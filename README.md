@@ -73,6 +73,8 @@ pyautomagic relies on the following libraries to work:
     scikit-learn
     pandas
     mne
+    matplotlib
+    seaborn
     
 Setup environment via Conda:
 
@@ -80,25 +82,34 @@ Setup environment via Conda:
     conda create -n pyautomagic
     conda activate pyautomagic
     conda config --add channels conda-forge
-    conda install numpy pandas mne scipy scikit-learn seaborn
+    conda install numpy pandas mne scipy scikit-learn seaborn matplotlib
+    
+## Setup Jupyter Kernel To Test
+You need to install ipykernel to expose your conda environment to jupyter notebooks.
+   
+    conda install ipykernel
+    python -m ipykernel install --name pyautomagic --user
+    # now you can run jupyter lab and select a kernel
+    jupyter lab 
+        
     
 ## Install from Github
 To install, run this command in your repo:
 
     pip install -e git+https://github.com/NeuroDataDesign/pyautomagic#egg=pyautomagic
 
-# Documentation
+
+# Testing and Documentation
+Run tests and also autoformatting of your code. Install black, pylint, pytest, and pytest-coverage.
+    
+    conda install sphinx black
+    black pyautomagic/*
+    pylint ./pyautomagic/
+    pytest --cov-config=.coveragerc --cov=./eegio/ tests/
+    coverage-badge -f -o coverage.svg
+
 Use sphinx to generate documentation:
 
     sphinx-quickstart
-    
-
-# Testing
-Run tests and also autoformatting of your code. Install black, pylint, pytest, and pytest-coverage.
-
-    black eegio/*
-    pylint ./eegio/
-    pytest --cov-config=.coveragerc --cov=./eegio/ tests/
-    coverage-badge -f -o coverage.svg
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
