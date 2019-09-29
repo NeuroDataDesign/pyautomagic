@@ -8,10 +8,14 @@ def performEOGRegression(eeg, eog):
         INPUT: eeg, eog data matrices
         OUTPUT: clean_eeg matrix """
 
-    size_tuple = np.shape(eog)  # resizing the EOG array so that its pseudoinverse can be calculated
-    dimension = len(size_tuple)
+    size_eeg = np.shape(eeg)
+    size_eog = np.shape(eog)
+    if size_eeg == 0 or size_eeg == 0:  # check if the inputs values for eeg and eog are null
+        return;
+
+    dimension = len(size_eog)
     if dimension == 1:
-        eog.resize((1, size_tuple[0]))
+        eog.resize((1, size_eog[0]))    # resizing the EOG array so that its pseudoinverse can be calculated
     eeg_t = np.transpose(eeg)
     eog_t = np.transpose(eog)
     pseudoinv = np.linalg.pinv(np.dot(np.transpose(eog_t), eog_t))  # performing pseudoinverse
