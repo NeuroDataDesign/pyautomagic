@@ -9,11 +9,14 @@ def performEOGRegression(eeg, eog):
         INPUT: eeg, eog data matrices
         OUTPUT: clean_eeg matrix """
 
-    # making it robust if a single dimensional array is used for the EOG channel
-    size_tuple = np.shape(eog)
-    dimension = len(size_tuple)
+    size_eeg = np.shape(eeg)
+    size_eog = np.shape(eog)
+    if size_eeg == 0 or size_eeg == 0:  # check if the inputs values for eeg and eog are null
+        return;
+
+    dimension = len(size_eog)
     if dimension == 1:
-        eog.resize((1, size_tuple[0]))
+        eog.resize((1, size_eog[0]))
 
     # performing linear regression
     eeg_t = np.transpose(eeg)
