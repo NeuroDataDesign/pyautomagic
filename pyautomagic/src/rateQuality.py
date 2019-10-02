@@ -1,38 +1,10 @@
-def rateQuality(OHA, THV, CHV, RCB, overallGoodCutoff=0.1, overallBadCutoff=0.2, timeGoodCutoff=0.1, timeBadCutoff=0.2,
-                channelGoodCutoff=0.15, channelBadCutoff=0.3, BadChannelGoodCutoff=0.15, BadChannelBadCutoff=0.3):
-
-    # Program verifies that the values are Numeric Type, if not, uses the default values
-    if not isinstance(overallGoodCutoff, int) and not isinstance(overallGoodCutoff, float):
-        overallGoodCutoff = 0.1
-        print('Error: overallGoodCutoff invalid value, using default')
-    if not isinstance(overallBadCutoff, int) and not isinstance(overallBadCutoff, float):
-        overallBadCutoff = 0.2
-        print('Error: overallBadCutoff invalid value, using default')
-
-    if not isinstance(timeGoodCutoff, int) and not isinstance(timeGoodCutoff, float):
-        timeGoodCutoff = 0.1
-        print('Error: timeGoodCutoff invalid value, using default')
-    if not isinstance(timeBadCutoff, int) and not isinstance(timeBadCutoff, float):
-        timeBadCutoff = 0.2
-        print('Error: timeBadCutoff invalid value, using default')
-
-    if not isinstance(channelGoodCutoff, int) and not isinstance(channelGoodCutoff, float):
-        channelGoodCutoff = 0.15
-        print('Error: channelGoodCutoff invalid value, using defult')
-    if not isinstance(channelBadCutoff, int) and not isinstance(channelBadCutoff, float):
-        channelBadCutoff = 0.3
-        print('Error: channelBadCutoff invalid value, using default')
-
-    if not isinstance(BadChannelGoodCutoff, int) and not isinstance(BadChannelGoodCutoff, float):
-        BadChannelGoodCutoff = 0.15
-        print('Error: BadChannelGoodCutoff invalid value, using default')
-    if not isinstance(BadChannelBadCutoff, int) and not isinstance(BadChannelBadCutoff, float):
-        BadChannelBadCutoff = 0.3
-        print('Error: BadChannelBadCutoff invalid value, using default')
-
-    if not isinstance(OHA, str) and not isinstance(THV, str) and not isinstance(CHV, str):
-        qualityScores = [OHA, THV, CHV]
-        print('Error: No qualityScores found, using defaults')
+def rateQuality(OHA, THV, CHV, RCB, overallGoodCutoff:float=0.1, overallBadCutoff:float=0.2, timeGoodCutoff:float=0.1, timeBadCutoff:float=0.2,
+                channelGoodCutoff:float=0.15, channelBadCutoff:float=0.3, BadChannelGoodCutoff:float=0.15, BadChannelBadCutoff:float=0.3):
+    
+    # check that thresholds are between 0 and 1
+    if any(isinstance(x, int) for x in [fill_this_in]) or any(x <= 0 or x >= 1 for x in [fill_this_in]):
+           logger.log(f"Some threshold cutoffs were set as integer. Please pass in a float between 0 and 1. You passed in {stuff}."
+           raise ValueError("Say something")
 
     qualityScores = [OHA, THV, CHV, RCB]
     Qs = qualityScores
