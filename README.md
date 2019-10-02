@@ -102,10 +102,11 @@ To install, run this command in your repo:
 # Testing and Documentation
 Run tests and also autoformatting of your code. Install black, pylint, pytest, and pytest-coverage.
     
-    conda install sphinx black
+    conda install sphinx black pytest pytest-cov coverage 
+    pip install coverage-badge
     black pyautomagic/*
     pylint ./pyautomagic/
-    pytest --cov-config=.coveragerc --cov=./eegio/ tests/
+    pytest --cov-config=.coveragerc --cov=./pyautomagic/ tests/
     coverage-badge -f -o coverage.svg
 
 Use sphinx to generate documentation:
