@@ -8,7 +8,9 @@ from sklearn.decomposition import TruncatedSVD
     this uses the alternating directions augmented method of multipliers
     as described in my blog
 """
-def rpca(M,lam,tol,maxIter):
+
+
+def rpca(M, lam, tol, maxIter):
 
     """ Perform Robust Principle Component Analysis:
     -Input = [M,lam,tol,maxIter]
@@ -30,8 +32,8 @@ def rpca(M,lam,tol,maxIter):
 
     Nr = M.shape[0]
     Nc = M.shape[1]
-    norm_2 = np.linalg.norm(M,2)
-    norm_inf = np.linalg.norm(M,np.inf) / lam
+    norm_2 = np.linalg.norm(M, 2)
+    norm_inf = np.linalg.norm(M, np.inf) / lam
     dual_norm = np.maximum(norm_2, norm_inf)
     Y = M / dual_norm
 
@@ -39,31 +41,31 @@ def rpca(M,lam,tol,maxIter):
     mu_bar = mu * 1e7
     rho = 1.5
 
-    L = np.zeros((Nr,Nc))
-    S = np.zeros((Nr,Nc))    
-    
+    L = np.zeros((Nr, Nc))
+    S = np.zeros((Nr, Nc))
+
     error = 10
     count = 0
-    isRunning = True;
-    while (isRunning and error > tol):
-        temp_t = M-L+(Y/mu)
-        S = soft_thres(temp_t, lam/mu)
-        U,sig,V = np.linalg.svd(M-S+(Y/mu), full_matrices=False)
-        L = np.dot(U, np.dot(np.diag(soft_thres(sig, 1/mu)), V))
-        Y = Y + mu*(M-L-S)
-        mu = np.minimum(mu*rho,mu_bar)
-        error = np.linalg.norm(M-L-S,'fro')/np.linalg.norm(M,'fro')
-        count += 1 
-        if (count >= maxIter):
-            isRunning = False;
-            
-            
-    L = L.reshape(Nr,Nc)
-    S = S.reshape(Nr,Nc)
+    isRunning = True
+    while isRunning and error > tol:
+        temp_t = M - L + (Y / mu)
+        S = soft_thres(temp_t, lam / mu)
+        U, sig, V = np.linalg.svd(M - S + (Y / mu), full_matrices=False)
+        L = np.dot(U, np.dot(np.diag(soft_thres(sig, 1 / mu)), V))
+        Y = Y + mu * (M - L - S)
+        mu = np.minimum(mu * rho, mu_bar)
+        error = np.linalg.norm(M - L - S, "fro") / np.linalg.norm(M, "fro")
+        count += 1
+        if count >= maxIter:
+            isRunning = False
 
-    return L,S
+    L = L.reshape(Nr, Nc)
+    S = S.reshape(Nr, Nc)
 
-def soft_thres(x,eps):
+    return L, S
+
+
+def soft_thres(x, eps):
     """
     Cian Scannell - Oct-2017  
     Soft thresholds a matrix x at the eps level
@@ -71,4 +73,4 @@ def soft_thres(x,eps):
     """
     a = np.sign(x)
     b = np.maximum((np.fabs(x) - eps), 0)
-    return np.multiply(a,b)
+    return np.multiply(a, b)
