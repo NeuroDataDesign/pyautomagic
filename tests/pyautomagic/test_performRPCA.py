@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-import performRPCA
+from pyautomagic.preprocessing.performRPCA import performRPCA
 """
 Basic unit Testing for performRPCA
 Tests basic input, erorr on no input, and changing the parameters.
