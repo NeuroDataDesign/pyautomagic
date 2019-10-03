@@ -19,11 +19,12 @@ import preProcessRPCA as preprocess
             that was removed.
 """
 
-def performRPCA(EEG, lam=[], tol=1e-7, maxIter=1000):
+
+def performRPCA(EEG, lam=-1, tol=1e-7, maxIter=1000):
     #Find lamda if not provided using the Automagic algorithim
     col = EEG.shape;
-    if (len(lam) == 0): #if no input lamda, calculate its value
-        lam = 1 / np.sqrt(col);
+    if (lam == -1): #if no input lamda, calculate its value
+        lam = 1 / np.sqrt(col[0]);
         
     #Perform Robust Principal Component Analysis
     data, error = preprocess.rpca(EEG,lam,tol,maxIter);
