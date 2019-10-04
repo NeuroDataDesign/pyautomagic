@@ -66,19 +66,19 @@ class Quality():
 
         # Calculating quality metrics
         # Overall high amplitude data points
-        OHA = np.sum(np.absolute(Data) > overallThresh) / n_samples
+        overall_high_amp = np.sum(np.absolute(Data) > overallThresh) / n_samples
         # Timepoints of high variance
         std_across_chans = np.std(Data, axis=0)
-        THV = np.sum(std_across_chans > timeThresh) / n_times
+        times_high_var = np.sum(std_across_chans > timeThresh) / n_times
         # Ratio of bad channels
-        RBC = len(bad_chans) / float(n_chans)
+        ratio_bad_chans = len(bad_chans) / float(n_chans)
         # Channels of high variance
         std_across_time = np.std(Data, axis=1)
-        CHV = np.sum(std_across_time > chanThresh) / n_chans
+        chan_high_var = np.sum(std_across_time > chanThresh) / n_chans
         # unthresholded mean absolute voltage
-        MAV = np.mean(np.absolute(Data))
+        mean_abs_volt = np.mean(np.absolute(Data))
 
-        quality_metrics = {'OHA': OHA, 'THV': THV, 'RBC': RBC, 'CHV': CHV, 'MAV': MAV,  # actual results
-                           'ot': overallThresh, 'tt': timeThresh, 'ct': chanThresh, # for development
-                           'ar': apply_common_avg}  # for development
+        quality_metrics = {'overall_high_amp': overall_high_amp, 'times_high_var': times_high_var, 'ratio_bad_chans': ratio_bad_chans, 'chan_high_var': chan_high_var, 'mean_abs_volt': mean_abs_volt,  # actual results
+                           'overallThresh': overallThresh, 'timeThresh': timeThresh, 'chanThresh': chanThresh, # for development
+                           'apply_common_avg': apply_common_avg}  # for development
         return quality_metrics
