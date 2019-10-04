@@ -3,8 +3,7 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 
-def perform_high_variance_channel_rejection(data: np.ndarray, removed_mask: np.array(dtype=bool),
-                                            sd_threshold: float = 25):
+def perform_high_variance_channel_rejection(data: np.ndarray, removed_mask: np.array, sd_threshold: float = 25):
     """
     reject bad channels based on high standard deviation
 
@@ -21,25 +20,26 @@ def perform_high_variance_channel_rejection(data: np.ndarray, removed_mask: np.a
 
     # checking input arguments and if not acceptable, assigning default value.
     if not isinstance(sd_threshold, int) and not isinstance(sd_threshold, float):
-        sd_threshold = 0.85
-        logger.log('Invalid channel_criterion value. Default of 0.85 used.')
+        sd_threshold = 25
+        logger.log('Invalid channel_criterion value. Default of 25 used.')
 
     # dimension of EEG data
-    s, _ = data.shape
+    no_channels, _ = data.shape
 
     # initializing bad_channel_mask
-    bad_channels_mask = np.zeros((1, s), dtype=bool)
+    bad_channels_mask = np.zeros((1, no_channels), dtype=bool)
 
     # calculating standard deviation and rejecting channels with higher sd than threshold value
     rejected = np.nanstd(data, axis=1) > sd_threshold
-    data_out = data[np.where(rejected)[0]] = 0
+    data[np.where(rejected)[0][0]] = 0
+    data_out = data
 
     # updating other parameters of dataset accordingly
-    bad_channels_mask[rejected] = True
-    new_mask = removed_mask
-    old_mask = removed_mask
-    new_mask[np.where(new_mask=0)[0]] = bad_channels_mask
-    bad_channels = np.setdiff1d(np.where(new_mask)[0], np.where(old_mask))
+    bad_channels_mask[0][np.where(rejected)[0][0]] = True
+    new_mask = np.copy(removed_mask)
+    old_mask = np.copy(removed_mask)
+    new_mask[np.where(new_mask == 0)[0]] = bad_channels_mask
+    bad_channels = np.setdiff1d(np.where(new_mask), np.where(old_mask))
     removed_mask = new_mask
 
     return data_out, bad_channels, removed_mask
