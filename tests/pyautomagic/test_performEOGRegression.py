@@ -2,18 +2,23 @@ import pytest
 import numpy as np
 import logging
 
-
 def performEOGRegression(eeg, eog, *args):
-    """
-    Performs linear regression to remove EOG artifact from the EEG data
+    """Performs linear regression to remove EOG artifact from the EEG data
 
-    :param eeg: EEG signal with the EOG artifacts
-    :type eeg: np.ndarray
-    :param eog: EOG signal
-    :type eog: np.ndarray
-    :param *args: variable length argument list
-    :return: Cleaned EEG signal from EEG artifacts
-    :rtype: np.ndarray
+    Parameters
+    ----------
+    eeg: np.ndarray
+        EEG signal with the EOG artifacts
+    eog: np.ndarray
+        EOG signal
+    *args
+        variable length argument list
+
+    Returns
+    -------
+    clean_eeg: np.ndarray
+               Cleaned EEG signal from EEG artifacts
+
     """
     # checks if EOG Regression should be skipped or not depending on the function arguments
     if len(args[0]) == 0:
