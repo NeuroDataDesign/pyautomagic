@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
-import sys
-sys.path.insert(1, '/Users/clairezurn/pyautomagic/pyautomagic/src')
-from calcQuality import calcQuality
+#import sys
+#sys.path.insert(1, '/pyautomagic/pyautomagic/src')
+from pyautomagic.src.calcQuality import calcQuality
 
 """
 
