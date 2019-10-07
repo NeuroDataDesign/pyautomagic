@@ -42,22 +42,31 @@ def calcQuality(Data: np.ndarray, bad_chans: List, overallThresh: float = 50, ti
     # checking all of the default value types, if not what they should be, use default
     if not isinstance(overallThresh, int) and not isinstance(overallThresh, float):
         overallThresh = 50
-        logger.log('Invalid overallThresh value. Default of 50 used.')
+        logger.log(30,'Invalid overallThresh value. Default of 50 used.')
+    if isinstance(overallThresh, bool):
+        overallThresh = 50
+        logger.log(30,'Invalid overallThresh value. Default of 50 used.')
     if not isinstance(timeThresh, int) and not isinstance(timeThresh, float):
         timeThresh = 25
-        logger.log('Invalid timeThresh value. Default of 25 used.')
+        logger.log(30,'Invalid timeThresh value. Default of 25 used.')
+    if isinstance(timeThresh, bool):
+        timeThresh = 25
+        logger.log(30,'Invalid timeThresh value. Default of 25 used.')
     if not isinstance(chanThresh, int) and not isinstance(chanThresh, float):
         chanThresh = 25
-        logger.log('Invalid chanThresh value. Default of 25 used.')
+        logger.log(30,'Invalid chanThresh value. Default of 25 used.')
+    if isinstance(chanThresh, bool):
+        chanThresh = 25
+        logger.log(30,'Invalid chanThresh value. Default of 25 used.')
     if not isinstance(apply_common_avg, bool):
         # ADD STATEMENT TO ALLOW TYPICAL OTHER BOOLEAN INDICATORS
         apply_common_avg = True
-        logger.log('Invalid apply_common_avg value. Average referencing used.')
+        logger.log(30,'Invalid apply_common_avg value. Average referencing used.')
     # ADD CHECKS FOR DAT AND BAD_CHANS?
 
     # get the dimensions of EEG data (# channels, # time points, # samples of data)
-    n_chans, n_times, n_samples = Data.shape
-
+    n_chans, n_times = Data.shape
+    n_samples = n_chans*n_times
     # perform average reference
     if apply_common_avg:
         avg_signal = np.mean(Data, axis=0)
@@ -67,7 +76,7 @@ def calcQuality(Data: np.ndarray, bad_chans: List, overallThresh: float = 50, ti
     # Overall high amplitude data points
     overall_high_amp = np.sum(np.absolute(Data) > overallThresh) / n_samples
     # Timepoints of high variance
-    std_across_chans = np.std(Data, axis=0)
+    std_across_chans = np.sqrt((np.sum(abs(Data - np.mean(Data,0))**2,0)) / (n_chans-1))#matching matlab std def
     times_high_var = np.sum(std_across_chans > timeThresh) / n_times
     # Ratio of bad channels
     ratio_bad_chans = len(bad_chans) / float(n_chans)
