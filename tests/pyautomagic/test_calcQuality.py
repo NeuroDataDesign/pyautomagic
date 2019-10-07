@@ -37,8 +37,8 @@ def test_incorrect_param_type():
     time = np.arange(.001, .1, .001)
     eeg =np.stack((100 * np.sin(50 * time), 10 * np.cos(40 * time)))
     bad_chans = [2]
-    overallThresh = True
-    chanThresh = 'test'
+    overallThresh = -40
+    chanThresh = 0
     timeThresh = False
     avg_ref = 'off'
     calculated_quality = calcQuality(eeg, bad_chans, overallThresh, timeThresh, chanThresh, avg_ref)
