@@ -56,7 +56,7 @@ def rateQuality(quality_metrics, overall_Good_Cutoff: float = 0.1, overall_Bad_C
     channel_Good_Cutoff : float
                     cutoff for "Good" quality based on channels of high variance across time [0.15].
 
-    :channel_Bad_Cutoff : float
+    channel_Bad_Cutoff : float
                     cutoff for "Bad" quality based on channels of high variance across time [0.3].
 
     Returns
