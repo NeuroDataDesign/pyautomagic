@@ -1,3 +1,17 @@
+# Copyright 2019 NeuroData (http://neurodata.io)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -8,36 +22,47 @@ def rateQuality(quality_metrics, overall_Good_Cutoff: float = 0.1, overall_Bad_C
                 time_Good_Cutoff: float = 0.1, time_Bad_Cutoff: float = 0.2,
                 bad_Channel_Good_Cutoff: float = 0.15, bad_Channel_Bad_Cutoff: float = 0.3, channel_Good_Cutoff: float = 0.15,
                 channel_Bad_Cutoff: float = 0.3):
-
     """
-    Rates datasets, based on quality measures calculated with calcQuality()
+    Rates datasets, based on quality measures calculated with calcQuality().
 
     The possible ratings:
         Good overall rating
         Regular overall rating
         Bad overall rating
 
-    :quality_metrics:  a dictionary containing the quality metrics to rate the dataset
-    :type quality_metrics: dict
-    :overall_Good_Cutoff: cutoff for "Good" quality based on  overall high amplitude data points [0.1]
-    :type overall_Good_Cutoff: float
-    :overall_Bad_Cutoff: cutoff for "Bad" quality based on overall high amplitude data point [0.2]
-    :type overall_Bad_Cutoff: float
-    :time_Good_Cutoff: cutoff for "Good" quality based on time points of high variance across channels [0.1]
-    :type time_Good_Cutoff: float
-    :time_Bad_Cutoff: cutoff for "Bad" quality based on time points of high variance across channels [0.2]
-    :type time_Bad_Cutoff: float
-    :bad_Channel_Good_Cutoff: cutoff for "Good" quality based on ratio of bad channels [0.15]
-    :type bad_Channel_Good_Cutoff: float
-    :bad_Channel_Bad_Cutoff: cutoff for "Bad" quality based on ratio of bad channels [0.3]
-    :type bad_Channel_Bad_Cutoff: float
-    :channel_Good_Cutoff: cutoff for "Good" quality based on channels of high variance across time [0.15]
-    :type channel_Good_Cutoff: float
-    :channel_Bad_Cutoff: cutoff for "Bad" quality based on channels of high variance across time [0.3]
-    :type channel_Bad_Cutoff: float
+    Parameters
+    ----------
+    quality_metrics : dict
+                    a dictionary containing the quality metrics to rate the dataset.
 
-    :return: dataset_qualification: a dictionary indicating is the dataset if "Good" = 100, "Regular" = 50 or "Bad" = 0
-    :rtype: dict
+    overall_Good_Cutoff : float
+                    cutoff for "Good" quality based on  overall high amplitude data points [0.1].
+
+    overall_Bad_Cutoff : float
+                    cutoff for "Bad" quality based on overall high amplitude data point [0.2].
+
+    time_Good_Cutoff : float
+                    cutoff for "Good" quality based on time points of high variance across channels [0.1].
+
+    time_Bad_Cutoff : float
+                    cutoff for "Bad" quality based on time points of high variance across channels [0.2].
+
+    bad_Channel_Good_Cutoff : float
+                    cutoff for "Good" quality based on ratio of bad channels [0.15].
+
+    bad_Channel_Bad_Cutoff : float
+                    cutoff for "Bad" quality based on ratio of bad channels [0.3].
+
+    channel_Good_Cutoff : float
+                    cutoff for "Good" quality based on channels of high variance across time [0.15].
+
+    :channel_Bad_Cutoff : float
+                    cutoff for "Bad" quality based on channels of high variance across time [0.3].
+
+    Returns
+    -------
+    dataset_qualification : dict
+                    a dictionary indicating is the dataset if "Good" = 100, "Regular" = 50 or "Bad" = 0.
 
     """
 
