@@ -4,21 +4,28 @@ import logging
 
 
 def performFilter(EEG, sfreq, filter_type=None, filt_freq=None, filter_length='auto'):
-    """ This function filters EEG data using Hamming windowed sinc FIR filter
+    """
+    This function filters EEG data using Hamming windowed sinc FIR filter
     with input filter type and parameters.
 
-    :param EEG: Input EEG data to be filtered.
-    :type EEG: ndarray, shape (…, n_times)
-    :param sfreq: The sample frequency in Hz.
-    :type sfreq: float | None
-    :param filter_type: The filter type, can only take 'low', 'high' or 'notch', defaults to None
-    :type filter_type: str
-    :param filt_freq: The filter frequency in Hz, defaults to None
-    :type filt_freq: float | None
-    :param filter_length: Length of the FIR filter to use, defaults to 'auto'.
-    :type filter_length: str | int
-    :return: The filtered EEG data.
-    :rtype: ndarray, shape (…, n_times)
+    Parameters
+    ----------
+    EEG : ndarray, shape (…, n_times)
+        Input EEG data to be filtered.
+    sfreq : float | None
+        The sample frequency in Hz.
+    filter_type : str
+        The filter type, can only take 'low', 'high' or 'notch', defaults to None
+    filt_freq : float | None
+        The filter frequency in Hz, defaults to None
+    filter_length : str | int
+        Length of the FIR filter to use, defaults to 'auto'.
+
+    Returns
+    -------
+    ndarray, shape (…, n_times)
+        The filtered EEG data.
+
     """
     if filter_type is None:
         logging.warning('No Filter Will be Performed')
