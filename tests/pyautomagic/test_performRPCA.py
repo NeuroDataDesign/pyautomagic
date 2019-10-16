@@ -49,6 +49,7 @@ def test_incorrect_input():
     print('test_incorrect_input Pass')
 
 def test_params1():
+
     EEG = np.array([[1,2,3],[4,5,6],[7,8,9]])
     lam = .7
     tol = 1e-8

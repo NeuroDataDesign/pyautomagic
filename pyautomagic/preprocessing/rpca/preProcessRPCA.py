@@ -36,6 +36,7 @@ def rpca(M,lam,tol,maxIter):
             Noise removed from the data (Sparse Matrix)
             note: M = L + S        
     
+
 """
 
     Nr = M.shape[0]
@@ -48,6 +49,7 @@ def rpca(M,lam,tol,maxIter):
     mu = 1.25 / norm_2
     mu_bar = mu * 1e7
     rho = 1.5
+
 
     L = np.zeros((Nr,Nc))
     S = np.zeros((Nr,Nc))    
@@ -74,10 +76,12 @@ def rpca(M,lam,tol,maxIter):
     return L,S
 
 def soft_thres(x,eps):
+
     """
     Cian Scannell - Oct-2017  
     Soft thresholds a matrix x at the eps level
     i.e ST(x,eps)_ij = sgn(x_ij) max(|x_ij| - eps, 0)
+
     
     parameters
     ----------
@@ -96,3 +100,4 @@ def soft_thres(x,eps):
     a = np.sign(x)
     b = np.maximum((np.fabs(x) - eps), 0)
     return np.multiply(a,b)
+
