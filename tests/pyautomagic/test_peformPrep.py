@@ -4,40 +4,35 @@ from pyautomaigc.preprocessing import performPrep
 
 
 def test_sample_input():
-    data = mne.io.read_raw_edf('/Users/raphaelbechtold/Documents/MATLAB' \
-                               '/Automagic/automagic/data/Subj1/S001R04.edf')
+    data = mne.io.read_raw_edf('pyautomagic/tests/test_data/S001R04.edf')
     eeg, time = data[:]
     matlab_output = [37,41,43,45]
     badchannels = performPrep.performPrep(eeg, 0, 160, 50)
     assert(np.array_equal(badchannels,matlab_output))
     
 def test_sample_input_change_srate():
-    data = mne.io.read_raw_edf('/Users/raphaelbechtold/Documents/MATLAB' \
-                               '/Automagic/automagic/data/Subj1/S001R04.edf')
+    data = mne.io.read_raw_edf('pyautomagic/tests/test_data/S001R04.edf')
     eeg, time = data[:]
     matlab_output = [41,43,45]
     badchannels = performPrep.performPrep(eeg, 0, 250, 50)
     assert(np.array_equal(badchannels,matlab_output))
     
 def test_sample_input_change_lineNoise():
-    data = mne.io.read_raw_edf('/Users/raphaelbechtold/Documents/MATLAB' \
-                               '/Automagic/automagic/data/Subj1/S001R04.edf')
+    data = mne.io.read_raw_edf('pyautomagic/tests/test_data/S001R04.edf')
     eeg, time = data[:]
     matlab_output = [37,41,43,45]
     badchannels = performPrep.performPrep(eeg, 0, 160, 60)
     assert(np.array_equal(badchannels,matlab_output))
     
 def test_sample_input_change_srate1000():
-    data = mne.io.read_raw_edf('/Users/raphaelbechtold/Documents/MATLAB' \
-                               '/Automagic/automagic/data/Subj1/S001R04.edf')
+    data = mne.io.read_raw_edf('pyautomagic/tests/test_data/S001R04.edf')
     eeg, time = data[:]
     matlab_output = [37,41,43]
     badchannels = performPrep.performPrep(eeg, 0, 1000, 50)
     assert(np.sum(np.isin(badchannels,matlab_output))==len(matlab_output))
     
 def test_detect_constant_values_for_long_time_sample():
-    data = mne.io.read_raw_edf('/Users/raphaelbechtold/Documents/MATLAB' \
-                               '/Automagic/automagic/data/Subj1/S001R04.edf')
+    data = mne.io.read_raw_edf('pyautomagic/tests/test_data/S001R04.edf')
     eeg, time = data[:]
     matlab_output = [4,37,41,43,44,45]
     #input constant value channel
@@ -46,8 +41,7 @@ def test_detect_constant_values_for_long_time_sample():
     assert(np.array_equal(badchannels,matlab_output))
     
 def test_detect_high_amplitude():
-    data = mne.io.read_raw_edf('/Users/raphaelbechtold/Documents/MATLAB' \
-                               '/Automagic/automagic/data/Subj1/S001R04.edf')
+    data = mne.io.read_raw_edf('pyautomagic/tests/test_data/S001R04.edf')
     eeg, time = data[:]
     matlab_output = [9,37,41,43,45]
     #input constant value channel
@@ -56,8 +50,7 @@ def test_detect_high_amplitude():
     assert(np.array_equal(badchannels,matlab_output))
 
 def test_bad_chan_from_deviation():
-    data = mne.io.read_raw_edf('/Users/raphaelbechtold/Documents/MATLAB' \
-                               '/Automagic/automagic/data/Subj1/S001R04.edf')
+    data = mne.io.read_raw_edf('pyautomagic/tests/test_data/S001R04.edf')
     eeg, time = data[:]
     matlab_output = [9,37,41,43,45]
     #input constant value channel
@@ -67,8 +60,7 @@ def test_bad_chan_from_deviation():
 
 
 def test_bad_chan_from_deviation_wSrate():
-    data = mne.io.read_raw_edf('/Users/raphaelbechtold/Documents/MATLAB' \
-                               '/Automagic/automagic/data/Subj1/S001R04.edf')
+    data = mne.io.read_raw_edf('pyautomagic/tests/test_data/S001R04.edf')
     eeg, time = data[:]
     matlab_output = [9,41,43,45]
     #input constant value channel
@@ -77,8 +69,7 @@ def test_bad_chan_from_deviation_wSrate():
     assert(np.array_equal(badchannels,matlab_output))
 
 def test_bad_chan_from_sum_of_channels_srate300():
-    data = mne.io.read_raw_edf('/Users/raphaelbechtold/Documents/MATLAB' \
-                               '/Automagic/automagic/data/Subj1/S001R04.edf')
+    data = mne.io.read_raw_edf('pyautomagic/tests/test_data/S001R04.edf')
     eeg, time = data[:]
     matlab_output = [9,41,43]
     #input constant value channel
@@ -88,8 +79,7 @@ def test_bad_chan_from_sum_of_channels_srate300():
     assert(np.sum(np.isin(badchannels,matlab_output))==len(matlab_output))
 
 def test_bad_chan_from_sum_of_channels_srate160():
-    data = mne.io.read_raw_edf('/Users/raphaelbechtold/Documents/MATLAB' \
-                               '/Automagic/automagic/data/Subj1/S001R04.edf')
+    data = mne.io.read_raw_edf('pyautomagic/tests/test_data/S001R04.edf')
     eeg, time = data[:]
     matlab_output = [9,41,43]
     #input constant value channel
@@ -99,8 +89,7 @@ def test_bad_chan_from_sum_of_channels_srate160():
     assert(np.sum(np.isin(badchannels,matlab_output))==len(matlab_output))    
     
 def test_sample_input_subj2():
-    data = mne.io.read_raw_edf('/Users/raphaelbechtold/Documents/MATLAB' \
-                               '/Automagic/automagic/data/Subj1/S001R04.edf')
+    data = mne.io.read_raw_edf('pyautomagic/tests/test_data/S001R04.edf')
     eeg, time = data[:]
     matlab_output = [37,41,43,45]
     badchannels = performPrep.performPrep(eeg, 0, 160, 50)
