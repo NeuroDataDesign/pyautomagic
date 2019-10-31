@@ -1,6 +1,6 @@
 import numpy as np
 import mne
-import pytest
+from pyautomaigc.preprocessing import performPrep
 
 
 def test_sample_input():
@@ -8,7 +8,7 @@ def test_sample_input():
                                '/Automagic/automagic/data/Subj1/S001R04.edf')
     eeg, time = data[:]
     matlab_output = [37,41,43,45]
-    badchannels = performPrep(eeg, 0, 160, 50)
+    badchannels = performPrep.performPrep(eeg, 0, 160, 50)
     assert(np.array_equal(badchannels,matlab_output))
     
 def test_sample_input_change_srate():
@@ -16,7 +16,7 @@ def test_sample_input_change_srate():
                                '/Automagic/automagic/data/Subj1/S001R04.edf')
     eeg, time = data[:]
     matlab_output = [41,43,45]
-    badchannels = performPrep(eeg, 0, 250, 50)
+    badchannels = performPrep.performPrep(eeg, 0, 250, 50)
     assert(np.array_equal(badchannels,matlab_output))
     
 def test_sample_input_change_lineNoise():
@@ -24,7 +24,7 @@ def test_sample_input_change_lineNoise():
                                '/Automagic/automagic/data/Subj1/S001R04.edf')
     eeg, time = data[:]
     matlab_output = [37,41,43,45]
-    badchannels = performPrep(eeg, 0, 160, 60)
+    badchannels = performPrep.performPrep(eeg, 0, 160, 60)
     assert(np.array_equal(badchannels,matlab_output))
     
 def test_sample_input_change_srate1000():
@@ -32,7 +32,7 @@ def test_sample_input_change_srate1000():
                                '/Automagic/automagic/data/Subj1/S001R04.edf')
     eeg, time = data[:]
     matlab_output = [37,41,43]
-    badchannels = performPrep(eeg, 0, 1000, 50)
+    badchannels = performPrep.performPrep(eeg, 0, 1000, 50)
     assert(np.sum(np.isin(badchannels,matlab_output))==len(matlab_output))
     
 def test_detect_constant_values_for_long_time_sample():
@@ -42,7 +42,7 @@ def test_detect_constant_values_for_long_time_sample():
     matlab_output = [4,37,41,43,44,45]
     #input constant value channel
     eeg[4,::] = -np.ones((1,eeg.shape[1]))
-    badchannels = performPrep(eeg, 0, 160, 50)
+    badchannels = performPrep.performPrep(eeg, 0, 160, 50)
     assert(np.array_equal(badchannels,matlab_output))
     
 def test_detect_high_amplitude():
@@ -52,7 +52,7 @@ def test_detect_high_amplitude():
     matlab_output = [9,37,41,43,45]
     #input constant value channel
     eeg[9,::] = eeg[9,::] * 10
-    badchannels = performPrep(eeg, 0, 160, 50)
+    badchannels = performPrep.performPrep(eeg, 0, 160, 50)
     assert(np.array_equal(badchannels,matlab_output))
 
 def test_bad_chan_from_deviation():
@@ -62,7 +62,7 @@ def test_bad_chan_from_deviation():
     matlab_output = [9,37,41,43,45]
     #input constant value channel
     eeg[9,::] = eeg[9,::]  + eeg[10,::] 
-    badchannels = performPrep(eeg, 0, 160, 50)
+    badchannels = performPrep.performPrep(eeg, 0, 160, 50)
     assert(np.array_equal(badchannels,matlab_output))
 
 
@@ -73,7 +73,7 @@ def test_bad_chan_from_deviation_wSrate():
     matlab_output = [9,41,43,45]
     #input constant value channel
     eeg[9,::] = eeg[9,::]  + eeg[10,::] 
-    badchannels = performPrep(eeg, 0, 250, 50)
+    badchannels = performPrep.performPrep(eeg, 0, 250, 50)
     assert(np.array_equal(badchannels,matlab_output))
 
 def test_bad_chan_from_sum_of_channels_srate300():
@@ -83,7 +83,7 @@ def test_bad_chan_from_sum_of_channels_srate300():
     matlab_output = [9,41,43]
     #input constant value channel
     eeg[9,::] = eeg[63,::]  + eeg[10,::] 
-    badchannels = performPrep(eeg, 0, 300, 50)
+    badchannels = performPrep.performPrep(eeg, 0, 300, 50)
     #detect at least same channels as matlab, but also other noisy channels
     assert(np.sum(np.isin(badchannels,matlab_output))==len(matlab_output))
 
@@ -94,7 +94,7 @@ def test_bad_chan_from_sum_of_channels_srate160():
     matlab_output = [9,41,43]
     #input constant value channel
     eeg[9,::] = eeg[63,::]  + eeg[10,::] 
-    badchannels = performPrep(eeg, 0, 300, 50)
+    badchannels = performPrep.performPrep(eeg, 0, 300, 50)
     #detect at least same channels as matlab, but also other noisy channels
     assert(np.sum(np.isin(badchannels,matlab_output))==len(matlab_output))    
     
@@ -103,7 +103,7 @@ def test_sample_input_subj2():
                                '/Automagic/automagic/data/Subj1/S001R04.edf')
     eeg, time = data[:]
     matlab_output = [37,41,43,45]
-    badchannels = performPrep(eeg, 0, 160, 50)
+    badchannels = performPrep.performPrep(eeg, 0, 160, 50)
     assert(np.array_equal(badchannels,matlab_output))  
     
     
