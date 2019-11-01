@@ -17,7 +17,8 @@ import os
 import logging
 logger = logging.getLogger(__name__)
 
-#class Project:
+# class Project:
+
 
 def __init__(self, name: str, data_folder: str, results_folder: str, file_extension: str, preprocess_parameters: dict, visualisation_parameters: dict):
     self.name = name
@@ -53,12 +54,8 @@ def Preprocess_All(self):
             uniqueName = self.blockList[i]
             block = self.blockMap(uniqueName)
             block.updateAddresses(self.data_folder, self.results_folder, self.params.EEGSystem.locFile)
-            # subjectName = block.subject.name ----- subject name? how to access it?
 
-            print("Processing file ", block.uniqueName, "file", i, "out of", (len(self.blockList)) )
-
-            # if not (os.path.exists(self.results_folder)):
-            #   bla bla bla ---- how to verify if the results folder for subjectName exists?
+            print("Processing file ", block.uniqueName, " file ", i, " out of ", (len(self.blockList)))
 
             [EEG] = block.preprocess()  # Call preprocess function to preprocess EEG data
 
@@ -85,7 +82,7 @@ def Interpolate_Selected(self):
             block = self.blockMap(uniqueName)
             block.updateAddresses(self.data_folder, self.results_folder, self.params.EEGSystem.locFile)
 
-            print("Processing file ", block.uniqueName, "file", i, "out of", (len(self.interpolateList)))
+            print("Processing file ", block.uniqueName, " file ", i, " out of ", (len(self.interpolateList)))
 
             block.interpolate()
 

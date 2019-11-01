@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""File containing all pyautomagic constant values"""
+"""File containing all Pyautomagic constant values"""
 
 PYAUTOMAGIC_VERSION = '1.0'
 
@@ -26,11 +26,15 @@ NEW_PROJECT = {'List_Name': 'Create New Project', 'Name': 'Type the name of your
 
 LOAD_PROJECT = {'List_Name': 'Load and existing project'}
 
+KEYBOARD_SHORTCUTS = {'GOOD': 'g, 1', 'OK': 'o, 2', 'BAD': 'b , 3', 'INTERPOLATE':  'i, 4', 'NOTRATED': 'n , 5', 'NEXT': 'rightarrow', 'PREVIOUS': 'leftarrow'}
+
+PREFIX_PATTERN = '^[gobni]+i?p_'
+
 RATINGS = {'Good': 'Good', 'Bad': 'Bad', 'Regular': 'Regular', 'Interpolate': 'Interpolate', 'Not_Rated': 'Not Rated'}
 
 EXTENSIONS = {'mat': '.mat', 'text': '.txt .asc .csv', 'fif': '.fif', 'set': '.set', 'edf': '.edf'}
 
-PYAUTOMAGIC = 'pyautomagic' #Folder name of pyautomagic
+PYAUTOMAGIC = 'pyautomagic'
 
 SRC_FOLDER = 'src'
 
