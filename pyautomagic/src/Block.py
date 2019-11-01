@@ -6,7 +6,7 @@ import os
 import json
 #from pyautomagic.src.calcQuality import calcQuality
 
-from mne_bids.utils import _parse_bids_filename
+from mne_bids.utils import _parse_bids_filename, _write_json
 from mne_bids.read import _read_raw
 
 logger = logging.getLogger(__name__)
@@ -126,9 +126,9 @@ class Block():
         """
         params = _parse_bids_filename(self.unique_name, verbose=False)
         if params['ses'] is None :
-            result_path = op.join(self.root_path,'derivatives','automagic',f"sub-{params['sub']}")
+            result_path = os.path.join(self.root_path,'derivatives','automagic',f"sub-{params['sub']}")
         else:
-            result_path = op.join(self.root_path,'derivatives','automagic',f"sub-{params['sub']}",f"ses-{params['ses']}")
+            result_path = os.path.join(self.root_path,'derivatives','automagic',f"sub-{params['sub']}",f"ses-{params['ses']}")
         return result_path
 
     def preprocess(self):
@@ -145,7 +145,7 @@ class Block():
             dictionary containing all the new updates to the block and the preprocessed array
             
         """
-        data = load_data(self)
+        data = self.load_data
         # do some parameter checks
         # use externally written function to preprocess
         # calcQuality
@@ -163,12 +163,18 @@ class Block():
         ----------
         none
         
-        Yields
-        ------
+        Returns
+        -------
         raw MNE object
         
         """
-        raw_filepath = self.unique_name+self.file_ext
+        params = _parse_bids_filename(self.unique_name, verbose=False)
+        if params['ses'] is None :
+            data_path = os.path.join(self.root_path,f"sub-{params['sub']}",self.unique_name)
+        else:
+            data_path = os.path.join(self.root_path,f"sub-{params['sub']}",f"ses-{params['ses']}",self.unique_name)
+        
+        raw_filepath = data_path+self.file_ext
         _read_raw(raw_filepath)
         
     def update_rating(self,update):
@@ -182,9 +188,9 @@ class Block():
         update : dict
             dictionary of updates
         
-        Yields
-        ------
-        raw MNE object
+        Returns
+        -------
+        none
         """
         # update can have many fields, go through and see what they are and update the block accordingly
 
@@ -205,9 +211,13 @@ class Block():
         none
         
         """
+        main_result_file = self.create_results_file
+        result_filename = self.unique_name + '_results.json'
+        result_file_overall = os.path.join(self.result_path,result_filename)
+        
         # save the processed stuff and figures into results path
         # dict_to_save = vars(self)
-        # _write_json(result_name,dict_to_save,overwrite=True,verbose = True) - obj save
+        _write_json(result_file_overall,main_result_file,overwrite=True,verbose = True)
         # save figs, store processed eeg - could add to above dict
     def write_log(self,updates):
         """
@@ -260,5 +270,8 @@ class Block():
             dictionary containing all of the relevant info needed to be saved
         
         """
-        # get the preprocessed file and do updates from Block info
-        # write log
+        results = vars(self)
+        return results
+        # need to decide which fields to not include in the saved file
+        # use pop() to remove them
+        
