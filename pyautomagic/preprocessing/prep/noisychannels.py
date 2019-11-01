@@ -51,16 +51,21 @@ def find_noisy_channels(raw, linenoise):
     EEGData = raw.get_data()
     ch_names_original = raw.info["ch_names"]
     sample_rate = raw.info["sfreq"]
-    mne.filter.filter_data(EEGData,sample_rate,1,None,picks=None,filter_length="auto",
-                           l_trans_bandwidth="auto",h_trans_bandwidth="auto",n_jobs=1,method="fir",iir_params=None,
-                           copy=True,phase="zero",fir_window="hamming",fir_design="firwin",pad="reflect_limited",
+    mne.filter.filter_data(EEGData,sample_rate, 1, None, picks=None,
+                           filter_length="auto", l_trans_bandwidth="auto",
+                           h_trans_bandwidth="auto", n_jobs=1,
+                           method="fir", iir_params=None,
+                           copy=True,phase="zero",fir_window="hamming",
+                           fir_design="firwin",pad="reflect_limited",
                            verbose=None)
     EEGData = signal.detrend(EEGData)
     # removing line noise
     mne.filter.notch_filter(EEGData,sample_rate,linenoise,filter_length="auto",
-                            notch_widths=None,trans_bandwidth=1,method="fir",iir_params=None,mt_bandwidth=None,
-                            p_value=0.05,picks=None,n_jobs=1,copy=True,phase="zero",fir_window="hamming",
-                            fir_design="firwin",pad="reflect_limited",verbose=None)
+                            notch_widths=None,trans_bandwidth=1,method="fir",
+                            iir_params=None,mt_bandwidth=None,
+                            p_value=0.05,picks=None,n_jobs=1,copy=True,phase="zero",
+                            fir_window="hamming",ir_design="firwin",pad="reflect_limited",
+                            verbose=None)
     # finding channels with NaNs or constant values for long periods of time
     original_dimensions = np.shape(EEGData)
     original_channels = np.arange(original_dimensions[0])
@@ -80,7 +85,7 @@ def find_noisy_channels(raw, linenoise):
             EEGData = np.delete(EEGData, i, axis=0)
     nans_no_data_channels = np.union1d(nan_channels, no_data_channels)
     channels_interpolate = np.setdiff1d(
-    channels_interpolate, nans_no_data_channels)  # channels to be used for interpolation
+    channels_interpolate, nans_no_data_channels)
     nans_no_data_ChannelName = list()
     ch_names = raw.info["ch_names"]
     for i in range(0, len(nans_no_data_channels)):
@@ -106,9 +111,9 @@ def find_noisy_channels(raw, linenoise):
         )
     deviation_channels = evaluation_channels[deviation_channel_mask]
     # finding channels with high frequency noise
+    EEGData = np.transpose(EEGData)
+    dimension = np.shape(EEGData)
     if sample_rate > 100:
-        EEGData = np.transpose(EEGData)
-        dimension = np.shape(EEGData)
         new_EEG = np.zeros((dimension[0], dimension[1]))
         bandpass_filter = filter_design(
             N_order=100,
@@ -117,10 +122,11 @@ def find_noisy_channels(raw, linenoise):
             sample_rate=sample_rate)
         for i in range(0, dimension[1]):
             new_EEG[:, i] = signal.filtfilt(bandpass_filter, 1, EEGData[:, i])
-        noisiness = np.divide(robust.mad(np.subtract(EEGData, new_EEG)), robust.mad(new_EEG))
+        noisiness = np.divide(robust.mad(np.subtract(EEGData, new_EEG)),
+                              robust.mad(new_EEG))
         noisiness_median = np.nanmedian(noisiness)
         noiseSD = (np.median(np.absolute(np.subtract(noisiness, np.median(noisiness))))
-                * 1.4826)
+                   * 1.4826)
         zscore_HFNoise = np.divide(np.subtract(noisiness, noisiness_median), noiseSD)
         HFnoise_channel_mask = [False] * new_dimension[0]
         for i in range(0, new_dimension[0]):
@@ -189,9 +195,9 @@ def find_noisy_channels(raw, linenoise):
     # medianMaxCorrelation = np.median(maximumCorrelations, 2);
 
     badSNR_channels = np.union1d(badCorrelation_channels_out, HFNoise_channels)
-    noisy_channels = np.union1d(np.union1d(
-        np.union1d(deviation_channels, np.union1d(badCorrelation_channels_out, dropout_channels_out)),
-        badSNR_channels), np.union1d(nan_channels, no_data_channels))
+    noisy_channels = np.union1d(np.union1d(np.union1d(deviation_channels,
+                    np.union1d(badCorrelation_channels_out, dropout_channels_out)),
+                     badSNR_channels), np.union1d(nan_channels, no_data_channels))
 
     # performing ransac
     bads = list()
@@ -254,7 +260,8 @@ def find_noisy_channels(raw, linenoise):
     return noisy_channels_list
 
 def run_ransac(chn_pos, chn_pos_good, good_chn_labs, n_pred_chns, data, n_samples, raw):
-    """Detects noisy channels apart from the ones described previously. It creates a random subset of the so-far good channels
+    """Detects noisy channels apart from the ones described previously. It creates
+    a random subset of the so-far good channels
     and predicts the values of the channels not in the subset.
 
     Parameters
@@ -339,7 +346,8 @@ def get_ransac_pred(chn_pos, chn_pos_good, good_chn_labs, n_pred_chns, raw, data
 
 
 def filter_design(N_order, amp, freq, sample_rate):
-    """ Creates a FIR low-pass filter that filters the EEG data using frequency sampling method.
+    """Creates a FIR low-pass filter that filters the EEG data using frequency
+    sampling method.
 
     Parameters
     __________
@@ -366,8 +374,10 @@ def filter_design(N_order, amp, freq, sample_rate):
     freq = np.multiply(freq,
                        np.exp(np.divide(np.multiply(-(0.5 * N_order) * sqrt(-1) *
                         math.pi, np.arange(nfft + 1)), nfft)))
-    kernel = np.real(np.fft.ifft(np.concatenate([freq, np.conj(freq[len(freq) - 2:0:-1])])))
-    kernel = np.multiply(kernel[0:N_order + 1], (np.transpose(hamming_window[:])))
+    kernel = np.real(np.fft.ifft(np.concatenate
+                                 ([freq, np.conj(freq[len(freq) - 2:0:-1])])))
+    kernel = np.multiply(kernel[0:N_order + 1],
+                         (np.transpose(hamming_window[:])))
     return kernel
 
 
