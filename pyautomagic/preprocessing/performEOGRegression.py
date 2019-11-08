@@ -1,46 +1,44 @@
 import numpy as np
 import logging
+import mne
 
 
-def performEOGRegression(eeg, eog, *args):
+def performEOGRegression(raw):
     """Performs linear regression to remove EOG artifact from the EEG data
 
         Parameters
         ----------
-        eeg: np.ndarray
-            EEG signal with the EOG artifacts
-        eog: np.ndarray
-            EOG signal
-        *args
-            variable length argument list
+        raw: MNE raw data structure
 
         Returns
         -------
-        clean_eeg: np.ndarray
-                   Cleaned EEG signal from EEG artifacts
+        clean_EEG: np.ndarray
+                   Cleaned EEG signal from EOG artifacts
 
         """
-    # checks if EOG Regression should be skipped or not depending on the function arguments
-    if len(args[0]) == 0:
+
+    EEG=raw.get_data()
+    EOG_idx=mne.pick_types(raw.info, eog=True)
+    EOG=EEG[EOG_idx]
+    # checks if EOG Regression should be skipped or not depending on whether EOG was recorded
+    if EOG_idx.shape[0] == 0:
         logging.warning('EOG regression skipped')
         return
 
-    size_eeg = np.shape(eeg)
-    size_eog = np.shape(eog)
-    dimension = len(size_eog)
+    size_EOG = EOG.shape
+    dim = len(size_EOG)
     # resizing the EOG array so that its pseudoinverse can be calculated
-    if dimension == 1:
-        eog.resize((1, size_eog[0]))
-    eeg_t = np.transpose(eeg)
-    eog_t = np.transpose(eog)
+    if dim == 1:
+        EOG.resize((1, size_EOG[0]))
+    EEG_t = np.transpose(EEG)
+    EOG_t = np.transpose(EOG)
     # performing pseudoinverse
-    pseudoinv = np.linalg.pinv(np.dot(np.transpose(eog_t), eog_t))
-    inv = np.dot(pseudoinv,np.transpose(eog_t))
-    subtract_eog = np.dot(eog_t, np.dot(inv, eeg_t))
+    pseudoinv = np.linalg.pinv(np.dot(np.transpose(EOG_t), EOG_t))
+    inv = np.dot(pseudoinv,np.transpose(EOG_t))
+    subtract_EOG = np.dot(EOG_t, np.dot(inv, EEG_t))
     # subtracting the EOG noise from the EEG signal
-    clean_eeg = np.transpose(np.subtract(eeg_t, subtract_eog))
-    return clean_eeg
-
+    clean_EEG = np.transpose(np.subtract(EEG_t, subtract_EOG))
+    return clean_EEG
 
 
 
