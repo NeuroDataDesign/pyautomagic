@@ -38,7 +38,7 @@ def preprocess(eeg, params):
     
     #perfom filter
     eeg_filt = eeg.copy()
-    eeg_filt._data = performFilter(data, eeg.sfreq,\
+    eeg_filt._data = performFilter(eeg.get_data(), eeg.sfreq,\
                              params['filter_type'], \
                              params['filt_freq'],\
                              params['filter_length'])
@@ -68,3 +68,5 @@ def preprocess(eeg, params):
         plt.clim(scale_min,scale_max)
         plt.title('Filtered EOG data');
         plt.colorbar()
+        
+   
