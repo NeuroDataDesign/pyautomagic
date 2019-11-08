@@ -2,7 +2,6 @@ import numpy as np
 import logging
 import mne
 
-
 def performEOGRegression(raw):
     """Performs linear regression to remove EOG artifact from the EEG data
 
@@ -20,7 +19,8 @@ def performEOGRegression(raw):
     EEG=raw.get_data()
     EOG_idx=mne.pick_types(raw.info, eog=True)
     EOG=EEG[EOG_idx]
-    # checks if EOG Regression should be skipped or not depending on whether EOG was recorded
+    # checks if EOG Regression should be skipped or not depending
+    # on whether EOG was recorded
     if EOG_idx.shape[0] == 0:
         logging.warning('EOG regression skipped')
         return
