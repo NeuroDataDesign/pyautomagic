@@ -3,6 +3,7 @@ import logging
 import mne
 
 def performEOGRegression(raw):
+  
     """Performs linear regression to remove EOG artifact from the EEG data
 
         Parameters
@@ -39,6 +40,3 @@ def performEOGRegression(raw):
     # subtracting the EOG noise from the EEG signal
     clean_EEG = np.transpose(np.subtract(EEG_t, subtract_EOG))
     return clean_EEG
-
-
-
