@@ -77,7 +77,9 @@ def calcQuality(data: np.ndarray, bad_chans: List, overallThresh: float = 50, ti
     # unthresholded mean absolute voltage
     mean_abs_volt = np.mean(np.absolute(data))
 
-    quality_metrics = {'overall_high_amp': overall_high_amp, 'times_high_var': times_high_var, 'ratio_bad_chans': ratio_bad_chans, 'chan_high_var': chan_high_var, 'mean_abs_volt': mean_abs_volt,  # actual results
-                       'overallThresh': overallThresh, 'timeThresh': timeThresh, 'chanThresh': chanThresh, # for development
-                       'apply_common_avg': apply_common_avg}  # for development
+    quality_metrics = {'overall_high_amp': overall_high_amp, 
+                       'times_high_var': times_high_var, 
+                       'ratio_bad_chans': ratio_bad_chans, 
+                       'chan_high_var': chan_high_var, 
+                       'mean_abs_volt': mean_abs_volt}  # for development
     return quality_metrics

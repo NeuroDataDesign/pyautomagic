@@ -1,14 +1,11 @@
 #from typing import List
 import logging
-#import numpy as np
 import os
-#import re
 import json
-#from pyautomagic.src.calcQuality import calcQuality
 import mne
 from mne_bids.utils import _parse_bids_filename, _write_json
 from mne_bids.read import _read_raw
-from pyautomagic.preprocess.preprocess import preprocess, interpolate
+from pyautomagic.preprocessing.preprocess import preprocess as execute_preprocess
 from pyautomagic.src.calcQuality import calcQuality
 from pyautomagic.src.rateQuality import rateQuality
 from matplotlib import pyplot as plt
@@ -61,17 +58,19 @@ class Block():
 
     """
     def __init__(self,root_path,data_filename,project,subject):
+        self.root_path = root_path
         self.project = project
         self.subject = subject
         self.unique_name = os.path.splitext(data_filename)[0]
         self.file_ext = os.path.splitext(data_filename)[1]
         self.params = project.params
         self.sampling_rate = project.sampling_rate
-        self.root_path = root_path
-        self.result_path = self.find_result_path
-        self = self.update_rating_from_file
         self.visualization_params = project.visualization_params
-        
+        self.result_path = self.find_result_path()
+        self.is_rated = False
+        self.is_interpolated = False
+        self.times_committed = -1
+        self = self.update_rating_from_file()
     
     def update_rating_from_file(self):
         """
@@ -97,14 +96,14 @@ class Block():
             saved_params = block['params']
             if not saved_params==self.params:
                 raise ValueError('Parameters of results file do not match this project. Can not merge.')
-            if block.is_interpolated or block.is_rated:
+            if block['is_interpolated'] or block['is_rated']:
                 self.rate = block.rate
-                self.to_be_interpolated = block.to_be_interpolated
-                self.is_interpolated = block.is_interpolated
-                self.auto_bad_chans = block.auto_bad_chans
-                self.final_bad_chans = block.final_bad_chans
-                self.quality_scores = block.quality_scores
-                self.times_commited = block.times_commited
+                self.to_be_interpolated = block['to_be_interpolated']
+                self.is_interpolated = block['is_interpolated']
+                self.auto_bad_chans = block['auto_bad_chans']
+                self.final_bad_chans = block['final_bad_chans']
+                self.quality_scores = block['quality_scores']
+                self.times_commited = block['times_commited']
             else: 
                 self.rate = 'not rated'
                 self.to_be_interpolated = []
@@ -114,7 +113,6 @@ class Block():
                 self.quality_scores = None
                 self.times_commited = 0
                 
-        
     def find_result_path(self):
         """
         Identifies the directory path pointing to where results stored
@@ -148,27 +146,36 @@ class Block():
         
         Returns
         -------
-        preprocessed: dict
+       results: dict
             dictionary containing all the new updates to the block and the preprocessed array
             
         """
-        data = self.load_data
-        preprocessed,fig_1,fig_2 = preprocess(data,self.params)
-        quality_scores = calcQuality(preprocessed,self.final_bad_chans,self.project.quality_thresholds)
-        automagic = preprocessed.pop('automagic')
+        data = self.load_data()
+        preprocessed,fig_1,fig_2 = execute_preprocess(data,self.params)
+        overall_thresh = self.project.quality_thresholds['overall_thresh']
+        time_thresh = self.project.quality_thresholds['time_thresh']
+        chan_thresh = self.project.quality_thresholds['chan_thresh']
+        apply_common_avg = self.project.quality_thresholds['apply_common_avg']
+        quality_scores = calcQuality(preprocessed.get_data(),
+                                     preprocessed.info['bads'],overall_thresh,
+                                     time_thresh,chan_thresh,apply_common_avg)
+        automagic = preprocessed.info['automagic']
         update_to_be_stored = {'rate':'not rated','is_manually_rated':False,
                                'to_be_interpolated':automagic['auto_bad_chans'],
                                'final_bad_chans':[],'is_interpolated':False,
                                'quality_scores':quality_scores,'commit':True}
         self.update_rating(update_to_be_stored)
-        automagic.update({'to_be_interpolated':automagic.auto_bad_chans,
+        automagic.update({'to_be_interpolated':automagic['auto_bad_chans'],
                           'final_bad_chans':self.final_bad_chans,
-                          'version':self.project.config.version,
+                          'version':self.project.config['version'],
                           'quality_scores':self.quality_scores,
                           'quality_thresholds':self.project.quality_thresholds,
                           'rate':self.rate,
                           'is_manually_rated':self.is_manually_rated,
-                          'times_commited':self.times_commited})
+                          'times_commited':self.times_committed,
+                          'params':self.params,
+                          'is_interpolated':self.is_interpolated,
+                          'is_rated':self.is_rated})
         results = {'preprocessed':preprocessed,'automagic':automagic}
         self.save_all_files(results,fig_1,fig_2)
         self.write_log(results)
@@ -196,8 +203,8 @@ class Block():
             data_path = os.path.join(self.root_path,f"sub-{params['sub']}",f"ses-{params['ses']}",self.unique_name)
         
         raw_filepath = data_path+self.file_ext
-        _read_raw(raw_filepath)
-        
+        data = _read_raw(raw_filepath)
+        return data
     def update_rating(self,update):
         """
         Takes update about ratings and stores in object
@@ -215,13 +222,25 @@ class Block():
         """
         # update can have many fields, go through and see what they are and update the block accordingly
         if 'quality_scores' in update:
-            self.quality_scores = update.quality_scores
+            self.quality_scores = update['quality_scores']
         if 'rate' in update:
             self.rate = update['rate']
             if not self.rate == 'interpolate' and not 'to_be_interpolated' in update:
                 self.to_be_interpolated = []
         if 'is_manually_rated' in update:
-            this_rate = rateQuality(self.quality_scores,self.project.rate_cutoffs)
+            overall_Good_Cutoff = self.project.rate_cutoffs['overall_Good_Cutoff']
+            overall_Bad_Cutoff = self.project.rate_cutoffs['overall_Bad_Cutoff']
+            time_Good_Cutoff = self.project.rate_cutoffs['time_Good_Cutoff']
+            time_Bad_Cutoff = self.project.rate_cutoffs['time_Bad_Cutoff']
+            bad_Channel_Good_Cutoff = self.project.rate_cutoffs['bad_Channel_Good_Cutoff']
+            bad_Channel_Bad_Cutoff = self.project.rate_cutoffs['bad_Channel_Bad_Cutoff']
+            channel_Good_Cutoff = self.project.rate_cutoffs['channel_Good_Cutoff']
+            channel_Bad_Cutoff = self.project.rate_cutoffs['channel_Bad_Cutoff']
+            this_rate = rateQuality(self.quality_scores,overall_Good_Cutoff,
+                                    overall_Bad_Cutoff,time_Good_Cutoff,
+                                    time_Bad_Cutoff,bad_Channel_Good_Cutoff,
+                                    bad_Channel_Bad_Cutoff,channel_Good_Cutoff,
+                                    channel_Bad_Cutoff)
             if update['is_manually_rated'] and not update['rate'] == this_rate:
                 self.is_manually_rated = True
             elif not update['is_manually_rated']:
@@ -240,7 +259,8 @@ class Block():
         if 'commit' in update and update['commit'] == True:
             self.times_committed += 1
             
-        self.project.update_rating_list(self)
+        self.project.update_rating_list()
+        
     def save_all_files(self,results,fig1,fig2):
         """
         Save results dictionary and figures to results path
@@ -260,14 +280,14 @@ class Block():
         none
         
         """
-        main_result_file = results.info['automagic']
+        main_result_file = results['automagic']
         result_filename = self.unique_name + '_results.json'
         result_file_overall = os.path.join(self.result_path,result_filename)
         _write_json(result_file_overall,main_result_file,overwrite=True,verbose = True)
-        
+        processed = results['preprocessed']
         processed_filename = self.unique_name+'_raw.fif'
         processed_file_overall = os.path.join(self.result_path,processed_filename)
-        results.save(processed_file_overall,overwrite=True)
+        processed.save(processed_file_overall,overwrite=True)
 
         plt.figure(fig1.number)
         fig1_name = self.unique_name + '.png'
@@ -290,10 +310,11 @@ class Block():
         log object???
         
         """
-        logger.info(f'pyautomagic version {self.config[''version'']}')
-        logger.info(f'Project:{self.project.name}, Subject:{self.subject.name}, File: {self.uniquename}')
+        logger.info(f"pyautomagic version {self.project.config['version']}")
+        logger.info(f'Project:{self.project.name}, Subject:{self.subject.name}, File: {self.unique_name}')
         logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
         # TODO: log more things from the preprocessing
+        
     def interpolate(self):
         """
         Interpolates bad channels to create new data and updates info
@@ -309,24 +330,34 @@ class Block():
         """
         result_filename = self.unique_name + '_results.json'
         result_file_overall = os.path.join(self.result_path,result_filename)
-        if os.path.isfile(result_file_overall):
-            with open(result_file_overall) as json_file:
-                automagic = json.load(json_file)
         processed_filename = self.unique_name+'_raw.fif'
         processed_file_overall = os.path.join(self.result_path,processed_filename)
-        eeg = _read_raw(processed_file_overall)
+        if os.path.isfile(result_file_overall) and os.path.isfile(processed_file_overall):
+            eeg = _read_raw(processed_file_overall)
+            with open(result_file_overall) as json_file:
+                automagic = json.load(json_file)
+        else:
+            raise(ValueError, 'The block has not been preprocessed yet.')
+            return
         interpolate_chans = self.to_be_interpolated
         if interpolate_chans ==[]:
-            raise(ValueError, 'The subject is rated to be interpolated but no channels chosen')
+            raise(ValueError, 'The block is rated to be interpolated but no channels chosen')
             return
         if self.params == [] or not 'interpolation_params' in self.params or self.params['interpolation_params'] == []:
             default_params = self.config['default_params']
             interpolation_params = default_params['interpolation_params']
         else:
             interpolation_params = self.params['interpolation_params']
-        interpolated = interpolate(eeg,interpolate_chans,interpolation_params['method'])
+            
+        interpolated = eeg.interpolate_bads(preload=True)#(origin=interpolation_params['origin'])
         
-        quality_scores = calcQuality(preprocessed,self.final_bad_chans,self.project.quality_thresholds)
+        overall_thresh = self.project.quality_thresholds['overall_thresh']
+        time_thresh = self.project.quality_thresholds['time_thresh']
+        chan_thresh = self.project.quality_thresholds['chan_thresh']
+        apply_common_avg = self.project.quality_thresholds['apply_common_avg']
+        quality_scores = calcQuality(interpolated.get_data(),
+                                     interpolated.info['bads'],overall_thresh,
+                                     time_thresh,chan_thresh,apply_common_avg)
         update_to_be_stored = {'rate':'not rated','is_manually_rated':False,
                                'to_be_interpolated':[],
                                'final_bad_chans':interpolate_chans,
@@ -342,13 +373,13 @@ class Block():
         automagic.update({'to_be_interpolated':self.to_be_interpolated,
                           'rate':self.rate,
                           'auto_bad_chans':self.auto_bad_chans,
-                          'quality_scores':self.quality_scores,
-                          'rate':self.rate})
-        # load up the preprocessed results file from results location
-        # perform the interpolation (uses some EEGLab stuff I believe)
-        # calcQuality
-        # update block info, update results file info
-        # save fils
-        # write log
-
-        
+                          'quality_scores':self.quality_scores})
+        main_result_file = results['automagic']
+        result_filename = self.unique_name + '_results.json'
+        result_file_overall = os.path.join(self.result_path,result_filename)
+        _write_json(result_file_overall,main_result_file,overwrite=True,verbose = True)
+        processed = results['preprocessed']
+        processed_filename = self.unique_name+'_raw.fif'
+        processed_file_overall = os.path.join(self.result_path,processed_filename)
+        processed.save(processed_file_overall,overwrite=True)
+        return results
