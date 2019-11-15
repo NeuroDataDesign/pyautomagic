@@ -16,11 +16,18 @@ import time
 import os
 import logging
 import numpy as np
-import json
 
 from pyautomagic.src import Config
 
 logger = logging.getLogger(__name__)
+
+# DUMMY CLASS TO TEST THE PROJECT CODE
+class Block:
+
+    def __init__(self):
+
+        self.block_list = None
+        self.unique_name = "Saul"
 
 
 class Project:
@@ -29,50 +36,69 @@ class Project:
 
     Parameters
     ----------
-    name : str
+    name
+        The name of the project
 
-    data_folder : str
+    d_folder
+        The folder where the raw data is stored
 
-    results_folder : str
+    p_folder
+        The path to the results folder
 
-    file_extension : str
+    file_ext
+        File extension
 
-    preprocess_parameters : dict
+    params
+        The default parameters to be used
 
-    visualisation_parameters : dict
+    visualisation_params
+        The default visualisation parameters to be used
 
 
     Attributes
     ----------
+    quality_thresholds
+        The thresholds to rate te quality of the datasets
 
+    ds_rate
+        Sampling rate to create reduced files
+
+    rate_cutoffs
+        Sampling rate to the recorded data
+
+    config
+        Configuration file with all the project constants
+
+    CVG
+        Constant Global Variables
+
+    current
+        The index of the current block
 
 
     """
 
-    def __init__(self, name: str, data_folder: str, results_folder: str, file_extension: str,
-                 preprocess_parameters: dict, visualisation_parameters: dict):
+    def __init__(self, name, d_folder, p_folder, file_ext, params, visualisation_params, current):
 
-        self.set_name(name)
-        self.set_data_folder()
-        self.set_results_folder()
-        self.create_ratings_stuctures()
-     #  self.mask = ext  # Method needed
-        self.quality_thresholds = Config.DefaultVisualisationParameters.CALC_QUALITY_PARAMS # Needed
+        self.name = name # Project name
+        self.data_folder = d_folder # Data folder
+        self.results_folder = p_folder # Results folder
+        self.file_ext = file_ext # File extension
+      # self.mask = ext
+        self.quality_thresholds = Config.DefaultVisualisationParameters.CALC_QUALITY_PARAMS
         self.ds_rate = Config.DefaultVisualisationParameters.DS_RATE
-        self.quality_cutoffs = Config.DefaultVisualisationParameters.RATE_QUALITY_PARAMS
+        self.rate_cutoffs = Config.DefaultVisualisationParameters.RATE_QUALITY_PARAMS
+        self.config = Config
+        self.params = params
+        self.visualisation_params = visualisation_params
+        self.params = Config.DefaultParameters
+        self.visualisation_params = Config.DefaultVisualisationParameters
+        self.CGV = Config.ConstantGlobalValues
+        self.current = current
 
-        params = Config.DefaultParameters
-        v_params = Config.DefaultVisualisationParameters
-
-        self.name = name
-        self.data_folder = data_folder
-        self.results_folder = results_folder
-        self.file_extension = file_extension
-        self.preprocess_parameters = preprocess_parameters
-        self.visualisation_parameters = visualisation_parameters
-
-        self.params = params # Default Parameters
-        self.v_params = v_params # Default Visualisation Parameters
+        # DUMMY DATA TO TEST THE CODE, WILL BE REMOVED
+        self.block_list = [1, 2, 3]
+        Block.unique_name = "Saul"
 
     def set_name(self, name):
         """
@@ -102,15 +128,15 @@ class Project:
 
         Returns
         -------
-        self.data_folder : str
+        self.d_folder : str
             Path to the data folder
 
         """
-        self.data_folder = input("Please enter the path to the data folder: ")  # Asks the user to type the data folder path
+        self.d_folder = input("Please enter the path to the data folder: ")  # Asks the user to type the data folder path
         if not os.path.exists('self.data_folder'):
             logger.error("This folder doesn't exist, please verify the path and enter the correct one")
         else:
-            return self.data_folder
+            return self.d_folder
 
     def set_results_folder(self):
         """
@@ -149,25 +175,26 @@ class Project:
             logger.error(
                 "No directory exists, please specify the correct data directory")  # Displays error mesagge if no data directory found
         else:
-            logger.log(20, "----- START PREPROCESSING -----")
+            print("----- START PREPROCESSING -----")
             start_time = time.process_time()  # Calculates start time = CPU time
-            for i in range(1, len(self.blockList)): # blockList needed from Block class
-                uniqueName = self.blockList[i] # blockList needed from Block class
-                block = self.blockMap(uniqueName) # blockMap needed from Block class
-                block.updateAddresses(self.data_folder, self.results_folder, self.params.EEG_SYSTEM['locFile']) # updateAddresses needed from Block class
+            for i in range(1, len(self.block_list)): # blockList needed from Block class
+                unique_name = self.block_list[i] # blockList needed from Block class
+                #block = self.block_map(unique_name) # blockMap needed from Block class
+                #block.updateAddresses(self.data_folder, self.results_folder, self.params.EEG_SYSTEM['locFile']) # updateAddresses needed from Block class
+                #subject_name = block.subject.name  # We need subject name from block
 
-                print("Processing file ", block.uniqueName, " file ", i, " out of ", (len(self.blockList))) # We need uniqueName and blockList
+                print("Processing file ", Block.unique_name, " file ", i, " out of ", (len(self.block_list))) # We need uniqueName and blockList
 
-                [EEG] = block.preprocess()  # Call preprocess function to preprocess EEG data, needed from Block class
+                # [EEG] = Block.preprocess()  # Call preprocess function to preprocess EEG data, needed from Block class
 
-                if len(EEG) == 0:
-                    logger.error("ERROR: EEG DATA NOT FOUND")
+                #if len(EEG) == 0:
+                #logger.error("ERROR: EEG DATA NOT FOUND")
 
-                self.save_project()  # Function to save the project
+                #self.save_project()  # Function to save the project
 
             end_time = start_time - time.process_time()  # Calculates end time
-            logger.log(20, "----- PREPROCESSING FINISHED -----")
-            logger.info("Total elapsed time: ", end_time)  # Prints total elapsed time of the process
+            print("----- PREPROCESSING FINISHED -----")
+            print("Total elapsed time: ", end_time)  # Prints total elapsed time of the process
 
     def interpolate_selected(self):
         """
@@ -188,10 +215,11 @@ class Project:
         else:
             logger.log(20, "----- START INTERPOLATION -----")
             start_time = time.process_time()  # Calculates start time = CPU time
-            for i in range(1, len(self.interpolate_list)):
-                uniqueName = self.blockList[i] # Whats block list?
-                block = self.blockMap(uniqueName) #Whats block map?
-                block.updateAddresses(self.data_folder, self.results_folder, self.params.EEGSystem.locFile)
+            int_list = self.interpolate_list
+            for i in range(1, len(int_list)):
+                uniqueName = self.block_list[i] # Whats block list?
+                block = self.block_map(uniqueName) #Whats block map?
+                block.updateAddresses(self.data_folder, self.results_folder, self.params.EEG_SYSTEM.locFile)
 
                 print("Processing file ", block.uniqueName, " file ", i, " out of ", (len(self.interpolate_list)))
 
@@ -449,7 +477,7 @@ class Project:
         # We need the state Adress to implement this function
         # Make_State_Address method is needed to get the address of the state file
 
-    def list_subject_files(self): # MAYBE NEEDED
+    def list_subject_files(self):
         """
         Method that lists all folders in the data folder
 
@@ -463,11 +491,10 @@ class Project:
             List of all folders in the data folder
 
         """
-        #lista  = os.listdir(self.data_folder)
         lista = self.list_subjects(self.data_folder)
         return lista
 
-    def list_preprocessed_subjects(self):  # MAYBE NEEDED
+    def list_preprocessed_subjects(self):
         """
         Method that lists all folders in the results folder
 
@@ -480,11 +507,10 @@ class Project:
         lista : list
             List of all folders in the results folder
         """
-        #lista = os.listdir(self.results_folder)
         lista = self.list_subjects(self.results_folder)
         return lista
 
-    def create_ratings_structure(self, ):  # NEEDED
+    def create_ratings_structure(self):
         """
         Method that creates and initialises all data structures based on the data
         on both data folder and results folder
@@ -509,14 +535,14 @@ class Project:
         not_rated_list
 
         """
-        pass
+
         logger.log(20, 'Setting up project. Please wait...')
         modified = False
-        subjects = os.listdir(self.data_folder) #
-        s_count = len(subjects)#Verify the error
+        subjects = os.listdir(self.d_folder)
+        s_count = len(subjects)
 
-        map = {}
-        lista = np.empty(0) # lista from list_subject_files()
+        # mapa = map()
+        lista = np.empty(0)
         p_list = np.empty(0)
         i_list = []
         g_list = []
@@ -528,9 +554,55 @@ class Project:
         files_count = 0
         n_preprocessed_file = 0
         n_preprocessed_subject = 0
-        for i in range(1, len(subjects)):
-            # CONTINUE HERE...
 
+        for i in range(1, len(subjects)):
+            subject_name = subjects[i]
+            logger.info('Adding subject %s', subject_name)
+          # subject = ([self.d_folder, subject_name, self.results_folder, subject_name])
+            raw_files = self.dir_not_hiddens() # Fill here with the data folder
+            temp = 0
+            files_count = 0
+            for j in range(1, len(raw_files)):
+                files_count = files_count+1
+                file = raw_files[j]
+                file_path = [] # Fill here with the file folder of the raw file
+                name_temp = file.name
+
+                splits = os.path.splitext(name_temp)
+                file_name = splits[1]
+                logger.info('...Adding file %s', file_name)
+
+                # mapa(block.unique_name) = block # unique_name from block is needed
+                lista[files_count] = block.unique_name
+                block.index = files_count
+
+                if block.is_interpolated:
+                    already_list = [already_list, block.index]
+
+              # p_list{end + 1} = block.unique_name IDK how to implement this
+                n_preprocessed_file = n_preprocessed_file + 1
+                temp = temp + 1
+
+        self.processed_list = p_list
+        self.n_processed_files = n_preprocessed_file
+        self.n_processed_subjects = n_preprocessed_subject
+        self.n_block = files_count
+        self.n_subject = s_count
+      # self.block_map = mapa
+        self.block_list = lista
+        self.interpolate_list = i_list
+        self.good_list = g_list
+        self.bad_list = b_list
+        self.ok_list = o_list
+        self.not_rated_list = n_list
+        self.already_interpolated = already_list
+
+        if not self.processed_list:
+            self.current = 1
+        else:
+            self.current = -1
+
+        self.save_project()
 
     def check_existings(self, skip): # NOT NEEDED
         pass
@@ -569,7 +641,8 @@ class Project:
     def make_state_address(self, address): #NOT NEEDED
         pass
 
-    def make_rating_manually(self, q_rate): #Deep
+    @staticmethod
+    def make_rating_manually(block, q_rate): #Deep
         """
         Returns q_rate if the block is not rated manually.
 
@@ -577,16 +650,25 @@ class Project:
         ----------
         q_rate : float
             The rate to be returned
+        block
+            Block for which the rate is returned
 
         Returns
         -------
-        none
+        rate
+            Return q_rate if the block is not manually rated.
+            If it is rated manually return 'Manually rated'
 
         """
-        pass
+        rate = None
+        if block.is_manually_rated:
+            rate = 'Manually Rated'
+        else:
+            rate = q_rate
+        return rate
 
     @staticmethod
-    def list_subjects(rootFolder):
+    def list_subjects(rootFolder): #Deep
         """
         Returns the list of subjects in the folder
 
@@ -605,13 +687,8 @@ class Project:
         subjects = [y for y in os.listdir(subs) if os.path.isdir(y)]
         return subjects
 
-    #     #subjects = os.listdir(rootFolder) ***SAUL
-    #
-    #     for file in os.listdir(rootFolder):
-    #         if os.path.isfile(os.path.join(root_folder, file)):
-    #             yield file
-
-    def dir_not_hiddens(self, folder): #Deep
+    @staticmethod
+    def dir_not_hiddens(folder): #Deep
         """
         Returns the list of files in the folder, excluding the hidden files
 
@@ -622,11 +699,18 @@ class Project:
 
         Returns
         -------
-        files
+        subjects
             List of files that are not hidden
 
         """
-        pass
+        subs = os.path.join(folder)
+        files = [y for y in os.listdir(subs) if os.path.isfile(y)]
+
+        return files
 
     def is_folder_changed(self, modified): #NOT NEEDED
         pass
+
+# DUMMY DATA TO TEST THE PROJECT CLASS, THIS WILL BE DELETED
+X=Project("Saul", "C:/Users\saul__000\OneDrive\Escritorio", "C:/Users\saul__000\OneDrive\Escritorio", ".mat", "EQUIS", "123", "1")
+y=X.preprocess_all()

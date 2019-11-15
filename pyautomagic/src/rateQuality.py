@@ -67,7 +67,7 @@ def rateQuality(quality_metrics, overall_Good_Cutoff: float = 0.1, overall_Bad_C
     """
 
     # Check that the values in quality_metrics{} are positive numbers not equal to 0
-    if not isinstance(quality_metrics.values(), int) and not isinstance(quality_metrics.values(), float) or isinstance(quality_metrics.values(), bool) or (quality_metrics.values() <= 0):
+    if not isinstance(quality_metrics.values(), int) and not isinstance(quality_metrics.values(), float) or isinstance(quality_metrics.values(), bool):
         logger.error("Some value of Quality Metrics is not a number, please verify your EEG input data")
 
     # Rating of EEG DATA according to the values of quality_metrics

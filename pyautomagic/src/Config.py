@@ -20,15 +20,15 @@ import numpy as np
 
 class ConstantGlobalValues:
 
-    PYAUTOMAGIC_VERSION = '1.0'
+    VERSION = '1.0'
 
     DEFAULT_KEYWORD = 'Default'
 
     NONE_KEYWORD = 'None'
 
-    NEW_PROJECT = {'List_Name': 'Create New Project', 'Name': 'Type the name of your new project',
-                   'Data_Folder': 'Choose where your raw data is',
-                   'Folder': 'Choose where you want the results to be saved'}
+    NEW_PROJECT = {'LIST_NAME': 'Create New Project', 'NAME': 'Type the name of your new project',
+                   'DATA_FOLDER': 'Choose where your raw data is',
+                   'FOLDER': 'Choose where you want the results to be saved'}
 
     LOAD_PROJECT = {'List_Name': 'Load and existing project'}
 
@@ -38,7 +38,7 @@ class ConstantGlobalValues:
     PREFIX_PATTERN = '^[gobni]+i?p_'
 
     RATINGS = {'Good': 'Good', 'Bad': 'Bad', 'Regular': 'Regular', 'Interpolate': 'Interpolate',
-               'Not Rated': 'Not Rated'}
+               'NotRated': 'Not Rated'}
 
     EXTENSIONS = {'mat': '.mat', 'text': '.txt .asc .csv', 'fif': '.fif', 'set': '.set', 'edf': '.edf'}
 
