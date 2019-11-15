@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 # DUMMY CLASS TO TEST THE PROJECT CODE
 class Block:
 
+
     def __init__(self):
 
         self.block_list = None
@@ -177,13 +178,13 @@ class Project:
         else:
             print("----- START PREPROCESSING -----")
             start_time = time.process_time()  # Calculates start time = CPU time
-            for i in range(1, len(self.block_list)): # blockList needed from Block class
+            for i in range(0, len(self.block_list)): # blockList needed from Block class
                 unique_name = self.block_list[i] # blockList needed from Block class
                 #block = self.block_map(unique_name) # blockMap needed from Block class
                 #block.updateAddresses(self.data_folder, self.results_folder, self.params.EEG_SYSTEM['locFile']) # updateAddresses needed from Block class
                 #subject_name = block.subject.name  # We need subject name from block
 
-                print("Processing file ", Block.unique_name, " file ", i, " out of ", (len(self.block_list))) # We need uniqueName and blockList
+                print("Processing file ", Block.unique_name, " file ", i+1, " out of ", (len(self.block_list))) # We need uniqueName and blockList
 
                 # [EEG] = Block.preprocess()  # Call preprocess function to preprocess EEG data, needed from Block class
 
@@ -218,7 +219,7 @@ class Project:
             int_list = self.interpolate_list
             for i in range(1, len(int_list)):
                 uniqueName = self.block_list[i] # Whats block list?
-                block = self.block_map(uniqueName) #Whats block map?
+                block = self.block_map(uniqueName) # Whats block map?
                 block.updateAddresses(self.data_folder, self.results_folder, self.params.EEG_SYSTEM.locFile)
 
                 print("Processing file ", block.uniqueName, " file ", i, " out of ", (len(self.interpolate_list)))
