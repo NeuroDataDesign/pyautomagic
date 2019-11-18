@@ -4,7 +4,7 @@ import os
 import json
 import mne
 from mne_bids.utils import _parse_bids_filename, _write_json
-from mne_bids.read import _read_raw
+from mne_bids.read import _read_raw,read_raw_bids
 from pyautomagic.preprocessing.preprocess import preprocess as execute_preprocess
 from pyautomagic.src.calcQuality import calcQuality
 from pyautomagic.src.rateQuality import rateQuality
@@ -12,7 +12,7 @@ from matplotlib import pyplot as plt
 
 
 logger = logging.getLogger(__name__)
-
+logger.setLevel(level=10)
 class Block():
     """
     Object for all operations on an individual dataset.
@@ -61,6 +61,7 @@ class Block():
         self.root_path = root_path
         self.project = project
         self.subject = subject
+        self.montage = project.montage #could be switched to allow for ind.
         self.unique_name = os.path.splitext(data_filename)[0]
         self.file_ext = os.path.splitext(data_filename)[1]
         self.params = project.params
@@ -71,6 +72,7 @@ class Block():
         self.is_interpolated = False
         self.times_committed = -1
         self = self.update_rating_from_file()
+        #self.auto_bad_chans = []
     
     def update_rating_from_file(self):
         """
@@ -156,10 +158,12 @@ class Block():
         time_thresh = self.project.quality_thresholds['time_thresh']
         chan_thresh = self.project.quality_thresholds['chan_thresh']
         apply_common_avg = self.project.quality_thresholds['apply_common_avg']
+        automagic = preprocessed.info['automagic']
+        preprocessed.info['bads'] = automagic['auto_bad_chans']
         quality_scores = calcQuality(preprocessed.get_data(),
                                      preprocessed.info['bads'],overall_thresh,
                                      time_thresh,chan_thresh,apply_common_avg)
-        automagic = preprocessed.info['automagic']
+        #self.detected_bads = preprocessed['auto_bad_chans']
         update_to_be_stored = {'rate':'not rated','is_manually_rated':False,
                                'to_be_interpolated':automagic['auto_bad_chans'],
                                'final_bad_chans':[],'is_interpolated':False,
@@ -167,6 +171,7 @@ class Block():
         self.update_rating(update_to_be_stored)
         automagic.update({'to_be_interpolated':automagic['auto_bad_chans'],
                           'final_bad_chans':self.final_bad_chans,
+                          'montage':self.montage,
                           'version':self.project.config['version'],
                           'quality_scores':self.quality_scores,
                           'quality_thresholds':self.project.quality_thresholds,
@@ -178,7 +183,7 @@ class Block():
                           'is_rated':self.is_rated})
         results = {'preprocessed':preprocessed,'automagic':automagic}
         self.save_all_files(results,fig_1,fig_2)
-        self.write_log(results)
+        self.write_log(automagic)
         return results
     
     def load_data(self):
@@ -196,14 +201,14 @@ class Block():
         raw MNE object
         
         """
-        params = _parse_bids_filename(self.unique_name, verbose=False)
-        if params['ses'] is None :
-            data_path = os.path.join(self.root_path,f"sub-{params['sub']}",self.unique_name)
-        else:
-            data_path = os.path.join(self.root_path,f"sub-{params['sub']}",f"ses-{params['ses']}",self.unique_name)
-        
-        raw_filepath = data_path+self.file_ext
-        data = _read_raw(raw_filepath)
+        #params = _parse_bids_filename(self.unique_name, verbose=False)
+        #if params['ses'] is None :
+           # bids_root = os.path.join(self.root_path,f"sub-{params['sub']}")
+        #else:
+           # bids_root = os.path.join(self.root_path,f"sub-{params['sub']}",f"ses-{params['ses']}")
+        #data_path = os.path.join(bids_root,self.unique_name)
+        bids_fname = self.unique_name+self.file_ext
+        data = read_raw_bids(bids_fname,self.root_path)
         return data
     def update_rating(self,update):
         """
@@ -307,13 +312,27 @@ class Block():
         
         Returns
         -------
-        log object???
+        Updates in log file
         
         """
-        logger.info(f"pyautomagic version {self.project.config['version']}")
-        logger.info(f'Project:{self.project.name}, Subject:{self.subject.name}, File: {self.unique_name}')
-        logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
-        # TODO: log more things from the preprocessing
+        logger.log(20,f"pyautomagic version {self.project.config['version']}")
+        logger.log(20,f'Project:{self.project.name}, Subject:{self.subject.name}, File: {self.unique_name}')
+        if 'prep' in updates and updates['prep']['performed']:
+            logger.log(20,'PREP performed.')
+        if 'crd' in updates and updates['crd']['performed']:
+            logger.log(20,'CRD performed.')
+        if 'filtering' in updates and updates['filtering']['performed']:
+            logger.log(20,'Filtering performed.')
+        if 'auto_bad_chans' in updates:
+            logger.log(20,f'There were {len(updates["auto_bad_chans"])} bad channels detected.')
+        if 'eog_regression' in updates and updates['eog_regression']['performed']:
+            logger.log(20,'EOG regression performed.')
+        logger.log(20,'Remove DC offset by subtracting the channel mean')
+        if 'high_var_rejection' in updates and updates['high_var_rejection']['performed']:
+            logger.log(20,'Identify remaining noisy or outlier channels.')
+        if 'interpolation' in updates:
+            logger.log(20,'Interpolate bad channels.' )
+        # TODO: fill the logger out more
         
     def interpolate(self):
         """
@@ -348,8 +367,9 @@ class Block():
             interpolation_params = default_params['interpolation_params']
         else:
             interpolation_params = self.params['interpolation_params']
-            
-        interpolated = eeg.interpolate_bads(preload=True)#(origin=interpolation_params['origin'])
+        eeg.load_data()
+        eeg.info['dig'] = mne.channels.make_standard_montage(self.montage)
+        interpolated = eeg.interpolate_bads()#(origin=interpolation_params['origin'])
         
         overall_thresh = self.project.quality_thresholds['overall_thresh']
         time_thresh = self.project.quality_thresholds['time_thresh']
