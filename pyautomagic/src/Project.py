@@ -12,17 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import timeit
 import time
 import os
 import logging
-# import numpy as np
-# import json
-# import mne
-# from mne_bids.utils import _write_json
+import json
+import mne
+from mne_bids.utils import _parse_bids_filename
+from pyautomagic.src.Block import Blockass
 from pyautomagic.src import Config
-from pyautomagic.src import Block
 
-logger = logging.getLogger(__name__)
+logging.basicConfig(format='%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG)
 
 
 class Project:
@@ -70,27 +70,28 @@ class Project:
 
     """
 
-    def __init__(self, name, d_folder, file_ext, params, visualisation_params, current, p_folder):
+    def __init__(self, name, d_folder, file_ext, params, v_params):
 
         self.name = name  # Project name
         self.data_folder = d_folder  # Data folder
-        self.results_folder = p_folder  # Results folder, calls a function from Block
-        self.file_ext = file_ext  # File extension
-        # self.mask = ext
+        self.results_folder = self.set_results_folder(d_folder)  # Results folder, calls a function from Block
+        #self.file_extenstion = file_ext  # File extension
+        # self.params = params
+        # self.v_params = v_params
+        #self.mask = file_ext
         self.quality_thresholds = Config.DefaultVisualisationParameters.CALC_QUALITY_PARAMS
         self.ds_rate = Config.DefaultVisualisationParameters.DS_RATE
         self.rate_cutoffs = Config.DefaultVisualisationParameters.RATE_QUALITY_PARAMS
         self.config = Config
-        self.params = params
-        self.visualisation_params = visualisation_params
         self.params = Config.DefaultParameters
-        self.visualisation_params = Config.DefaultVisualisationParameters
+        self.v_params = Config.DefaultVisualisationParameters
         self.CGV = Config.ConstantGlobalValues
-        self.current = current
 
-        self.block_list = [1, 2, 3, 4, 5, 6, 7] #DUMMY DATA TO TEST ONLY, DELETE THIS
+        self.set_name(name)
+        self.set_data_folder(d_folder)
 
-    def get_current_block(self): # NEEDED
+
+    def get_current_block(self):  # NEEDED
         """
         Returns the block pointed by the current index
 
@@ -107,7 +108,7 @@ class Project:
 
         pass
 
-    def get_next_index(self): # NEEDED
+    def get_next_index(self):  # NEEDED
         """
         Returns the index of the next block in the list
 
@@ -133,7 +134,7 @@ class Project:
         """
         pass
 
-    def get_previous_index(self): # NEEDED
+    def get_previous_index(self):  # NEEDED
         """
         Returns the index of the previous block in the list
 
@@ -174,38 +175,43 @@ class Project:
         """
 
         if not (os.path.isdir(self.data_folder)):
-            logger.error(
-                "No directory exists, please specify the correct data directory")  # Displays error message if no data directory found
+            logging.log(40,
+                        "No directory exists, please specify the correct data directory")  # Displays error message if no data directory found
+
         else:
-            print("-----*** START PREPROCESSING ALL DATASET ***-----")
-            start_time = time.process_time()  # Calculates start time = CPU time
+            logging.log(20, "----- START PREPROCESSING -----")
+            start_time = timeit.default_timer()  # Calculates start time = CPU time
             for i in range(0, len(self.block_list)):
-                unique_name = self.block_list[i] # block list is in create rating structure
-                block = self.block_map[unique_name] # block_map is in create rating structure
-                block.updateAddresses(self.data_folder, self.results_folder, self.params.EEG_SYSTEM['locFile']) # updateAddresses needed from Block class
-                subject_name = block.subject.name
+                unique_name = self.block_list[i]
+                block = self.block_map[unique_name]
+                # subject_name = block.subject.name
+                logging.log(20, "Processing file %s %s out of %s", block.unique_name, i + 1, (len(self.block_list)))
 
-                print("Processing file ", block.unique_name, " file ", i+1, " out of ", (len(self.block_list))) # We need uniqueName and blockList
+                # logging.log(20, "Processing file %s %s out of %s", 'Saul', i+1, (len(self.block_list)))
 
-                results = Block.Block.preprocess()  # Call preprocess function from Block class, Claire has it
+                pX = Blockass()
+                presults = pX.preprocess()
 
-                EEG = results['preprocessed']
+                EEG = presults['preprocessed']
 
-                if len(EEG) == 0:
-                    logger.error("ERROR: EEG DATA NOT FOUND")
+                if not EEG:
+                    logging.log(40, "EEG PREPROCESSED DATA NOT FOUND")
+                    break
 
-                if self.current == -1:
-                    self.current = 1
+                # if self.current == -1:
+                #   self.current = 1
 
-                self.save_project()  # Function to save the project
-
-            end_time = start_time - time.process_time()  # Calculates end time
-            print("----- PREPROCESSING FINISHED -----")
-            print("Total elapsed time: ", end_time)  # Prints total elapsed time of the process
+                self.save_project()  # FUNCTION TO SAVE THE PROJECT
+                logging.log(20, "**Project saved**")
+                # time.sleep(1) #DELETE THIS LINE IS JUST TO CHECK THE TIME
+            end_time = timeit.default_timer()  # Calculates end time
+            logging.log(20, "---- PREPROCESSING FINISHED ----")
+            logging.log(20, "Total elapsed time: %s sec",
+                        end_time - start_time)  # Prints total elapsed time of the process
 
     def interpolate_selected(self):
         """
-        Interpolates all the channels selected
+        Interpolates all the channels selected to be interpolated
 
         Parameters
         ----------
@@ -216,31 +222,36 @@ class Project:
         none
 
         """
+
         if len(self.interpolate_list) == 0:  # Need to find interpolate_list
-            logger.error("Interpolate subjects list is empty, please rate first")
+            logging.log(40, "Interpolate subjects list is empty, please rate first")
 
         else:
-            logger.log(20, "----- START INTERPOLATION -----")
-            start_time = time.process_time()  # Calculates start time = CPU time
+            logging.log(20, "----- START INTERPOLATION -----")
+            start_time = timeit.default_timer()
             int_list = self.interpolate_list
             for i in range(0, len(int_list)):
-                unique_name = self.block_list[i] # Whats block list?
-                block = self.block_map[unique_name] # Whats block map?
-                block.updateAddresses(self.data_folder, self.results_folder, self.params.EEG_SYSTEM.locFile)
+                index = int_list[i]
+                unique_name = self.block_list[index]
+                block = self.block_map[unique_name]
 
-                print("Processing file ", block.uniqueName, " file ", i+1, " out of ", (len(self.interpolate_list)))
+                logging.log(20, "Processing file %s file %s out of %s", block.uniqueName, i + 1,
+                            (len(self.interpolate_list)))
 
-                block.interpolate()
+                iX = Blockass()
+                iresults = iX.interpolate()
 
-                self.already_interpolated = [self.already_interpolated, i]
+                self.already_interpolated = [self.already_interpolated, index]
 
-                self.save_project() # Method in this class to save the project
+                self.save_project()  # Method in this class to save the project
+                logging.log(20, "**Project saved**")
 
-            end_time = start_time - time.process_time()  # Calculates end time
-            logger.log(20, "----- INTERPOLATION FINISHED -----")
-            logger.info("Total elapsed time: ", end_time)  # Prints total elapsed time of the process
+            end_time = timeit.default_timer()  # Calculates end time
+            logging.log(20, "----- INTERPOLATION FINISHED -----")
+            logging.log(20, "Total elapsed time: %s sec",
+                        start_time - end_time)  # Prints total elapsed time of the process
 
-    def update_rating_lists(self, block_rate: str): # NEEDED for Claire
+    def update_rating_lists(self, block_rate: str):  # NEEDED for Claire
         """
         Updates the five rating lists depending on the rating of the
         given block
@@ -254,11 +265,11 @@ class Project:
         none
 
         """
-        #block_rate = Config.ConstantGlobalValues.RATINGS
+        # block_rate = Config.ConstantGlobalValues.RATINGS
 
         pass
 
-    def update_rating_structure(self): # NEEDED 300 LINES OF CODE IN MATLAB
+    def update_rating_structure(self):  # NEEDED 300 LINES OF CODE IN MATLAB
         """
         Updates the data structures of this project
 
@@ -273,7 +284,7 @@ class Project:
         """
         pass
 
-    def get_quality_ratings(self): # NEEDED
+    def get_quality_ratings(self):  # NEEDED
         """
         Returns the quality ratings of all blocks given the cuttoffs
 
@@ -291,7 +302,7 @@ class Project:
         pass
         # Method returns the quality ratings of all blocks
 
-    def apply_quality_ratings(self, cutoffs, apply_to_manually_rated): # NEEDED
+    def apply_quality_ratings(self, cutoffs, apply_to_manually_rated):  # NEEDED
         """
         Modify all the blocks to have the new ratings given by this
         cutoffs
@@ -329,7 +340,7 @@ class Project:
         # This method is called only when the project is loaded
         # from a state file
 
-    def get_rated_count(self, rated_count):
+    def get_rated_count(self, rated_count):  # DEEP
         """
         Return number of files that have already been rated
 
@@ -345,7 +356,7 @@ class Project:
         """
         pass
 
-    def to_be_interpolated(self, count): #Deep
+    def to_be_interpolated(self, count):  # Deep
         """
         Return the number of files that are rated as interpolate
 
@@ -361,7 +372,7 @@ class Project:
         """
         pass
 
-    def are_folders_changed(self, modified): #Deep
+    def are_folders_changed(self, modified):  # Deep
         """
         Method that verifies if any change has happened to data folder or results folder
         since the last update
@@ -378,10 +389,10 @@ class Project:
         """
         pass
 
-    def Export_To_BIDS(self): #NOT NEEDED
+    def Export_To_BIDS(self):  # NOT NEEDED
         pass
 
-    def save_project(self): # M N D U
+    def save_project(self):  # DEEP
         """
         Save the class to the state file
 
@@ -460,15 +471,15 @@ class Project:
 
         """
 
-        logger.log(20, 'Setting up project. Please wait...')
-        modified = False
-        subjects = os.listdir(self.data_folder)
+        logging.log(20, 'Setting up project. Please wait...')
+        subjects = self.list_subject_files()
         s_count = len(subjects)
 
         mapa = {}
-        lista = [] #Empty list
-        p_list = [] #Empty list
-        i_list = [] #
+        listb = []
+        ext = self.file_extension
+        p_list = []
+        i_list = []
         g_list = []
         b_list = []
         o_list = []
@@ -481,29 +492,29 @@ class Project:
 
         for i in range(1, len(subjects)):
             subject_name = subjects[i]
-            logger.info('Adding subject %s', subject_name)
+            logging.info('Adding subject %s', subject_name)
             subject = Subject([self.data_folder, subject_name, self.results_folder, subject_name])
-            raw_files = self.dir_not_hiddens(self.data_folder) # Fill here with the data folder
+            raw_files = self.dir_not_hiddens(self.data_folder)  # Fill here with the data folder
             temp = 0
             files_count = 0
             for j in range(1, len(raw_files)):
-                files_count = files_count+1
+                files_count = files_count + 1
                 file = raw_files[j]
-                file_path = [] # Fill here with the file folder of the raw file
+                file_path = []  # Fill here with the file folder of the raw file
                 name_temp = file.name
 
                 splits = os.path.splitext(name_temp)
                 file_name = splits[1]
-                logger.info('...Adding file %s', file_name)
+                logging.info('...Adding file %s', file_name)
 
-                mapa[block.unique_name] = block # unique_name from block is needed
-                lista[files_count] = block.unique_name
+                mapa[block.unique_name] = block  # unique_name from block is needed
+                listb[files_count] = block.unique_name
                 block.index = files_count
 
                 if block.is_interpolated:
-                  already_list = [already_list, block.index]
+                    already_list = [already_list, block.index]
 
-                p_list.append(block.unique_name) #block.unique_name
+                p_list.append(block.unique_name)  # block.unique_name
                 n_preprocessed_file = n_preprocessed_file + 1
                 temp = temp + 1
 
@@ -513,7 +524,7 @@ class Project:
         self.n_block = files_count
         self.n_subject = s_count
         self.block_map = mapa
-        self.block_list = lista
+        self.block_list = listb
         self.interpolate_list = i_list
         self.good_list = g_list
         self.bad_list = b_list
@@ -546,52 +557,53 @@ class Project:
         self.name = name
         return self.name
 
-    def set_data_folder(self):
+    def set_data_folder(self, data_folder):
         """
         Sets the path folder where the data is stored
 
         Parameters
         ----------
-        none
+        data_folder
 
         Returns
         -------
-        self.d_folder : str
+        self.data_folder : str
             Path to the data folder
 
         """
-        self.data_folder = input("Please enter the path to the data folder: ")  # Asks the user to type the data folder path
-        if not os.path.exists('self.data_folder'):
-            logger.error("This folder doesn't exist, please verify the path and enter the correct one")
+        self.data_folder = data_folder
+        if not os.path.exists(self.data_folder):
+            logging.error("This folder doesn't exist, please verify the path and enter the correct one")
         else:
+            print("this exists!: ", self.data_folder)
             return self.data_folder
 
-    def set_results_folder(self):
+    def set_results_folder(self, folder):
 
         """
         Sets the path folder where the results will be stored
 
         Parameters
         ----------
-        self.results_folder
-            Path to the results folder specified by the user
+        folder
+            Path where is the data stored
 
         Returns
         -------
-        self
+        self.results_folder
             Path to the results folder
 
         """
-        # os.mkdir(self.results_folder) # Makes directory for results
-        # return self.results_folder
-        pass
+        self.results_folder = os.path.join(folder, 'derivatives', 'automagic')
+        print(self.results_folder)
+        return self.results_folder
 
-    def check_existings(self): # NOT NEEDED
+    def check_existings(self):  # NOT NEEDED
         pass
-        #If there is already one preprocessed file in the resutlts folder
-        #ask the user to overwrite the file or skip it
+        # If there is already one preprocessed file in the resutlts folder
+        # ask the user to overwrite the file or skip it
 
-    def write_to_log(self, source_address, msg): # M N D U
+    def write_to_log(self, source_address, msg):  # M N D U
         """
         Method that writes specal events that happened during preprocessing
         into the log file
@@ -611,19 +623,19 @@ class Project:
         # Write special events that happened during preprocessing into
         # the log file
 
-    def update_main_gui(self): #NOT NEEDED
+    def update_main_gui(self):  # NOT NEEDED
         pass
 
     @staticmethod
-    def add_slash(folder): #NOT NEEDED
+    def add_slash(folder):  # NOT NEEDED
         pass
 
     @staticmethod
-    def add_automagic_paths(): #NOT NEEDED
+    def add_automagic_paths():  # NOT NEEDED
         pass
 
     @staticmethod
-    def make_state_address(p_folder): #NOT NEEDED
+    def make_state_address(p_folder):  # NOT NEEDED
         pass
 
     @staticmethod
@@ -669,9 +681,13 @@ class Project:
             Subjects in the root folder
         """
 
-        subs = os.path.join(root_folder)
-        subjects = [y for y in os.listdir(subs) if os.path.isdir(y)]
-        return subjects
+        if os.path.isdir(root_folder):
+            subs = os.path.join(root_folder)
+            subjects = [y for y in os.listdir(subs) if os.path.isdir(os.path.join(root_folder, y))]
+            #print(subjects)
+            return subjects
+        else:
+            logging.log(30, "No directory exists")
 
     @staticmethod
     def dir_not_hiddens(folder):
@@ -694,13 +710,12 @@ class Project:
         return files
 
     @staticmethod
-    def is_folder_changed(folder, folder_counts, n_blocks, ext, all_steps): #NOT NEEDED
+    def is_folder_changed(folder, folder_counts, n_blocks, ext, all_steps):  # NOT NEEDED
         pass
+
 
 # DUMMY DATA TO TEST THE PROJECT CLASS, THIS WILL BE DELETED
 
-
-X = Project("Saul", "C:/Users\saul__000\OneDrive\Escritorio", "C:/Users\saul__000\OneDrive\Escritorio", ".mat", "EQUIS", "123", "C:/Users\saul__000\OneDrive\Escritorio")
-Y = X.preprocess_all()
-
+#X = Project("Saul", "C:/Users\saul__000\OneDrive\Escritorio\Johns Hopkins", ".mat", "C:/Users\saul__000\OneDrive\Escritorio\Johns Hopkins", "A", "B")
+#Y = X.set_data_folder("C:/Users\saul__000\OneDrive\Escritorio\Johns Hopkins")
 
