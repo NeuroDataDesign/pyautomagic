@@ -376,7 +376,7 @@ class Block():
         chan_thresh = self.project.quality_thresholds['chan_thresh']
         apply_common_avg = self.project.quality_thresholds['apply_common_avg']
         quality_scores = calcQuality(interpolated.get_data(),
-                                     interpolated.info['bads'],overall_thresh,
+                                     interpolate_chans,overall_thresh,
                                      time_thresh,chan_thresh,apply_common_avg)
         update_to_be_stored = {'rate':'not rated','is_manually_rated':False,
                                'to_be_interpolated':[],
@@ -392,13 +392,15 @@ class Block():
         self.write_log(automagic)
         automagic.update({'to_be_interpolated':self.to_be_interpolated,
                           'rate':self.rate,
-                          'auto_bad_chans':self.auto_bad_chans,
-                          'quality_scores':self.quality_scores})
+                          'quality_scores':self.quality_scores,
+                          'is_manually_rated':self.is_manually_rated,
+                          'is_interpolated':self.is_interpolated})
         main_result_file = results['automagic']
         result_filename = self.unique_name + '_results.json'
         result_file_overall = os.path.join(self.result_path,result_filename)
         _write_json(result_file_overall,main_result_file,overwrite=True,verbose = True)
         processed = results['preprocessed']
+        processed.info['dig'] = None
         processed_filename = self.unique_name+'_raw.fif'
         processed_file_overall = os.path.join(self.result_path,processed_filename)
         processed.save(processed_file_overall,overwrite=True)
