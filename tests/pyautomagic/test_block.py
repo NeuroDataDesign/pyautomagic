@@ -1,7 +1,7 @@
 import pytest
 import os
 import json
-from pyautomagic.pyautomagic.src import Block, Project, Subject
+from pyautomagic.src import Block, Project, Subject
 
 root_path = '/tests/test_data/test_project'
 config = {'version':1.0}
