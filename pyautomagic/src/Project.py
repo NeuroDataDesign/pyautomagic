@@ -1,4 +1,4 @@
-# Copyright 2019 NeuroData (http://neurodata.io)
+# Copyright 2019 Neuro Data (http://neurodata.io)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 import timeit
 import os
 import logging
-import json
-import mne
+# import json
+# import mne
 from pyautomagic.src.Block import Block
 from pyautomagic.src.Subject import Subject
 from pyautomagic.src import Config
@@ -26,7 +26,8 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s: %(message)s', level=log
 
 class Project:
     """
-    Object containing all methods for creating a new project
+    Object containing all methods for creating a new project.
+
 
     Parameters
     ----------
@@ -63,18 +64,14 @@ class Project:
     CGV : dict
         Constant Global Variables
 
-
-
     """
 
     def __init__(self, name, d_folder, file_ext):
 
-        self.name = name
-        self.data_folder = d_folder
+        self.name = self.set_name(name)
+        self.data_folder = self.set_data_folder(d_folder)
         self.results_folder = self.set_results_folder(d_folder)
         self.file_extension = os.path.splitext(file_ext)[1]
-        # self.params = params
-        # self.v_params = v_params
         self.mask = file_ext
         self.quality_thresholds = Config.DefaultVisualisationParameters.CALC_QUALITY_PARAMS
         self.ds_rate = Config.DefaultVisualisationParameters.DS_RATE
@@ -83,10 +80,24 @@ class Project:
         self.params = Config.DefaultParameters
         self.v_params = Config.DefaultVisualisationParameters
         self.CGV = Config.ConstantGlobalValues
-        # self.s_rate = s_rate # This is specified by the user
 
-        self.set_name(name)
-        self.set_data_folder(d_folder)
+        if '.txt' in self.file_extension:
+            logging.error('Your data has a .txt file extension, please provide the sampling rate')
+
+        self.processed_list = []
+        self.n_processed_files = 0
+        self.n_processed_subjects = 0
+        self.n_block = 0
+        self.n_subject = 0
+        self.block_map = {}
+        self.block_list = []
+        self.interpolate_list = []
+        self.good_list = []
+        self.bad_list = []
+        self.ok_list = []
+        self.not_rated_list = []
+        self.already_interpolated = []
+        self.current = None
 
     def get_current_block(self):  # DEEP
         """
@@ -111,11 +122,11 @@ class Project:
 
         Parameters
         ----------
-        none
+        None
 
         Returns
         -------
-        none
+        None
 
         """
 
@@ -131,20 +142,22 @@ class Project:
                 block = self.block_map[unique_name]
                 subject_name = block.subject.name
                 logging.log(20, "Processing file %s %s out of %s", block.unique_name, i + 1, (len(self.block_list)))
-                
+
                 if not os.path.exists(os.path.join(self.results_folder, subject_name)):
                     os.makedirs(os.path.join(self.results_folder, subject_name))
 
-                presults = block.preprocess()
-                EEG = presults['preprocessed']
+                p_results = block.preprocess()
+                EEG = p_results['preprocessed']
                 if not EEG:
                     logging.log(40, "EEG PREPROCESSED DATA NOT FOUND")
                     break
 
-                # if self.current == -1:
-                #    self.current = 1
-                self.save_project()  # FUNCTION TO SAVE THE PROJECT
+                if self.current == -1:
+                    self.current = 1
+
+                self.update_project()  # FUNCTION TO SAVE THE PROJECT
                 logging.log(20, "**Project saved**")
+            self.save_project()
             end_time = timeit.default_timer()  # Calculates end time
             logging.log(20, "---- PREPROCESSING FINISHED ----")
             logging.log(20, "Total elapsed time: %s sec",
@@ -344,6 +357,9 @@ class Project:
         """
         pass
 
+    def update_project(self):
+        pass
+
     def list_subject_files(self):
 
         """
@@ -427,23 +443,27 @@ class Project:
         for i in range(0, len(subjects)):
             subject_name = subjects[i]
             logging.info('Adding subject %s', subject_name)
-            a = self.data_folder+subject_name
-            b = self.results_folder+subject_name
+            a = self.data_folder + ' ' + subject_name
+            b = self.results_folder + ' ' + subject_name
             subject = Subject(a, b)
             raw_files = []
-            sessOrEEG = self.list_subjects(subject.data_folder)
-            if 'ses-' and 'eeg' in sessOrEEG:
-                for sesIdx in range(0, len(sessOrEEG)):
-                    sessFile = sessOrEEG[sesIdx]
-                    eegFold = subject.data_folder + slash + sessFile + slash + 'eeg' + slash
-                    if os.path.isdir(eegFold):
-                        raw_files = raw_files + self.dir_not_hiddens(eegFold+'*'+self.mask)
+            sess_or_EEG = self.list_subjects(subject.data_folder)
 
-            elif 'ses-' or 'eeg' in sessOrEEG:
-                eegFold = subject.data_folder + slash + 'eeg' + slash
-                raw_files = self.dir_not_hiddens(eegFold + '*' + self.mask)
+            if len(sess_or_EEG) != 0 and any(i.startswith('ses-') for i in sess_or_EEG) and all(
+                    i.startswith('ses-') for i in sess_or_EEG):
+                for sesIdx in range(0, len(sess_or_EEG)):
+                    sess_file = sess_or_EEG[sesIdx]
+                    eeg_fold = subject.data_folder + slash + sess_file + slash + 'eeg' + slash
+                    if os.path.isdir(eeg_fold):
+                        raw_files = [raw_files + self.dir_not_hiddens(eeg_fold + '*' + self.mask)]
+
+            elif len(sess_or_EEG) != 0 and any(i.startswith('ses-') for i in sess_or_EEG) and any(
+                    i.startswith('eeg') for i in sess_or_EEG):
+                eeg_fold = subject.data_folder + slash + 'eeg' + slash
+                raw_files = self.dir_not_hiddens(eeg_fold + '*' + self.mask)
+
             else:
-                raw_files = self.dir_not_hiddens(self.data_folder + subject_name + slash + '*' + self.mask)
+                raw_files = self.dir_not_hiddens(a + slash + '*' + self.mask)
 
             temp = 0
             for j in range(0, len(raw_files)):
@@ -451,12 +471,21 @@ class Project:
                 file = raw_files[j]
                 file_path = file.folder + slash + file.name  # File folder of the raw file
                 name_temp = file.name
+                if not ext in name_temp:
+                    if not ext.isupper():
+                        ext = ext.upper()
+                    elif not ext.islower():
+                        ext = ext.lower()
+
+                    self.mask = self.mask.replace(self.file_extension, ext)
+                    self.file_extension = ext
+
                 splits = os.path.splitext(name_temp)
                 file_name = splits[0]
                 logging.info('...Adding file %s', file_name)
 
-                block = Block(file_path, file_name)
-                mapa[block.unique_name] = block  # unique_name from block is needed
+                block = Block(file_name, file_path)  # Calling block class
+                mapa[block.unique_name] = block
                 listb[files_count] = block.unique_name
                 block.index = files_count
 
@@ -467,7 +496,7 @@ class Project:
                 n_preprocessed_file = n_preprocessed_file + 1
                 temp = temp + 1
 
-            if len(raw_files) == 0 and temp == len(raw_files):
+            if len(raw_files) != 0 and temp == len(raw_files):
                 n_preprocessed_subject = n_preprocessed_subject + 1
 
         self.processed_list = p_list
