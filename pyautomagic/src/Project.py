@@ -12,11 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import numpy as np
 import timeit
 import os
 import logging
-# import json
-# import mne
+import glob
+from mne_bids.utils import _write_json
+from pyautomagic.src.rateQuality import rateQuality
 from pyautomagic.src.Block import Block
 from pyautomagic.src.Subject import Subject
 from pyautomagic.src import Config
@@ -80,24 +82,14 @@ class Project:
         self.params = Config.DefaultParameters
         self.v_params = Config.DefaultVisualisationParameters
         self.CGV = Config.ConstantGlobalValues
+        self.automagic_final = {}
 
+        # If the file extension corresponds to txt, the user is asked to provide the sampling rate s_rate
         if '.txt' in self.file_extension:
             logging.error('Your data has a .txt file extension, please provide the sampling rate')
 
-        self.processed_list = []
-        self.n_processed_files = 0
-        self.n_processed_subjects = 0
-        self.n_block = 0
-        self.n_subject = 0
-        self.block_map = {}
-        self.block_list = []
-        self.interpolate_list = []
-        self.good_list = []
-        self.bad_list = []
-        self.ok_list = []
-        self.not_rated_list = []
-        self.already_interpolated = []
-        self.current = None
+        # Calling create_rating_structures() method
+        self.create_ratings_structure()
 
     def get_current_block(self):  # DEEP
         """
@@ -105,7 +97,7 @@ class Project:
 
         Parameters
         ----------
-        none
+        None
 
         Returns
         -------
@@ -114,7 +106,15 @@ class Project:
 
         """
 
-        pass
+        if self.current == -1:
+            subject = Subject('', '')
+            block = Block('', '', self, Subject)
+            block.index = -1
+            return
+
+        unique_name = self.processed_list[self.current]
+        block = self.block_map[unique_name]
+        return block
 
     def preprocess_all(self):
         """
@@ -136,7 +136,7 @@ class Project:
 
         else:
             logging.log(20, "----- START PREPROCESSING -----")
-            start_time = timeit.default_timer()  # Calculates start time = CPU time
+            start_time = timeit.default_timer()  # Calculates start time
             for i in range(0, len(self.block_list)):
                 unique_name = self.block_list[i]
                 block = self.block_map[unique_name]
@@ -146,7 +146,7 @@ class Project:
                 if not os.path.exists(os.path.join(self.results_folder, subject_name)):
                     os.makedirs(os.path.join(self.results_folder, subject_name))
 
-                p_results = block.preprocess()
+                p_results = block.preprocess()  # Preprocess function
                 EEG = p_results['preprocessed']
                 if not EEG:
                     logging.log(40, "EEG PREPROCESSED DATA NOT FOUND")
@@ -155,10 +155,10 @@ class Project:
                 if self.current == -1:
                     self.current = 1
 
-                self.update_project()  # FUNCTION TO SAVE THE PROJECT
+                self.update_project(p_results)  # Function to save the current changes
                 logging.log(20, "**Project saved**")
-            self.save_project()
-            end_time = timeit.default_timer()  # Calculates end time
+            self.save_project()  # Function to save all the changes
+            end_time = timeit.default_timer()  # End time
             logging.log(20, "---- PREPROCESSING FINISHED ----")
             logging.log(20, "Total elapsed time: %s sec",
                         end_time - start_time)  # Prints total elapsed time of the process
@@ -169,11 +169,11 @@ class Project:
 
         Parameters
         ----------
-        none
+        None
 
         Returns
         -------
-        none
+        None
 
         """
 
@@ -196,64 +196,102 @@ class Project:
 
                 self.already_interpolated = [self.already_interpolated, index]
 
-                self.save_project()  # Method in this class to save the project
                 logging.log(20, "**Project saved**")
-
+            self.save_project()
             end_time = timeit.default_timer()  # Calculates end time
             logging.log(20, "----- INTERPOLATION FINISHED -----")
             logging.log(20, "Total elapsed time: %s sec",
                         end_time - start_time)  # Prints total elapsed time of the process
 
-    def update_rating_lists(self, block_rate: str):  # DEEP
+    def update_rating_lists(self, block):
         """
-        Updates the five rating lists depending on the rating of the
-        given block
+        Updates the rating lists according to the rating of the block.
 
         Parameters
         ----------
-        block_rate : str
+        block
+            block for which the rating list has to be updated
 
         Returns
         -------
-        none
+        None
 
         """
-        # block_rate = Config.ConstantGlobalValues.RATINGS
 
-        pass
+        self.good_list = np.asarray([self.good_list])
+        self.not_rated_list = np.asarray([self.not_rated_list])
+        self.ok_list = np.asarray([self.ok_list])
+        self.bad_list = np.asarray([self.bad_list])
+        self.interpolate_list = np.asarray([self.interpolate_list])
 
-    def update_rating_structure(self):
+        if block.rate == self.CGV.RATINGS.Good:
+            if not np.isin(block.index, self.good_list):
+                self.good_list = np.append(self.good_list, block.index)
+                self.not_rated_list = self.not_rated_list[self.not_rated_list != block.index]
+                self.ok_list = self.ok_list[self.ok_list != block.index]
+                self.bad_list = self.bad_list[self.bad_list != block.index]
+                self.interpolate_list = self.interpolate_list[self.interpolate_list != block.index]
+                self.good_list = np.unique(self.good_list)
+
+        elif block.rate == self.CGV.RATINGS.OK:
+            if not np.isin(block.index, self.ok_list):
+                self.ok_list = np.append(self.ok_list, block.index)
+                self.not_rated_list = self.not_rated_list[self.not_rated_list != block.index]
+                self.good_list = self.good_list[self.good_list != block.index]
+                self.bad_list = self.bad_list[self.bad_list != block.index]
+                self.interpolate_list = self.interpolate_list[self.interpolate_list != block.index]
+                self.ok_list = np.unique(self.ok_list)
+
+        elif block.rate == self.CGV.RATINGS.Bad:
+            if not np.isin(block.index, self.bad_list):
+                self.bad_list = np.append(self.bad_list, block.index)
+                self.not_rated_list = self.not_rated_list[self.not_rated_list != block.index]
+                self.good_list = self.good_list[self.good_list != block.index]
+                self.ok_list = self.ok_list[self.ok_list != block.index]
+                self.interpolate_list = self.interpolate_list[self.interpolate_list != block.index]
+                self.bad_list = np.unique(self.bad_list)
+
+        elif block.rate == self.CGV.RATINGS.Interpolate:
+            if not np.isin(block.index, self.interpolate_list):
+                self.interpolate_list = np.append(self.interpolate_list, block.index)
+                self.not_rated_list = self.not_rated_list[self.not_rated_list != block.index]
+                self.good_list = self.good_list[self.good_list != block.index]
+                self.ok_list = self.ok_list[self.ok_list != block.index]
+                self.bad_list = self.bad_list[self.bad_list != block.index]
+                self.interpolate_list = np.unique(self.interpolate_list)
+
+        elif block.rate == self.CGV.RATINGS.NotRated:
+            if not np.isin(block.index, self.not_rated_list):
+                self.not_rated_list = np.append(self.not_rated_list, block.index)
+                self.bad_list = self.bad_list[self.bad_list != block.index]
+                self.good_list = self.good_list[self.good_list != block.index]
+                self.ok_list = self.ok_list[self.ok_list != block.index]
+                self.interpolate_list = self.interpolate_list[self.interpolate_list != block.index]
+                self.not_rated_list = np.unique(self.not_rated_list)
+
+        self.good_list = self.good_list.tolist()
+        self.not_rated_list = self.not_rated_list.tolist()
+        self.ok_list = self.ok_list.tolist()
+        self.bad_list = self.bad_list.tolist()
+        self.interpolate_list = self.interpolate_list.tolist()
+
+    def get_quality_ratings(self, cutoffs):
         """
-        Updates the data structures of this project
-
         Parameters
         ----------
-        none
+        cutoffs : dict
+            cutoffs on which the ratings will be decided
 
         Returns
         -------
-        none
-
+        ratings : list
+            list of block-wise ratings
         """
-        pass
 
-    def get_quality_ratings(self):  # NEEDED
-        """
-        Returns the quality ratings of all blocks given the cuttoffs
-
-        Parameters
-        ----------
-        cutoffs : int
-            The cutoffs for which the quality ratings are returned
-
-        Returns
-        -------
-        ratings
-            Quality ratings returned
-
-        """
-        pass
-        # Method returns the quality ratings of all blocks
+        blocks = [self.block_map[x] for x in self.processed_list]
+        q_scores = [z.quality_scores for z in blocks]
+        ratings = [rateQuality(w) for w in q_scores]
+        return ratings
 
     def apply_quality_ratings(self, cutoffs, apply_to_manually_rated):  # NEEDED
         """
@@ -268,13 +306,13 @@ class Project:
 
         Returns
         -------
-        none
+        None
 
         """
         pass
         # Modify all the blocks to have the new ratings given by this cutoffs
 
-    def update_addresses_from_state_file(self, p_folder, data_folder):  # NOT NEEDED I THINK
+    def update_addresses_from_state_file(self, p_folder, data_folder):
         """
         Method called when the project is loaded from a state file
 
@@ -284,81 +322,73 @@ class Project:
 
         data_folder
 
+
         Returns
         -------
-        none
+        None
 
         """
         pass
         # This method is called only when the project is loaded
         # from a state file
 
-    def get_rated_count(self, rated_count):  # DEEP
+    def get_rated_count(self):
         """
-        Return number of files that have already been rated
-
         Parameters
         ----------
-        none
+        None
+
 
         Returns
         -------
-        rated_count : int
-            Number of files that have been rated
-
+        Count for no. of blocks that are yet to be rated
         """
-        pass
+        return len(self.processed_list) - (len(self.not_rated_list) + len(self.interpolate_list))
 
-    def to_be_interpolated(self, count):  # Deep
+    def to_be_interpolated_count(self):
         """
-        Return the number of files that are rated as interpolate
-
         Parameters
         ----------
-        none
+        None
 
         Returns
         -------
-        count : int
-            Number of files that are rated as interpolate
-
+        Count for no. of blocks that are yet to be interpolated
         """
-        pass
-
-    def are_folders_changed(self, modified):  # Deep
-        """
-        Method that verifies if any change has happened to data folder or results folder
-        since the last update
-
-        Parameters
-        ----------
-        none
-
-        Returns
-        -------
-        modified : bool
-            Returns true or false depending if the folders have been changed or not
-
-        """
-        pass
+        return len(self.interpolate_list)
 
     def save_project(self):  # DEEP
         """
-        Save the class to the state file
+        saves the project information to a JSON file
 
         Parameters
         ----------
-        none
+        None
 
         Returns
         -------
-        none
+        None
 
         """
-        pass
+        result_file = self.name + '_results.json'
+        result_file_path = os.path.join(self.results_folder, result_file)
+        _write_json(result_file_path, self.automagic_final, overwrite=True, verbose=True)
 
-    def update_project(self):
-        pass
+    def update_project(self, preprocessed):
+        """
+        Updates the project information dictionary with each blocks information
+
+        Parameters
+        ----------
+        preprocessed
+            Preprocessed files
+
+        Returns
+        -------
+        None
+        """
+        update = preprocessed['automagic']
+        self.automagic_final.update(update)
 
     def list_subject_files(self):
 
@@ -371,12 +401,12 @@ class Project:
 
         Returns
         -------
-        lista : list
+        listb : list
             List of all folders in the data folder
 
         """
-        lista = self.list_subjects(self.data_folder)
-        return lista
+        listb = self.list_subjects(self.data_folder)
+        return listb
 
     def list_preprocessed_subjects(self):
         """
@@ -384,15 +414,15 @@ class Project:
 
         Parameters
         ----------
-        none
+        None
 
         Returns
         -------
-        lista : list
+        listb : list
             List of all folders in the results folder
         """
-        lista = self.list_subjects(self.results_folder)
-        return lista
+        listb = self.list_subjects(self.results_folder)
+        return listb
 
     def create_ratings_structure(self):
         """
@@ -401,7 +431,7 @@ class Project:
 
         Parameters
         ----------
-        none
+        None
 
         Returns
         -------
@@ -442,62 +472,65 @@ class Project:
 
         for i in range(0, len(subjects)):
             subject_name = subjects[i]
-            logging.info('Adding subject %s', subject_name)
-            a = self.data_folder + ' ' + subject_name
-            b = self.results_folder + ' ' + subject_name
-            subject = Subject(a, b)
-            raw_files = []
-            sess_or_EEG = self.list_subjects(subject.data_folder)
+            if not subject_name.startswith(
+                    'derivatives'):  # Condition to exclude the results folder when looking for the subjects
+                logging.info('Adding subject %s', subject_name)
+                a = self.data_folder + slash + subject_name
+                b = self.results_folder + slash + subject_name
+                subject = Subject(a, b)
+                raw_files = []
+                sess_or_EEG = self.list_subjects(subject.data_folder)
 
-            if len(sess_or_EEG) != 0 and any(i.startswith('ses-') for i in sess_or_EEG) and all(
-                    i.startswith('ses-') for i in sess_or_EEG):
-                for sesIdx in range(0, len(sess_or_EEG)):
-                    sess_file = sess_or_EEG[sesIdx]
-                    eeg_fold = subject.data_folder + slash + sess_file + slash + 'eeg' + slash
-                    if os.path.isdir(eeg_fold):
-                        raw_files = [raw_files + self.dir_not_hiddens(eeg_fold + '*' + self.mask)]
+                if len(sess_or_EEG) != 0 and any(i.startswith('ses-') for i in sess_or_EEG) and all(
+                        i.startswith('ses-') for i in sess_or_EEG):
+                    for sesIdx in range(0, len(sess_or_EEG)):
+                        sess_file = sess_or_EEG[sesIdx]
+                        eeg_fold = subject.data_folder + slash + sess_file + slash + 'eeg' + slash
+                        if os.path.isdir(eeg_fold):
+                            raw_files = [raw_files + self.dir_not_hiddens(eeg_fold + '*' + self.mask)]
 
-            elif len(sess_or_EEG) != 0 and any(i.startswith('ses-') for i in sess_or_EEG) and any(
-                    i.startswith('eeg') for i in sess_or_EEG):
-                eeg_fold = subject.data_folder + slash + 'eeg' + slash
-                raw_files = self.dir_not_hiddens(eeg_fold + '*' + self.mask)
+                elif len(sess_or_EEG) != 0 and any(i.startswith('ses-') for i in sess_or_EEG) and any(
+                        i.startswith('eeg') for i in sess_or_EEG):
+                    eeg_fold = subject.data_folder + slash + 'eeg' + slash
+                    raw_files = self.dir_not_hiddens(eeg_fold + '*' + self.mask)
 
-            else:
-                raw_files = self.dir_not_hiddens(a + slash + '*' + self.mask)
+                else:
+                    raw_files = self.dir_not_hiddens(a + slash + '*' + self.mask)
 
-            temp = 0
-            for j in range(0, len(raw_files)):
-                files_count = files_count + 1
-                file = raw_files[j]
-                file_path = file.folder + slash + file.name  # File folder of the raw file
-                name_temp = file.name
-                if not ext in name_temp:
-                    if not ext.isupper():
-                        ext = ext.upper()
-                    elif not ext.islower():
-                        ext = ext.lower()
+                temp = 0
+                for j in range(0, len(raw_files)):
+                    files_count = files_count + 1
+                    file = raw_files[j]
+                    file_path = file.folder + slash + file.name  # File folder of the raw file
+                    name_temp = file.name
+                    if not ext in name_temp:
+                        if not ext.isupper():
+                            ext = ext.upper()
+                        elif not ext.islower():
+                            ext = ext.lower()
 
-                    self.mask = self.mask.replace(self.file_extension, ext)
-                    self.file_extension = ext
+                        self.mask = self.mask.replace(self.file_extension, ext)
+                        self.file_extension = ext
 
-                splits = os.path.splitext(name_temp)
-                file_name = splits[0]
-                logging.info('...Adding file %s', file_name)
+                    splits = os.path.splitext(name_temp)
+                    file_name = splits[0]
+                    logging.info('...Adding file %s', file_name)
 
-                block = Block(file_name, file_path)  # Calling block class
-                mapa[block.unique_name] = block
-                listb[files_count] = block.unique_name
-                block.index = files_count
+                    block = Block(file_name, file_path, self, Subject)  # Calling block class
+                    mapa[block.unique_name] = block
+                    # listb[files_count] = block.unique_name
+                    listb.insert(files_count, block.unique_name)
+                    block.index = files_count
 
-                if block.is_interpolated:
-                    already_list = already_list + block.index
+                    if block.is_interpolated:
+                        already_list = already_list + block.index
 
-                p_list.append(block.unique_name)
-                n_preprocessed_file = n_preprocessed_file + 1
-                temp = temp + 1
+                    p_list.append(block.unique_name)
+                    n_preprocessed_file = n_preprocessed_file + 1
+                    temp = temp + 1
 
-            if len(raw_files) != 0 and temp == len(raw_files):
-                n_preprocessed_subject = n_preprocessed_subject + 1
+                if len(raw_files) != 0 and temp == len(raw_files):
+                    n_preprocessed_subject = n_preprocessed_subject + 1
 
         self.processed_list = p_list
         self.n_processed_files = n_preprocessed_file
@@ -539,13 +572,13 @@ class Project:
         self.name = name
         return self.name
 
-    def set_data_folder(self, data_folder):
+    def set_data_folder(self, folder):
         """
         Sets the path folder where the data is stored
 
         Parameters
         ----------
-        data_folder : str
+        folder : str
             Path to the raw data folder
 
         Returns
@@ -554,9 +587,9 @@ class Project:
             Path to the raw data folder
 
         """
-        self.data_folder = data_folder
+        self.data_folder = folder
         if not os.path.exists(self.data_folder):
-            logging.error("%s: This folder doesn't exist, please verify your data folder", data_folder)
+            logging.error("%s: This folder doesn't exist, please verify your data folder", folder)
         else:
             return self.data_folder
 
@@ -580,31 +613,9 @@ class Project:
             logging.error('%s: Cannot create results folder, please verify your data folder', folder)
         else:
             self.results_folder = os.path.join(folder, 'derivatives', 'automagic')
+            if not os.path.exists(self.results_folder):
+                os.makedirs(self.results_folder)
             return self.results_folder
-
-    def write_to_log(self, source_address, msg):  # M N D U
-        """
-        Method that writes specal events that happened during preprocessing
-        into the log file
-
-        Parameters
-        ----------
-        source_address : file
-            The block file for which the error is printed
-
-        Returns
-        -------
-        msg : str
-            The message to be written in the log file
-
-        """
-        pass
-        # Write special events that happened during preprocessing into
-        # the log file
-
-    @staticmethod
-    def make_state_address(p_folder):  # NOT NEEDED
-        pass
 
     @staticmethod
     def make_rating_manually(block, q_rate):
@@ -675,6 +686,4 @@ class Project:
             List of files that are not hidden
 
         """
-        subs = os.path.join(folder)
-        files = [y for y in os.listdir(subs) if os.path.isfile(y)]
-        return files
+        return glob.glob(os.path.join(folder, '*'))

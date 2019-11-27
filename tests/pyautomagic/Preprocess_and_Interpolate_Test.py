@@ -2,11 +2,11 @@ import timeit
 import os
 import logging
 import ntpath
-#import json
-#import mne
-#from pyautomagic.src import Config
+import glob
+
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG)
+
 
 class Block:
 
@@ -24,25 +24,13 @@ class Block:
     def interpolate(self):
         pass
 
+
 class Subject:
 
     def __init__(self, data_folder, result_folder):
         self.result_folder = result_folder
         self.data_folder = data_folder
         self.name = self.extract_name(data_folder)
-
-    def update_addresses(self, new_data_path, new_project_path):
-        """
-            This method is to be called to update addresses
-            in case the project is loaded from another operating system and may
-            have a different path to the dataFolder or resultFolder. This can
-            happen either because the data is on a server and the path to it is
-            different on different systems, or simply if the project is loaded
-            from a windows to a iOS or vice versa.
-        """
-
-        self.data_folder = ntpath.join(new_data_path, self.name)
-        self.result_folder = ntpath.join(new_project_path, self.name)
 
     @staticmethod
     def extract_name(address):
@@ -98,21 +86,18 @@ class Project:
     def __init__(self, name, d_folder, file_ext):
 
         self.name = name  # Project name
-        self.data_folder = d_folder  # Data folder
+        self.data_folder = self.set_data_folder(d_folder)  # Data folder
         self.results_folder = self.set_results_folder(d_folder)  # Results folder, calls a function from Block
         self.file_extension = os.path.splitext(file_ext)[1]  # File extension
         self.mask = file_ext
 
-        self.set_name(name)
-        self.set_data_folder(d_folder)
-
-        # Dummy data to test functions
+        # Dummy data to test functions, this is the data from the RAW FILES
         self.block_list = ["Liang", "Deep", "Claire", "Raph", "Aamna"]
         self.block_map = {}
         for i in range(len(self.block_list)):
             self.block_map[self.block_list[i]] = Block(self.block_list[i], '')
 
-        # More dummy data
+        # # Dummy data to test the functions
         self.interpolate_list = [0, 1, 2, 3, 4]
         self.already_interpolated = [5]
 
@@ -247,12 +232,78 @@ class Project:
             logging.error('%s: Cannot create results folder, please verify your data folder', folder)
         else:
             self.results_folder = os.path.join(folder, 'derivatives', 'automagic')
-            #print(self.results_folder)
+            if not os.path.exists(self.results_folder):
+                os.makedirs(self.results_folder)
             return self.results_folder
 
     def save_project(self):
         pass
 
-X = Project("Stupid Project", "C:/Users\saul__000\OneDrive\Escritorio\Johns Hopkins/NeuroData Design I\Project_Test_Folder", "something.edf")
-A = X.preprocess_all_test()
-B = X.interpolate_selected()
+    @staticmethod
+    def dir_not_hiddens(folder):
+        """
+        Returns the list of files in the folder, excluding the hidden files
+
+        Parameters
+        ----------
+        folder
+            The folder in which the files are listed
+
+        Returns
+        -------
+        subjects
+            List of files that are not hidden
+
+        """
+
+        return glob.glob(os.path.join(folder, '*'))
+
+    @staticmethod
+    def list_subjects(root_folder):
+
+        """
+        Returns the list of subjects in the folder
+
+        Parameters
+        ----------
+        root_folder : str
+            The folder in which the subjects are looked for
+
+        Returns
+        -------
+        subjects : list
+            List of subjects in the root folder
+        """
+
+        if os.path.isdir(root_folder):
+            subs = os.path.join(root_folder)
+            subjects = [y for y in os.listdir(subs) if os.path.isdir(os.path.join(root_folder, y))]
+            if len(subjects) == 0:
+                logging.error("%s: This path doesn't have any folders, please verify your data", root_folder)
+            else:
+                return subjects
+        else:
+            logging.log(40, "%s: This directory doesn't exist", root_folder)
+
+    def list_subject_files(self):
+
+        """
+        Method that lists all folders in the data folder
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        lista : list
+            List of all folders in the data folder
+
+        """
+        lista = self.list_subjects(self.data_folder)
+        return lista
+
+
+X = Project("Stupid Project", r"C:\Users\saul__000\OneDrive\Escritorio\Johns Hopkins\NeuroData Design I\Project_Test_Folder", "something.txt")
+X.preprocess_all_test()
+X.interpolate_selected()
