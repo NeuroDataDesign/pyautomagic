@@ -1,15 +1,9 @@
 import numpy as np
 
-<<<<<<< HEAD
 
 def perform_EOG_regression(EEG, EOG):
     """The artifacts due to EOG activity are removed from the EEG data using the subtraction method
         that relies on the linear transformation of the EEG signal
-=======
-def performEOGRegression(raw):
-  
-    """Performs linear regression to remove EOG artifact from the EEG data
->>>>>>> 33bb36b07b9b5e0c925a93e2bf4b58fc3f26ff13
 
         Parameters
         ----------
