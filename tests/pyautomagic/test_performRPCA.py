@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from pyautomagic.preprocess.RPCA import performRPCA
+from pyautomagic.preprocessing.RPCA import performRPCA
 
 
 def test_basic_input1():
@@ -11,7 +11,7 @@ def test_basic_input1():
     assert(np.allclose(A,expected_A))
     assert(np.allclose(E,expected_E))
     print('test_basic_input1 Pass')
-    
+
 def test_basic_input2():
     EEG = np.array([[1,2,3],[4,5,6],[7,8,9]])
     expected_A = np.array([[1.5999989,1.99999912,2.3999982],\
@@ -34,14 +34,14 @@ def test_basic_input3():
     A,E = performRPCA.performRPCA(EEG);
     assert(np.allclose(A,expected_A))
     assert(np.allclose(E,expected_E))
-    print('test_basic_input3 Pass')    
+    print('test_basic_input3 Pass')
 
 def test_no_input():
     with pytest.raises(TypeError):
         A,E = performRPCA.performRPCA()
     assert(True)
     print('test_no_input Pass')
-    
+
 def test_incorrect_input():
     with pytest.raises(AttributeError):
         A,E = performRPCA.performRPCA("Wrong input Type")
@@ -64,7 +64,7 @@ def test_params1():
     assert(np.allclose(A,expected_A))
     assert(np.allclose(E,expected_E))
     print('test_params1 Pass')
-    
+
 def test_params2():
     EEG = np.array([[1,2,3],[4,5,6],[7,8,9]])
     lam = .2
@@ -76,7 +76,7 @@ def test_params2():
     assert(np.allclose(A,expected_A))
     assert(np.allclose(E,expected_E))
     print('test_params2 Pass')
-    
+
 
 def test_params3():
     EEG = np.array([[1,2,3],[4,5,6],[7,8,9]])
@@ -93,4 +93,4 @@ def test_params3():
     assert(np.allclose(A,expected_A))
     assert(np.allclose(E,expected_E))
     print('test_params3 Pass')
-    
+
