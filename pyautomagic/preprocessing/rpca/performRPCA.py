@@ -1,5 +1,5 @@
 import numpy as np
-import preProcessRPCA as preprocess
+import .preProcessRPCA as preprocess
 
 def performRPCA(EEG, lam=-1, tol=1e-7, maxIter=1000):
 
