@@ -1,9 +1,9 @@
 import mne
 import matplotlib.pyplot as plt
 import numpy as np
-from rpca import rpca
-from performFilter import performFilter
-from prep.prep_pipeline import prep_pipeline
+from .rpca import rpca
+from .performFilter import performFilter
+from .prep.prep_pipeline import prep_pipeline
 
 
 """ preprocess

@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.decomposition import TruncatedSVD
 
 
-def rpca(M,lam,tol,maxIter):
+def rpca(M,lam=-1,tol=1e-7,maxIter=1000):
 
     """ Perform Robust Principle Component Analysis:
 
@@ -36,12 +36,12 @@ def rpca(M,lam,tol,maxIter):
 
 """
     #Calculate lamda if not provided using the Automagic algorithim
-    col = EEG.shape;
-    if (lam == -1): #if no input lamda, calculate its value
-        lam = 1 / np.sqrt(col[1]);
-
     Nr = M.shape[0]
     Nc = M.shape[1]
+    if (lam == -1): #if no input lamda, calculate its value
+        lam = 1 / np.sqrt(Nc);
+
+
     norm_2 = np.linalg.norm(M,2)
     norm_inf = np.linalg.norm(M,np.inf) / lam
     dual_norm = np.maximum(norm_2, norm_inf)
