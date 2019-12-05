@@ -1,8 +1,8 @@
 import numpy as np
-from performEOGRegression import perform_EOG_regression
+from pyautomagic.preprocessing.perform_EOG_regression import perform_EOG_regression
 import pytest
 
-def test_EOG_Regression():
+def test_EOG_egression():
     """Test for EOG Regression in EEG data"""
 
     # making a random signal with no noise
