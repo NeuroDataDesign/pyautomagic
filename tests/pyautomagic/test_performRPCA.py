@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from pyautomagic.preprocessing.RPCA import performRPCA
+from pyautomagic.preprocessing.rpca import performRPCA
 
 
 def test_basic_input1():
