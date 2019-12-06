@@ -3,7 +3,7 @@ import logging
 import os
 import json
 import mne
-import mne-bids
+import mne_bids
 from mne_bids.utils import _parse_bids_filename, _write_json
 from mne_bids.read import _read_raw,read_raw_bids
 from pyautomagic.preprocessing.preprocess import preprocess as execute_preprocess
@@ -54,7 +54,7 @@ class Block():
         list of channel indices determined to be bad after checks
     quality_scores : dict
         contains all metrics of quality calculated for the dataset
-    times_commited : int
+    times_committed : int
         used to track how many changes were made to the evaluation of the data
 
     """
@@ -100,13 +100,13 @@ class Block():
             if not saved_params==self.params:
                 raise ValueError('Parameters of results file do not match this project. Can not merge.')
             if block['is_interpolated'] or block['is_rated']:
-                self.rate = block.rate
+                self.rate = block['rate']
                 self.to_be_interpolated = block['to_be_interpolated']
                 self.is_interpolated = block['is_interpolated']
                 self.auto_bad_chans = block['auto_bad_chans']
                 self.final_bad_chans = block['final_bad_chans']
                 self.quality_scores = block['quality_scores']
-                self.times_commited = block['times_commited']
+                self.times_committed = block['times_committed']
             else: 
                 self.rate = 'not rated'
                 self.to_be_interpolated = []
@@ -114,7 +114,7 @@ class Block():
                 self.auto_bad_chans = []
                 self.final_bad_chans = []
                 self.quality_scores = None
-                self.times_commited = 0
+                self.times_committed = int(0)
                 
     def find_result_path(self):
         """
@@ -178,7 +178,7 @@ class Block():
                           'quality_thresholds':self.project.quality_thresholds,
                           'rate':self.rate,
                           'is_manually_rated':self.is_manually_rated,
-                          'times_commited':self.times_committed,
+                          'times_committed':self.times_committed,
                           'params':self.params,
                           'is_interpolated':self.is_interpolated,
                           'is_rated':self.is_rated})
