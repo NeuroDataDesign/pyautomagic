@@ -69,7 +69,7 @@ def rateQuality(quality_metrics, overall_Good_Cutoff: float = 0.1, overall_Bad_C
     # Check that the values in quality_metrics{} are positive numbers not equal to 0
     if not isinstance(quality_metrics.values(), int) and not isinstance(quality_metrics.values(), float) or isinstance(quality_metrics.values(), bool) or (quality_metrics.values() <= 0):
         logger.error("Some value of Quality Metrics is not a number, please verify your EEG input data")
-    print(overall_Bad_Cutoff)
+
     # Rating of EEG DATA according to the values of quality_metrics
     # The function rates the EEG DATA with the rule that the rating depends on the WORST rating
     if quality_metrics['overall_high_amp'] > overall_Bad_Cutoff or quality_metrics['times_high_var'] > time_Bad_Cutoff or quality_metrics['ratio_bad_chans'] > bad_Channel_Bad_Cutoff or quality_metrics['chan_high_var'] > channel_Bad_Cutoff:
