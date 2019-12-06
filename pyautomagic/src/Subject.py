@@ -32,6 +32,7 @@ class Subject:
         Returns
         -------
         None
+
         """
 
         self.data_folder = os.path.join(new_data_path, self.name)
@@ -53,6 +54,25 @@ class Subject:
         result = os.path.join(parent, 'derivatives', 'automagic', f"sub-{self.name}")
         return result
 
+    def result_path(self, data_folder):
+        """
+        finds the result folder path for the corresponding subject data folder according to the BIDS folder hierarchy.
+        Parameters
+        ----------
+        data_folder : str
+            subject data folder
+
+        Returns
+        -------
+        result : str
+            corresponding result folder
+
+        """
+        parent, _ = ntpath.split(data_folder)
+        # grandparent, _ = ntpath.split(parent)
+        result = ntpath.join(parent, 'derivatives', 'automagic', f"sub-{self.name}")
+        return result
+
     @staticmethod
     def extract_name(address):
         """
@@ -61,6 +81,7 @@ class Subject:
         ----------
         address : str
             path of the subject folder
+
         Returns
         -------
         name : str
@@ -68,6 +89,7 @@ class Subject:
         """
         head, tail = os.path.split(address)
         name = tail or os.path.basename(head)
+
         if name.startswith('sub-'):
             name = name.replace('sub-', '')
         return name
