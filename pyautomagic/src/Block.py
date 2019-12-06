@@ -3,8 +3,9 @@ import logging
 import os
 import json
 import mne
-from mne_bids.utils import _parse_bids_filename, _write_json
-from mne_bids.read import _read_raw,read_raw_bids
+import mne_bids
+from mne_bids.mne_bids.utils import _parse_bids_filename, _write_json
+from mne_bids.mne_bids.read import _read_raw,read_raw_bids
 from pyautomagic.preprocessing.preprocess import preprocess as execute_preprocess
 from pyautomagic.src.calcQuality import calcQuality
 from pyautomagic.src.rateQuality import rateQuality
