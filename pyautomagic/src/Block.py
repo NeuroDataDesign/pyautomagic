@@ -1,5 +1,5 @@
 import os
-from pyautomagic.src.Project import Project
+#from pyautomagic.src.Project import Project
 
 
 class Block:

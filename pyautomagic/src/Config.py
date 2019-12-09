@@ -32,21 +32,12 @@ class ConstantGlobalValues:
 
     LOAD_PROJECT = {'List_Name': 'Load and existing project'}
 
-    KEYBOARD_SHORTCUTS = {'GOOD': 'g, 1', 'OK': 'o, 2', 'BAD': 'b , 3', 'INTERPOLATE': 'i, 4', 'NOTRATED': 'n , 5',
-                          'NEXT': 'rightarrow', 'PREVIOUS': 'leftarrow'}
-
-    PREFIX_PATTERN = '^[gobni]+i?p_'
-
     RATINGS = {'Good': 'Good', 'Bad': 'Bad', 'Regular': 'Regular', 'Interpolate': 'Interpolate',
                'NotRated': 'Not Rated'}
 
     EXTENSIONS = {'mat': '.mat', 'text': '.txt .asc .csv', 'fif': '.fif', 'set': '.set', 'edf': '.edf'}
 
     PYAUTOMAGIC = 'pyautomagic'
-
-    SRC_FOLDER = 'src'
-
-    GUI_FOLDER = 'gui'
 
     PREPROCESSING_FOLDER = 'preprocessing'
 
@@ -83,11 +74,14 @@ class DefaultParameters:
 
     SETTINGS = {'trackAllSteps': 0}
 
+    PARAMS = {'line_frequencies': 50, 'filter_type': 'high', 'filt_freq': None, 'filter_length': 'auto', 'eog_regression': False, 'lam': -1, 'tol': 1e-7, 'max_iter': 1000}
+
 
 # Pre processing Constants
 
 
 class PreprocessingConstants:
+
     FILTER_CSTS = {'NOTCH_EU': 50, 'NOTHC_US': 60, 'NOTCH OTHER': {}, 'RUN MESSAGE': 'Perform Filtering...'}
 
     EEG_LAB_CSTS = {'ZIP': 'eeglab14_1_2b.zip'}
@@ -130,17 +124,13 @@ class RecommendedParameters:
 
     RPCA_PARAMS_REC = {'lambda': [], 'tol': 1e-7, 'maxIter': 1000}
 
-    IC_LABEL_PARAMS = {'brainTher': 0.8, 'muscleTher': [], 'eyeTher': [], 'heartTher': [], 'lineNoiseTher': [],
-                       'channelNoiseTher': [], 'otherTher': 0.8, 'includeSelected': 1,
-                       'high': {'freq': 1.0, 'order': []}}
-
     EOG_REGRESSION_PARAMS_REC = {}
 
     DETRENDING_PARAMS_REC = {}
 
     CHANNEL_REDUCTION_PARAMS_REC = {'tobeExcludedChans': []}
 
-    EEG_SYSTEM_REC = {'name': 'Others', 'sys10_20': 0, 'locFile': '', 'refChan': {'idx': []}, 'fileLocType': '',
+    EEG_SYSTEM_REC = {'name': 'Others', 'standard_1020': 0, 'locFile': '', 'refChan': {'idx': []}, 'fileLocType': '',
                       'eogChans': [], 'powerLineFreq': []}
 
     SETTINGS_REC = {'trackAllSteps': 0, 'pathToSteps': '/allSteps.mat'}

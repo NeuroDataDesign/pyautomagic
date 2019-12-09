@@ -8,12 +8,12 @@ import glob
 logging.basicConfig(format='%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG)
 
 
-class Block:
+class Test_Block:
 
     def __init__(self, data_name, data_folder):
         self.unique_name = data_name
         self.data_folder = data_folder
-        self.subject = Subject('name', '')
+        self.subject = Test_Subject('name', '')
         self.is_interpolated = False
 
     def preprocess(self):
@@ -25,7 +25,7 @@ class Block:
         pass
 
 
-class Subject:
+class Test_Subject:
 
     def __init__(self, data_folder, result_folder):
         self.result_folder = result_folder
@@ -38,7 +38,7 @@ class Subject:
         return tail or ntpath.basename(head)
 
 
-class Project:
+class Test_Project:
     """
     Object containing all methods for creating a new project
 
@@ -95,7 +95,7 @@ class Project:
         self.block_list = ["Liang", "Deep", "Claire", "Raph", "Aamna"]
         self.block_map = {}
         for i in range(len(self.block_list)):
-            self.block_map[self.block_list[i]] = Block(self.block_list[i], '')
+            self.block_map[self.block_list[i]] = Test_Block(self.block_list[i], '')
 
         # # Dummy data to test the functions
         self.interpolate_list = [0, 1, 2, 3, 4]
@@ -304,6 +304,6 @@ class Project:
         return lista
 
 
-X = Project("Stupid Project", r"C:\Users\saul__000\OneDrive\Escritorio\Johns Hopkins\NeuroData Design I\Project_Test_Folder", "something.txt")
+X = Test_Project("Stupid Project", r"C:\Users\saul__000\OneDrive\Escritorio\Johns Hopkins\NeuroData Design I\Project_Test_Folder", "something.txt")
 X.preprocess_all_test()
 X.interpolate_selected()

@@ -480,6 +480,7 @@ class Project:
                 subject = Subject(a, b)
                 raw_files = []
                 sess_or_EEG = self.list_subjects(subject.data_folder)
+                #print(len(sess_or_EEG))
 
                 if len(sess_or_EEG) != 0 and any(i.startswith('ses-') for i in sess_or_EEG) and all(
                         i.startswith('ses-') for i in sess_or_EEG):
@@ -496,6 +497,7 @@ class Project:
 
                 else:
                     raw_files = self.dir_not_hiddens(a + slash + '*' + self.mask)
+                #print(len(raw_files))
 
                 temp = 0
                 for j in range(0, len(raw_files)):
@@ -687,3 +689,7 @@ class Project:
 
         """
         return glob.glob(os.path.join(folder, '*'))
+
+
+X = Project("Project_Saep", r"C:\Users\saul__000\OneDrive\Escritorio\bids-examples-master\bids-examples-master\eeg_face13", ".edf")
+X.preprocess_all()

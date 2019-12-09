@@ -1,6 +1,5 @@
 import ntpath
 
-
 class Subject:
 
     def __init__(self, data_folder, result_folder):
@@ -24,4 +23,7 @@ class Subject:
     @staticmethod
     def extract_name(address):
         head, tail = ntpath.split(address)
-        return tail or ntpath.basename(head)
+        name = tail or ntpath.basename(head)
+        if name.startswith('sub-'):
+            name = name.replace('sub-', '')
+        return name
