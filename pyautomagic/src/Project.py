@@ -10,7 +10,7 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-# limitations under the License.
+# limitations under the License
 
 import numpy as np
 import timeit
@@ -22,6 +22,7 @@ from pyautomagic.src.rateQuality import rateQuality
 from pyautomagic.src.Block import Block
 from pyautomagic.src.Subject import Subject
 from pyautomagic.src import Config
+
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG)
 
