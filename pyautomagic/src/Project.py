@@ -16,7 +16,7 @@ import numpy as np
 import timeit
 import os
 import logging
-import glob
+# import glob
 from mne_bids.utils import _write_json
 from pyautomagic.src.rateQuality import rateQuality
 from pyautomagic.src.Block import Block
@@ -68,7 +68,7 @@ class Project:
 
     """
 
-    def __init__(self, name, d_folder, file_ext):
+    def __init__(self, name, d_folder, file_ext, montage):
 
         self.name = self.set_name(name)
         self.data_folder = self.set_data_folder(d_folder)
@@ -83,6 +83,7 @@ class Project:
         self.v_params = Config.DefaultVisualisationParameters
         self.CGV = Config.ConstantGlobalValues
         self.automagic_final = {}
+        self.montage = montage
 
         # If the file extension corresponds to txt, the user is asked to provide the sampling rate s_rate
         if '.txt' in self.file_extension:
@@ -493,7 +494,7 @@ class Project:
                 elif len(sess_or_EEG) != 0 and any(i.startswith('ses-') for i in sess_or_EEG) and any(
                         i.startswith('eeg') for i in sess_or_EEG):
                     eeg_fold = subject.data_folder + slash + 'eeg' + slash
-                    raw_files = self.dir_not_hiddens(eeg_fold + '*' + self.mask)
+                    raw_files = self.dir_not_hiddens(eeg_fold + '*' + self.mask) #HERE IS SEARCHING FOR FILES THAT START WITH WHATEVER IS
 
                 else:
                     raw_files = self.dir_not_hiddens(a + slash + '*' + self.mask)
@@ -688,8 +689,12 @@ class Project:
             List of files that are not hidden
 
         """
-        return glob.glob(os.path.join(folder, '*'))
+        #return glob.glob(os.path.join(folder, '*'))
+        #print(glob.glob(os.path.join(folder, '*')))
+        files = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
+        print(files)
 
-
-X = Project("Project_Saep", r"C:\Users\saul__000\OneDrive\Escritorio\bids-examples-master\bids-examples-master\eeg_face13", ".edf")
+X = Project("Project_Saep", r"C:\Users\saul__000\OneDrive\Escritorio\bids-examples-master\bids-examples-master\eeg_face13", ".edf", "x")
 X.preprocess_all()
+#X.dir_not_hiddens(r"C:\Users\saul__000\OneDrive\Escritorio\SAP")
+
