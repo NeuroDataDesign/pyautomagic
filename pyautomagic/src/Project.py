@@ -16,13 +16,11 @@ import numpy as np
 import timeit
 import os
 import logging
-# import glob
 from mne_bids.utils import _write_json
 from pyautomagic.src.rateQuality import rateQuality
 from pyautomagic.src.Block import Block
 from pyautomagic.src.Subject import Subject
 from pyautomagic.src import Config
-
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG)
 
@@ -69,22 +67,23 @@ class Project:
 
     """
 
-    def __init__(self, name, d_folder, file_ext, montage):
+    def __init__(self, name, d_folder, file_ext, montage, sampling_rate):
 
         self.name = self.set_name(name)
         self.data_folder = self.set_data_folder(d_folder)
         self.results_folder = self.set_results_folder(d_folder)
         self.file_extension = os.path.splitext(file_ext)[1]
         self.mask = file_ext
-        self.quality_thresholds = Config.DefaultVisualisationParameters.CALC_QUALITY_PARAMS
-        self.ds_rate = Config.DefaultVisualisationParameters.DS_RATE
-        self.rate_cutoffs = Config.DefaultVisualisationParameters.RATE_QUALITY_PARAMS
+        self.quality_thresholds = Config.DefaultVisualizationParameters.CALC_QUALITY_PARAMS
+        self.ds_rate = Config.DefaultVisualizationParameters.DS_RATE
+        self.rate_cutoffs = Config.DefaultVisualizationParameters.RATE_QUALITY_PARAMS
         self.config = Config
         self.params = Config.DefaultParameters
-        self.v_params = Config.DefaultVisualisationParameters
+        self.visualization_params = Config.DefaultVisualizationParameters
         self.CGV = Config.ConstantGlobalValues
         self.automagic_final = {}
         self.montage = montage
+        self.sampling_rate = sampling_rate
 
         # If the file extension corresponds to txt, the user is asked to provide the sampling rate s_rate
         if '.txt' in self.file_extension:
@@ -359,7 +358,7 @@ class Project:
         """
         return len(self.interpolate_list)
 
-    def save_project(self):  # DEEP
+    def save_project(self):
         """
         saves the project information to a JSON file
 
@@ -482,30 +481,38 @@ class Project:
                 subject = Subject(a, b)
                 raw_files = []
                 sess_or_EEG = self.list_subjects(subject.data_folder)
-                #print(len(sess_or_EEG))
+                #print(sess_or_EEG) #delete this
 
                 if len(sess_or_EEG) != 0 and any(i.startswith('ses-') for i in sess_or_EEG) and all(
                         i.startswith('ses-') for i in sess_or_EEG):
+                 #   print("1")
                     for sesIdx in range(0, len(sess_or_EEG)):
                         sess_file = sess_or_EEG[sesIdx]
                         eeg_fold = subject.data_folder + slash + sess_file + slash + 'eeg' + slash
                         if os.path.isdir(eeg_fold):
-                            raw_files = [raw_files + self.dir_not_hiddens(eeg_fold + '*' + self.mask)]
+                            raw_files = raw_files.append(self.dir_not_hiddens(eeg_fold, self.mask))
 
                 elif len(sess_or_EEG) != 0 and any(i.startswith('ses-') for i in sess_or_EEG) and any(
                         i.startswith('eeg') for i in sess_or_EEG):
+                   # print("2.1")
                     eeg_fold = subject.data_folder + slash + 'eeg' + slash
-                    raw_files = self.dir_not_hiddens(eeg_fold + '*' + self.mask) #HERE IS SEARCHING FOR FILES THAT START WITH WHATEVER IS
+                    raw_files = self.dir_not_hiddens(eeg_fold, self.mask)
+
+                elif len(sess_or_EEG) != 0 and any(i.startswith('eeg') for i in sess_or_EEG):
+                  #  print("2.2")
+                    eeg_fold = subject.data_folder + slash + 'eeg' + slash
+                    raw_files = self.dir_not_hiddens(eeg_fold, self.mask)
 
                 else:
-                    raw_files = self.dir_not_hiddens(a + slash + '*' + self.mask)
-                #print(len(raw_files))
+                    #print("3")
+                    raw_files = self.dir_not_hiddens(a + slash, self.mask)
 
                 temp = 0
                 for j in range(0, len(raw_files)):
                     files_count = files_count + 1
                     file = raw_files[j]
-                    file_path = file.folder + slash + file.name  # File folder of the raw file
+                    # file_path = file.folder + slash + file.name  # File folder of the raw file
+                    file_path = os.path.dirname(file.path) + slash + file.name
                     name_temp = file.name
                     if not ext in name_temp:
                         if not ext.isupper():
@@ -520,9 +527,8 @@ class Project:
                     file_name = splits[0]
                     logging.info('...Adding file %s', file_name)
 
-                    block = Block(file_name, file_path, self, Subject)  # Calling block class
+                    block = Block(file_name, file_path, self, subject)  # Calling block class
                     mapa[block.unique_name] = block
-                    # listb[files_count] = block.unique_name
                     listb.insert(files_count, block.unique_name)
                     block.index = files_count
 
@@ -675,7 +681,7 @@ class Project:
             logging.log(40, "%s: This directory doesn't exist", root_folder)
 
     @staticmethod
-    def dir_not_hiddens(folder):
+    def dir_not_hiddens(folder, extn):
         """
         Returns the list of files in the folder, excluding the hidden files
 
@@ -684,18 +690,23 @@ class Project:
         folder
             The folder in which the files are listed
 
+        extn
+
         Returns
         -------
-        subjects
+        files
             List of files that are not hidden
 
         """
-        #return glob.glob(os.path.join(folder, '*'))
-        #print(glob.glob(os.path.join(folder, '*')))
-        files = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
-        print(files)
+        files = []
+        for f in os.scandir(folder):
+            fname, fext = os.path.splitext(f)
+            if os.path.isfile(os.path.join(folder, f)) and fext == extn:
+                files.append(f)
 
-X = Project("Project_Saep", r"C:\Users\saul__000\OneDrive\Escritorio\bids-examples-master\bids-examples-master\eeg_face13", ".edf", "x")
+        return files
+
+
+X = Project("Project_Saep", r"C:\Users\saul__000\OneDrive\Escritorio\bids-examples-master\bids-examples-master\eeg_face13", ".edf", "x", 5)
 X.preprocess_all()
-#X.dir_not_hiddens(r"C:\Users\saul__000\OneDrive\Escritorio\SAP")
 
