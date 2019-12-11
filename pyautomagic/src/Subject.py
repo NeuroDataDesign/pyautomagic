@@ -38,6 +38,7 @@ class Subject:
         self.data_folder = os.path.join(new_data_path, self.name)
         self.result_folder = os.path.join(new_project_path, self.name)
 
+
     def result_path(self, data_folder):
         """
         finds the result folder path for the corresponding subject data folder according to the BIDS folder hierarchy.
@@ -54,6 +55,7 @@ class Subject:
         result = os.path.join(parent, 'derivatives', 'automagic', f"sub-{self.name}")
         return result
 
+
     def result_path(self, data_folder):
         """
         finds the result folder path for the corresponding subject data folder according to the BIDS folder hierarchy.
@@ -68,9 +70,8 @@ class Subject:
             corresponding result folder
 
         """
-        parent, _ = ntpath.split(data_folder)
-        # grandparent, _ = ntpath.split(parent)
-        result = ntpath.join(parent, 'derivatives', 'automagic', f"sub-{self.name}")
+        parent, _ = os.path.split(data_folder)
+        result = os.path.join(parent, 'derivatives', 'automagic', f"sub-{self.name}")
         return result
 
     @staticmethod
