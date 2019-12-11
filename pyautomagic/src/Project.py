@@ -16,6 +16,8 @@ import numpy as np
 import timeit
 import os
 import logging
+import mne
+import mne_bids
 from mne_bids.utils import _write_json
 from pyautomagic.src.rateQuality import rateQuality
 from pyautomagic.src.Block import Block
