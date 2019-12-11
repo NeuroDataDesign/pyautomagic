@@ -1,17 +1,3 @@
-# Copyright 2019 NeuroData (http://neurodata.io)
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 import numpy as np
 
 # File containing all Pyautomagic constant values
@@ -74,8 +60,6 @@ class DefaultParameters:
 
     SETTINGS = {'trackAllSteps': 0}
 
-    PARAMS = {'line_frequencies': 50, 'filter_type': 'high', 'filt_freq': None, 'filter_length': 'auto', 'eog_regression': False, 'lam': -1, 'tol': 1e-7, 'max_iter': 1000}
-
 
 # Pre processing Constants
 
@@ -83,19 +67,6 @@ class DefaultParameters:
 class PreprocessingConstants:
 
     FILTER_CSTS = {'NOTCH_EU': 50, 'NOTHC_US': 60, 'NOTCH OTHER': {}, 'RUN MESSAGE': 'Perform Filtering...'}
-
-    EEG_LAB_CSTS = {'ZIP': 'eeglab14_1_2b.zip'}
-
-    CRD_CSTS = {'URL': 'http://sccn.ucsd.edu/eeglab/plugins/clean_rawdata0.32.zip', 'ZIP': 'clean_rawdata0.32.zip',
-                'RUN MESSAGE': 'Finding Bad Channels...'}
-
-    PREP_CSTS = {'URL': 'https://github.com/VisLab/EEG-Clean-Tools/archive/master.zip',
-                 'ZIP': 'VisLab-EEG-Clean-Tools.zip'}
-
-    RPCA_CSTS = {'URL': 'http://perception.csl.illinois.edu/matrix-rank/Files/inexact_alm_rpca.zip',
-                 'ZIP': 'inexact_alm_rpca.zip', 'RUN_MESSAGE': 'Performing Robust PCA  (this may take a while...)'}
-
-    IC_LABEL_CSTS = {'ZIP': 'ICLabel0.3.1.zip', 'RUN_MESSAGE': 'Performing ICLabel (this may take a while...)'}
 
     EOG_REGRESSION_CSTS = {'RUN_MESSAGE': 'Perform EOG Regression...'}
 

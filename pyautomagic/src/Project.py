@@ -1,17 +1,3 @@
-# Copyright 2019 Neuro Data (http://neurodata.io)
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License
-
 import numpy as np
 import timeit
 import os
@@ -24,7 +10,9 @@ from pyautomagic.src.Block import Block
 from pyautomagic.src.Subject import Subject
 from pyautomagic.src import Config
 
-logging.basicConfig(format='%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG)
+logging.basicConfig(
+    format="%(asctime)s - %(levelname)s: %(message)s", level=logging.DEBUG
+)
 
 
 class Project:
@@ -48,6 +36,9 @@ class Project:
 
     sampling_rate : int
         Sampling rate for the txt file
+
+    params : dict
+        Preprocessing parameters for the new project
 
 
     Attributes
@@ -75,32 +66,30 @@ class Project:
 
     """
 
-    def __init__(self, name, d_folder, file_ext, montage, sampling_rate):
+    def __init__(self, name, d_folder, file_ext, montage, sampling_rate, params):
 
         self.name = self.set_name(name)
         self.data_folder = self.set_data_folder(d_folder)
         self.results_folder = self.set_results_folder(d_folder)
-        self.file_extension = file_ext.partition('.')[2]
+        self.file_extension = file_ext.partition(".")[2]
         self.mask = file_ext
-        self.quality_thresholds = Config.DefaultVisualizationParameters.CALC_QUALITY_PARAMS
+        self.quality_thresholds = (
+            Config.DefaultVisualizationParameters.CALC_QUALITY_PARAMS
+        )
         self.ds_rate = Config.DefaultVisualizationParameters.DS_RATE
         self.rate_cutoffs = Config.DefaultVisualizationParameters.RATE_QUALITY_PARAMS
         self.config = Config
-        self.params = Config.DefaultParameters
+        self.params = params
         self.visualization_params = Config.DefaultVisualizationParameters
         self.CGV = Config.ConstantGlobalValues
         self.automagic_final = {}
         self.montage = montage
         self.sampling_rate = sampling_rate
 
-        # If the file extension corresponds to txt, the user is asked to provide the sampling rate s_rate
-        # if '.txt' in self.file_extension:
-        #     logging.error('Your data has a .txt file extension, please provide the sampling rate')
-
         # Calling create_rating_structures() method
         self.create_ratings_structure()
 
-    def get_current_block(self):  # DEEP
+    def get_current_block(self):
         """
         Returns the block pointed by the current index
 
@@ -116,8 +105,8 @@ class Project:
         """
 
         if self.current == -1:
-            subject = Subject('')
-            block = Block('', '', self, subject)
+            subject = Subject("")
+            block = Block("", "", self, subject)
             block.index = -1
             return
 
@@ -140,8 +129,9 @@ class Project:
         """
 
         if not (os.path.isdir(self.data_folder)):
-            logging.log(40,
-                        "No directory exists, please specify the correct data directory")  # Displays error message if no data directory found
+            logging.log(
+                40, "No directory exists, please specify the correct data directory"
+            )  # Displays error message if no data directory found
 
         else:
             logging.log(20, "----- START PREPROCESSING -----")
@@ -150,13 +140,23 @@ class Project:
                 unique_name = self.block_list[i]
                 block = self.block_map[unique_name]
                 subject_name = block.subject.name
-                logging.log(20, "Processing file %s %s out of %s", block.unique_name, i + 1, (len(self.block_list)))
+                logging.log(
+                    20,
+                    "Processing file %s %s out of %s",
+                    block.unique_name,
+                    i + 1,
+                    (len(self.block_list)),
+                )
 
-                if not os.path.exists(os.path.join(self.results_folder, 'sub-' + subject_name)):
-                    os.makedirs(os.path.join(self.results_folder, 'sub-' + subject_name))
+                if not os.path.exists(
+                    os.path.join(self.results_folder, "sub-" + subject_name)
+                ):
+                    os.makedirs(
+                        os.path.join(self.results_folder, "sub-" + subject_name)
+                    )
 
                 p_results = block.preprocess()  # Preprocess function
-                EEG = p_results['preprocessed']
+                EEG = p_results["preprocessed"]
                 if not EEG:
                     logging.log(40, "EEG PREPROCESSED DATA NOT FOUND")
                     break
@@ -169,8 +169,9 @@ class Project:
             self.save_project()  # Function to save all the changes
             end_time = timeit.default_timer()  # End time
             logging.log(20, "---- PREPROCESSING FINISHED ----")
-            logging.log(20, "Total elapsed time: %s sec",
-                        end_time - start_time)  # Prints total elapsed time of the process
+            logging.log(
+                20, "Total elapsed time: %s sec", end_time - start_time
+            )  # Prints total elapsed time of the process
 
     def interpolate_selected(self):
         """
@@ -195,11 +196,16 @@ class Project:
             int_list = self.interpolate_list
             for i in range(0, len(int_list)):
                 index = int_list[i]
-                unique_name = self.block_list[index-1]
+                unique_name = self.block_list[index - 1]
                 block = self.block_map[unique_name]
 
-                logging.log(20, "Processing file %s file %s out of %s", block.unique_name, i + 1,
-                            (len(self.interpolate_list)))
+                logging.log(
+                    20,
+                    "Processing file %s file %s out of %s",
+                    block.unique_name,
+                    i + 1,
+                    (len(self.interpolate_list)),
+                )
 
                 block.interpolate()
 
@@ -209,8 +215,9 @@ class Project:
             self.save_project()
             end_time = timeit.default_timer()  # Calculates end time
             logging.log(20, "----- INTERPOLATION FINISHED -----")
-            logging.log(20, "Total elapsed time: %s sec",
-                        end_time - start_time)  # Prints total elapsed time of the process
+            logging.log(
+                20, "Total elapsed time: %s sec", end_time - start_time
+            )  # Prints total elapsed time of the process
 
     def update_rating_lists(self, block):
         """
@@ -236,34 +243,48 @@ class Project:
         if block.rate == self.CGV.RATINGS.Good:
             if not np.isin(block.index, self.good_list):
                 self.good_list = np.append(self.good_list, block.index)
-                self.not_rated_list = self.not_rated_list[self.not_rated_list != block.index]
+                self.not_rated_list = self.not_rated_list[
+                    self.not_rated_list != block.index
+                ]
                 self.ok_list = self.ok_list[self.ok_list != block.index]
                 self.bad_list = self.bad_list[self.bad_list != block.index]
-                self.interpolate_list = self.interpolate_list[self.interpolate_list != block.index]
+                self.interpolate_list = self.interpolate_list[
+                    self.interpolate_list != block.index
+                ]
                 self.good_list = np.unique(self.good_list)
 
         elif block.rate == self.CGV.RATINGS.OK:
             if not np.isin(block.index, self.ok_list):
                 self.ok_list = np.append(self.ok_list, block.index)
-                self.not_rated_list = self.not_rated_list[self.not_rated_list != block.index]
+                self.not_rated_list = self.not_rated_list[
+                    self.not_rated_list != block.index
+                ]
                 self.good_list = self.good_list[self.good_list != block.index]
                 self.bad_list = self.bad_list[self.bad_list != block.index]
-                self.interpolate_list = self.interpolate_list[self.interpolate_list != block.index]
+                self.interpolate_list = self.interpolate_list[
+                    self.interpolate_list != block.index
+                ]
                 self.ok_list = np.unique(self.ok_list)
 
         elif block.rate == self.CGV.RATINGS.Bad:
             if not np.isin(block.index, self.bad_list):
                 self.bad_list = np.append(self.bad_list, block.index)
-                self.not_rated_list = self.not_rated_list[self.not_rated_list != block.index]
+                self.not_rated_list = self.not_rated_list[
+                    self.not_rated_list != block.index
+                ]
                 self.good_list = self.good_list[self.good_list != block.index]
                 self.ok_list = self.ok_list[self.ok_list != block.index]
-                self.interpolate_list = self.interpolate_list[self.interpolate_list != block.index]
+                self.interpolate_list = self.interpolate_list[
+                    self.interpolate_list != block.index
+                ]
                 self.bad_list = np.unique(self.bad_list)
 
         elif block.rate == self.CGV.RATINGS.Interpolate:
             if not np.isin(block.index, self.interpolate_list):
                 self.interpolate_list = np.append(self.interpolate_list, block.index)
-                self.not_rated_list = self.not_rated_list[self.not_rated_list != block.index]
+                self.not_rated_list = self.not_rated_list[
+                    self.not_rated_list != block.index
+                ]
                 self.good_list = self.good_list[self.good_list != block.index]
                 self.ok_list = self.ok_list[self.ok_list != block.index]
                 self.bad_list = self.bad_list[self.bad_list != block.index]
@@ -275,7 +296,9 @@ class Project:
                 self.bad_list = self.bad_list[self.bad_list != block.index]
                 self.good_list = self.good_list[self.good_list != block.index]
                 self.ok_list = self.ok_list[self.ok_list != block.index]
-                self.interpolate_list = self.interpolate_list[self.interpolate_list != block.index]
+                self.interpolate_list = self.interpolate_list[
+                    self.interpolate_list != block.index
+                ]
                 self.not_rated_list = np.unique(self.not_rated_list)
 
         self.good_list = self.good_list.tolist()
@@ -313,7 +336,9 @@ class Project:
         -------
         Count for no. of blocks that are yet to be rated
         """
-        return len(self.processed_list) - (len(self.not_rated_list) + len(self.interpolate_list))
+        return len(self.processed_list) - (
+            len(self.not_rated_list) + len(self.interpolate_list)
+        )
 
     def to_be_interpolated_count(self):
         """
@@ -340,9 +365,11 @@ class Project:
         None
 
         """
-        result_file = self.name + '_results.json'
+        result_file = self.name + "_results.json"
         result_file_path = os.path.join(self.results_folder, result_file)
-        _write_json(result_file_path, self.automagic_final, overwrite=True, verbose=True)
+        _write_json(
+            result_file_path, self.automagic_final, overwrite=True, verbose=True
+        )
 
     def update_project(self, preprocessed):
         """
@@ -357,7 +384,7 @@ class Project:
         -------
         None
         """
-        update = preprocessed['automagic']
+        update = preprocessed["automagic"]
         self.automagic_final.update(update)
 
     def list_subject_files(self):
@@ -396,7 +423,7 @@ class Project:
 
     def create_ratings_structure(self):
         """
-        Method that creates and initialises all data structures based on the data
+        Method that creates and initializes all data structures based on the data
         on both data folder and results folder
 
         Parameters
@@ -420,7 +447,7 @@ class Project:
 
         """
 
-        logging.log(20, 'Setting up project. Please wait...')
+        logging.log(20, "Setting up project. Please wait...")
         slash = os.path.sep
         subjects = self.list_subject_files()
         s_count = len(subjects)
@@ -443,29 +470,47 @@ class Project:
         for i in range(0, len(subjects)):
             subject_name = subjects[i]
             if not subject_name.startswith(
-                    'derivatives'):  # Condition to exclude the results folder when looking for the subjects
-                logging.info('Adding subject %s', subject_name)
+                "derivatives"
+            ):  # Condition to exclude the results folder when looking for the subjects
+                logging.info("Adding subject %s", subject_name)
                 a = self.data_folder + slash + subject_name
                 b = self.results_folder + slash + subject_name
                 subject = Subject(a)
                 raw_files = []
                 sess_or_EEG = self.list_subjects(subject.data_folder)
 
-                if len(sess_or_EEG) != 0 and any(i.startswith('ses-') for i in sess_or_EEG) and all(
-                        i.startswith('ses-') for i in sess_or_EEG):
+                if (
+                    len(sess_or_EEG) != 0
+                    and any(i.startswith("ses-") for i in sess_or_EEG)
+                    and all(i.startswith("ses-") for i in sess_or_EEG)
+                ):
                     for sesIdx in range(0, len(sess_or_EEG)):
                         sess_file = sess_or_EEG[sesIdx]
-                        eeg_fold = subject.data_folder + slash + sess_file + slash + 'eeg' + slash
+                        eeg_fold = (
+                            subject.data_folder
+                            + slash
+                            + sess_file
+                            + slash
+                            + "eeg"
+                            + slash
+                        )
                         if os.path.isdir(eeg_fold):
-                            raw_files = raw_files.append(self.dir_not_hiddens(eeg_fold, self.mask))
+                            raw_files = raw_files.append(
+                                self.dir_not_hiddens(eeg_fold, self.mask)
+                            )
 
-                elif len(sess_or_EEG) != 0 and any(i.startswith('ses-') for i in sess_or_EEG) and any(
-                        i.startswith('eeg') for i in sess_or_EEG):
-                    eeg_fold = subject.data_folder + slash + 'eeg' + slash
+                elif (
+                    len(sess_or_EEG) != 0
+                    and any(i.startswith("ses-") for i in sess_or_EEG)
+                    and any(i.startswith("eeg") for i in sess_or_EEG)
+                ):
+                    eeg_fold = subject.data_folder + slash + "eeg" + slash
                     raw_files = self.dir_not_hiddens(eeg_fold, self.mask)
 
-                elif len(sess_or_EEG) != 0 and any(i.startswith('eeg') for i in sess_or_EEG):
-                    eeg_fold = subject.data_folder + slash + 'eeg' + slash
+                elif len(sess_or_EEG) != 0 and any(
+                    i.startswith("eeg") for i in sess_or_EEG
+                ):
+                    eeg_fold = subject.data_folder + slash + "eeg" + slash
                     raw_files = self.dir_not_hiddens(eeg_fold, self.mask)
 
                 else:
@@ -475,8 +520,6 @@ class Project:
                 for j in range(0, len(raw_files)):
                     files_count = files_count + 1
                     file = raw_files[j]
-                    # file_path = file.folder + slash + file.name  # File folder of the raw file
-                    # file_path = os.path.dirname(file.path) + slash + file.name
                     name_temp = file.name
                     if not ext in name_temp:
                         if not ext.isupper():
@@ -488,22 +531,24 @@ class Project:
                         self.file_extension = ext
 
                     file_name = name_temp
-                    logging.info('...Adding file %s', file_name)
+                    logging.info("...Adding file %s", file_name)
 
-                    block = Block(self.data_folder, file_name, self, subject)  # Calling block class
+                    block = Block(
+                        self.data_folder, file_name, self, subject
+                    )  # Calling block class
                     mapa[block.unique_name] = block
                     listb.insert(files_count, block.unique_name)
                     block.index = files_count
 
-                    if block.rate == 'Good':
+                    if block.rate == "Good":
                         g_list.append(block.index)
-                    elif block.rate == 'OK':
+                    elif block.rate == "OK":
                         o_list.append(block.index)
-                    elif block.rate == 'Bad':
+                    elif block.rate == "Bad":
                         b_list.append(block.index)
-                    elif block.rate == 'Interpolate':
+                    elif block.rate == "Interpolate":
                         i_list.append(block.index)
-                    elif block.rate == 'NotRated':
+                    elif block.rate == "NotRated":
                         n_list.append(block.index)
 
                     if block.is_interpolated:
@@ -536,7 +581,7 @@ class Project:
             self.current = -1
 
         self.save_project()
-        logging.info('**Project saved**')
+        logging.info("**Project saved**")
 
     def set_name(self, name):
         """
@@ -573,7 +618,9 @@ class Project:
         """
         self.data_folder = folder
         if not os.path.exists(self.data_folder):
-            logging.error("%s: This folder doesn't exist, please verify your data folder", folder)
+            logging.error(
+                "%s: This folder doesn't exist, please verify your data folder", folder
+            )
         else:
             return self.data_folder
 
@@ -594,9 +641,12 @@ class Project:
 
         """
         if not os.path.exists(folder):
-            logging.error('%s: Cannot create results folder, please verify your data folder', folder)
+            logging.error(
+                "%s: Cannot create results folder, please verify your data folder",
+                folder,
+            )
         else:
-            self.results_folder = os.path.join(folder, 'derivatives', 'automagic')
+            self.results_folder = os.path.join(folder, "derivatives", "automagic")
             if not os.path.exists(self.results_folder):
                 os.makedirs(self.results_folder)
             return self.results_folder
@@ -622,7 +672,7 @@ class Project:
         """
         rate = None
         if block.is_manually_rated:
-            rate = 'Manually Rated'
+            rate = "Manually Rated"
         else:
             rate = q_rate
         return rate
@@ -646,9 +696,16 @@ class Project:
 
         if os.path.isdir(root_folder):
             subs = os.path.join(root_folder)
-            subjects = [y for y in os.listdir(subs) if os.path.isdir(os.path.join(root_folder, y))]
+            subjects = [
+                y
+                for y in os.listdir(subs)
+                if os.path.isdir(os.path.join(root_folder, y))
+            ]
             if len(subjects) == 0:
-                logging.error("%s: This path doesn't have any folders, please verify your data", root_folder)
+                logging.error(
+                    "%s: This path doesn't have any folders, please verify your data",
+                    root_folder,
+                )
             else:
                 return subjects
         else:
@@ -665,6 +722,7 @@ class Project:
             The folder in which the files are listed
 
         extn
+            Extension of the raw file
 
         Returns
         -------
