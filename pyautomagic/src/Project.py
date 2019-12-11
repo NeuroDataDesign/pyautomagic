@@ -72,7 +72,7 @@ class Project:
         self.name = self.set_name(name)
         self.data_folder = self.set_data_folder(d_folder)
         self.results_folder = self.set_results_folder(d_folder)
-        self.file_extension = os.path.splitext(file_ext)[1]
+        self.file_extension = file_ext.partition('.')[2]
         self.mask = file_ext
         self.quality_thresholds = Config.DefaultVisualizationParameters.CALC_QUALITY_PARAMS
         self.ds_rate = Config.DefaultVisualizationParameters.DS_RATE
@@ -108,8 +108,8 @@ class Project:
         """
 
         if self.current == -1:
-            subject = Subject('', '')
-            block = Block('', '', self, Subject)
+            subject = Subject('')
+            block = Block('', '', self, subject)
             block.index = -1
             return
 
@@ -144,8 +144,8 @@ class Project:
                 subject_name = block.subject.name
                 logging.log(20, "Processing file %s %s out of %s", block.unique_name, i + 1, (len(self.block_list)))
 
-                if not os.path.exists(os.path.join(self.results_folder, subject_name)):
-                    os.makedirs(os.path.join(self.results_folder, subject_name))
+                if not os.path.exists(os.path.join(self.results_folder, 'sub-' + subject_name)):
+                    os.makedirs(os.path.join(self.results_folder, 'sub-' + subject_name))
 
                 p_results = block.preprocess()  # Preprocess function
                 EEG = p_results['preprocessed']
@@ -187,7 +187,7 @@ class Project:
             int_list = self.interpolate_list
             for i in range(0, len(int_list)):
                 index = int_list[i]
-                unique_name = self.block_list[index]
+                unique_name = self.block_list[index-1]
                 block = self.block_map[unique_name]
 
                 logging.log(20, "Processing file %s file %s out of %s", block.unique_name, i + 1,
@@ -195,7 +195,7 @@ class Project:
 
                 block.interpolate()
 
-                self.already_interpolated = [self.already_interpolated, index]
+                self.already_interpolated.append(index)
 
                 logging.log(20, "**Project saved**")
             self.save_project()
@@ -293,45 +293,6 @@ class Project:
         q_scores = [z.quality_scores for z in blocks]
         ratings = [rateQuality(w) for w in q_scores]
         return ratings
-
-    def apply_quality_ratings(self, cutoffs, apply_to_manually_rated):  # NEEDED
-        """
-        Modify all the blocks to have the new ratings given by this
-        cutoffs
-
-        Parameters
-        ----------
-        cutoffs
-
-        apply_to_manually_rated
-
-        Returns
-        -------
-        None
-
-        """
-        pass
-        # Modify all the blocks to have the new ratings given by this cutoffs
-
-    def update_addresses_from_state_file(self, p_folder, data_folder):
-        """
-        Method called when the project is loaded from a state file
-
-        Parameters
-        ----------
-        p_folder
-
-        data_folder
-
-
-        Returns
-        -------
-        None
-
-        """
-        pass
-        # This method is called only when the project is loaded
-        # from a state file
 
     def get_rated_count(self):
         """
@@ -478,14 +439,12 @@ class Project:
                 logging.info('Adding subject %s', subject_name)
                 a = self.data_folder + slash + subject_name
                 b = self.results_folder + slash + subject_name
-                subject = Subject(a, b)
+                subject = Subject(a)
                 raw_files = []
                 sess_or_EEG = self.list_subjects(subject.data_folder)
-                #print(sess_or_EEG) #delete this
 
                 if len(sess_or_EEG) != 0 and any(i.startswith('ses-') for i in sess_or_EEG) and all(
                         i.startswith('ses-') for i in sess_or_EEG):
-                 #   print("1")
                     for sesIdx in range(0, len(sess_or_EEG)):
                         sess_file = sess_or_EEG[sesIdx]
                         eeg_fold = subject.data_folder + slash + sess_file + slash + 'eeg' + slash
@@ -494,17 +453,14 @@ class Project:
 
                 elif len(sess_or_EEG) != 0 and any(i.startswith('ses-') for i in sess_or_EEG) and any(
                         i.startswith('eeg') for i in sess_or_EEG):
-                   # print("2.1")
                     eeg_fold = subject.data_folder + slash + 'eeg' + slash
                     raw_files = self.dir_not_hiddens(eeg_fold, self.mask)
 
                 elif len(sess_or_EEG) != 0 and any(i.startswith('eeg') for i in sess_or_EEG):
-                  #  print("2.2")
                     eeg_fold = subject.data_folder + slash + 'eeg' + slash
                     raw_files = self.dir_not_hiddens(eeg_fold, self.mask)
 
                 else:
-                    #print("3")
                     raw_files = self.dir_not_hiddens(a + slash, self.mask)
 
                 temp = 0
@@ -512,7 +468,7 @@ class Project:
                     files_count = files_count + 1
                     file = raw_files[j]
                     # file_path = file.folder + slash + file.name  # File folder of the raw file
-                    file_path = os.path.dirname(file.path) + slash + file.name
+                    # file_path = os.path.dirname(file.path) + slash + file.name
                     name_temp = file.name
                     if not ext in name_temp:
                         if not ext.isupper():
@@ -523,14 +479,24 @@ class Project:
                         self.mask = self.mask.replace(self.file_extension, ext)
                         self.file_extension = ext
 
-                    splits = os.path.splitext(name_temp)
-                    file_name = splits[0]
+                    file_name = name_temp
                     logging.info('...Adding file %s', file_name)
 
-                    block = Block(file_name, file_path, self, subject)  # Calling block class
+                    block = Block(self.data_folder, file_name, self, subject)  # Calling block class
                     mapa[block.unique_name] = block
                     listb.insert(files_count, block.unique_name)
                     block.index = files_count
+
+                    if block.rate == 'Good':
+                        g_list.append(block.index)
+                    elif block.rate == 'OK':
+                        o_list.append(block.index)
+                    elif block.rate == 'Bad':
+                        b_list.append(block.index)
+                    elif block.rate == 'Interpolate':
+                        i_list.append(block.index)
+                    elif block.rate == 'NotRated':
+                        n_list.append(block.index)
 
                     if block.is_interpolated:
                         already_list = already_list + block.index
@@ -700,13 +666,8 @@ class Project:
         """
         files = []
         for f in os.scandir(folder):
-            fname, fext = os.path.splitext(f)
-            if os.path.isfile(os.path.join(folder, f)) and fext == extn:
+            fname, fext = os.path.splitext(f.name)
+            if os.path.isfile(os.path.join(folder, f.name)) and fext == extn:
                 files.append(f)
 
         return files
-
-
-X = Project("Project_Saep", r"C:\Users\saul__000\OneDrive\Escritorio\bids-examples-master\bids-examples-master\eeg_face13", ".edf", "x", 5)
-X.preprocess_all()
-

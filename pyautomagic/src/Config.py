@@ -32,7 +32,7 @@ class ConstantGlobalValues:
 
     LOAD_PROJECT = {'List_Name': 'Load and existing project'}
 
-    RATINGS = {'Good': 'Good', 'Bad': 'Bad', 'Regular': 'Regular', 'Interpolate': 'Interpolate',
+    RATINGS = {'Good': 'Good', 'Bad': 'Bad', 'OK': 'OK', 'Interpolate': 'Interpolate',
                'NotRated': 'Not Rated'}
 
     EXTENSIONS = {'mat': '.mat', 'text': '.txt .asc .csv', 'fif': '.fif', 'set': '.set', 'edf': '.edf'}
@@ -138,7 +138,7 @@ class RecommendedParameters:
 
 # Default Visualisation Parameters
 
-class DefaultVisualisationParameters:
+class DefaultVisualizationParameters:
 
     COLOR_SCALE = 100
 
