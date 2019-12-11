@@ -16,6 +16,7 @@ import numpy as np
 import timeit
 import os
 import logging
+import mne_bids
 from mne_bids.utils import _write_json
 from pyautomagic.src.rateQuality import rateQuality
 from pyautomagic.src.Block import Block
@@ -40,6 +41,12 @@ class Project:
 
     file_ext : str
         File extension
+
+    montage : str
+        Montage to be used
+
+    sampling_rate : int
+        Sampling rate for the txt file
 
 
     Attributes
@@ -86,8 +93,8 @@ class Project:
         self.sampling_rate = sampling_rate
 
         # If the file extension corresponds to txt, the user is asked to provide the sampling rate s_rate
-        if '.txt' in self.file_extension:
-            logging.error('Your data has a .txt file extension, please provide the sampling rate')
+        # if '.txt' in self.file_extension:
+        #     logging.error('Your data has a .txt file extension, please provide the sampling rate')
 
         # Calling create_rating_structures() method
         self.create_ratings_structure()
