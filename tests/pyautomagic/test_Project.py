@@ -6,7 +6,7 @@ from pyautomagic.src import Project
 name = "Dummy project 123456"
 d_folder = os.path.join("..", "test_data", "test_dataset_folder")
 file_ext = ".edf"
-montage = "A"
+montage = "biosemi128"
 sampling_rate = 5000
 params = {
     "line_frequencies": 50,
@@ -34,7 +34,7 @@ def test_results_folder():
     )
     assert (
         test_Project.results_folder
-        == r"..\test_data\test_dataset_folder\derivatives\automagic"
+        == os.path.join("..", "test_data", "test_dataset_folder", "derivatives", "automagic")
     )
 
 
@@ -49,7 +49,7 @@ def test_set_montage():
     test_Project = Project.Project(
         name, d_folder, file_ext, montage, sampling_rate, params
     )
-    assert test_Project.montage == "A"
+    assert test_Project.montage == "biosemi128"
 
 
 def test_sampling_rate():
@@ -62,34 +62,34 @@ def test_sampling_rate():
 def test_project_pyautomagic_run():
 
     open(
-        r"..\test_data\test_dataset_folder\sub-001\eeg\sub-001_task-faceFO_eeg.edf", "w"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-001", "eeg", "sub-001_task-faceFO_eeg.edf"), "w"
     )
     open(
-        r"..\test_data\test_dataset_folder\sub-002\eeg\sub-002_task-faceFO_eeg.edf", "w"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-002", "eeg", "sub-002_task-faceFO_eeg.edf"), "w"
     )
     open(
-        r"..\test_data\test_dataset_folder\sub-003\eeg\sub-003_task-faceFO_eeg.edf", "w"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-003", "eeg", "sub-003_task-faceFO_eeg.edf"), "w"
     )
     open(
-        r"..\test_data\test_dataset_folder\sub-004\eeg\sub-004_task-faceFO_eeg.edf", "w"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-004", "eeg", "sub-004_task-faceFO_eeg.edf"), "w"
     )
     open(
-        r"..\test_data\test_dataset_folder\sub-005\eeg\sub-005_task-faceFO_eeg.edf", "w"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-005", "eeg", "sub-005_task-faceFO_eeg.edf"), "w"
     )
     open(
-        r"..\test_data\test_dataset_folder\sub-006\eeg\sub-006_task-faceFO_eeg.edf", "w"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-006", "eeg", "sub-006_task-faceFO_eeg.edf"), "w"
     )
     open(
-        r"..\test_data\test_dataset_folder\sub-007\eeg\sub-007_task-faceFO_eeg.edf", "w"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-007", "eeg", "sub-007_task-faceFO_eeg.edf"), "w"
     )
     open(
-        r"..\test_data\test_dataset_folder\sub-008\eeg\sub-008_task-faceFO_eeg.edf", "w"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-008", "eeg", "sub-008_task-faceFO_eeg.edf"), "w"
     )
     open(
-        r"..\test_data\test_dataset_folder\sub-009\eeg\sub-009_task-faceFO_eeg.edf", "w"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-009", "eeg", "sub-009_task-faceFO_eeg.edf"), "w"
     )
     open(
-        r"..\test_data\test_dataset_folder\sub-010\eeg\sub-010_task-faceFO_eeg.edf", "w"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-010", "eeg", "sub-010_task-faceFO_eeg.edf"), "w"
     )
 
     X = Project.Project(name, d_folder, file_ext, montage, sampling_rate, params)
@@ -98,10 +98,11 @@ def test_project_pyautomagic_run():
 
     X.interpolate_selected()
 
-    assert X.results_folder == r"..\test_data\test_dataset_folder\derivatives\automagic"
+    assert X.results_folder == os.path.join("..", "test_data", "test_dataset_folder", "derivatives", "automagic")
 
     assert os.path.isfile(
-        r"..\test_data\test_dataset_folder\derivatives\automagic\Dummy project 123456_results.json"
+        os.path.join("..", "test_data", "test_dataset_folder", "derivatives", "automagic", "Dummy project 123456_results.json")
+
     )
 
     assert len(X.block_list) == 10
@@ -111,35 +112,36 @@ def test_project_pyautomagic_run():
     assert len(X.already_interpolated) == 10
 
     os.remove(
-        r"..\test_data\test_dataset_folder\derivatives\automagic\Dummy project 123456_results.json"
+        os.path.join("..", "test_data", "test_dataset_folder", "derivatives", "automagic", "Dummy project 123456_results.json")
     )
     os.remove(
-        r"..\test_data\test_dataset_folder\sub-001\eeg\sub-001_task-faceFO_eeg.edf"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-001", "eeg", "sub-001_task-faceFO_eeg.edf")
     )
     os.remove(
-        r"..\test_data\test_dataset_folder\sub-002\eeg\sub-002_task-faceFO_eeg.edf"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-002", "eeg", "sub-002_task-faceFO_eeg.edf")
     )
     os.remove(
-        r"..\test_data\test_dataset_folder\sub-003\eeg\sub-003_task-faceFO_eeg.edf"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-003", "eeg", "sub-003_task-faceFO_eeg.edf")
     )
     os.remove(
-        r"..\test_data\test_dataset_folder\sub-004\eeg\sub-004_task-faceFO_eeg.edf"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-004", "eeg", "sub-004_task-faceFO_eeg.edf")
     )
     os.remove(
-        r"..\test_data\test_dataset_folder\sub-005\eeg\sub-005_task-faceFO_eeg.edf"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-005", "eeg", "sub-005_task-faceFO_eeg.edf")
     )
     os.remove(
-        r"..\test_data\test_dataset_folder\sub-006\eeg\sub-006_task-faceFO_eeg.edf"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-006", "eeg", "sub-006_task-faceFO_eeg.edf")
     )
     os.remove(
-        r"..\test_data\test_dataset_folder\sub-007\eeg\sub-007_task-faceFO_eeg.edf"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-007", "eeg", "sub-007_task-faceFO_eeg.edf")
     )
     os.remove(
-        r"..\test_data\test_dataset_folder\sub-008\eeg\sub-008_task-faceFO_eeg.edf"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-008", "eeg", "sub-008_task-faceFO_eeg.edf")
     )
     os.remove(
-        r"..\test_data\test_dataset_folder\sub-009\eeg\sub-009_task-faceFO_eeg.edf"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-009", "eeg", "sub-009_task-faceFO_eeg.edf")
+
     )
     os.remove(
-        r"..\test_data\test_dataset_folder\sub-010\eeg\sub-010_task-faceFO_eeg.edf"
+        os.path.join("..", "test_data", "test_dataset_folder", "sub-010", "eeg", "sub-010_task-faceFO_eeg.edf")
     )
