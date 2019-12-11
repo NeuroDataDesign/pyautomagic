@@ -76,6 +76,7 @@ pyautomagic relies on the following libraries to work:
     mne
     matplotlib
     seaborn
+    mne-bids
     
 Setup environment via Conda:
 
