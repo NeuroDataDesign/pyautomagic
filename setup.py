@@ -27,6 +27,7 @@ REQUIRED_PACKAGES = [
     "scikit-learn>=0.19.2",
     "pandas>=0.23.4",
     "mne>=0.18.2",
+    "mne-bids>=0.3",
 ]
 CLASSIFICATION_OF_PACKAGE = [
     # How mature is this project? Common values are
