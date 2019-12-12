@@ -47,6 +47,7 @@ mayavi==4.7.1
 mccabe==0.6.1
 mistune==0.8.4
 mne==0.18.2
+mne-bids==0.3
 mock==3.0.5
 more-itertools==7.2.0
 natsort==6.0.0
