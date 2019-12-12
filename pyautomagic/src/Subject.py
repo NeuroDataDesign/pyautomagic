@@ -71,7 +71,7 @@ class Subject:
 
         """
         parent, _ = os.path.split(data_folder)
-        result = os.path.join(parent, 'derivatives', 'automagic', f"sub-{self.name}")
+        result = os.path.join(parent, "derivatives", "automagic", f"sub-{self.name}")
         return result
 
     @staticmethod
@@ -91,6 +91,6 @@ class Subject:
         head, tail = os.path.split(address)
         name = tail or os.path.basename(head)
 
-        if name.startswith('sub-'):
-            name = name.replace('sub-', '')
+        if name.startswith("sub-"):
+            name = name.replace("sub-", "")
         return name
