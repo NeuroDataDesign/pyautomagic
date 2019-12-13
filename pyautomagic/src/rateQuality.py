@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import logging
+import pprint
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +66,8 @@ def rateQuality(quality_metrics, overall_Good_Cutoff: float = 0.1, overall_Bad_C
                     a dictionary indicating is the dataset if "Good" = 100, "Regular" = 50 or "Bad" = 0.
 
     """
-
+    print('XXXXXXX')
+    pprint.pprint(type(quality_metrics.values()))
     # Check that the values in quality_metrics{} are positive numbers not equal to 0
     if not isinstance(quality_metrics.values(), int) and not isinstance(quality_metrics.values(), float) or isinstance(quality_metrics.values(), bool) or (quality_metrics.values() <= 0):
         logger.error("Some value of Quality Metrics is not a number, please verify your EEG input data")

@@ -180,8 +180,8 @@ class Block:
         time_thresh = self.project.quality_thresholds["time_thresh"]
         chan_thresh = self.project.quality_thresholds["chan_thresh"]
         apply_common_avg = self.project.quality_thresholds["apply_common_avg"]
-        pyautomagic = preprocess.pyautomagic
-        preprocessed.info["bads"] = preprocess.bad_chs
+        automagic = preprocess.automagic
+        preprocessed.info["bads"] = automagic["auto_bad_chans"]
         quality_scores = calcQuality(
             preprocessed.get_data(),
             preprocessed.info["bads"],
@@ -194,16 +194,16 @@ class Block:
         update_to_be_stored = {
             "rate": "not rated",
             "is_manually_rated": False,
-            "to_be_interpolated": preprocessed.info["bads"],
+            "to_be_interpolated": automagic["auto_bad_chans"],
             "final_bad_chans": [],
             "is_interpolated": False,
             "quality_scores": quality_scores,
             "commit": True,
         }
         self.update_rating(update_to_be_stored)
-        pyautomagic.update(
+        automagic.update(
             {
-                "to_be_interpolated": preprocessed.info["bads"],
+                "to_be_interpolated": automagic["auto_bad_chans"],
                 "final_bad_chans": self.final_bad_chans,
                 "montage": self.montage,
                 "version": self.project.config["version"],
@@ -217,9 +217,9 @@ class Block:
                 "is_rated": self.is_rated,
             }
         )
-        results = {"preprocessed": preprocessed, "pyautomagic": pyautomagic}
+        results = {"preprocessed": preprocessed, "automagic": automagic}
         self.save_all_files(results, fig_1, fig_2)
-        self.write_log(pyautomagic)
+        self.write_log(automagic)
         return results
 
     def load_data(self):
@@ -330,7 +330,7 @@ class Block:
         none
 
         """
-        main_result_file = results["pyautomagic"]
+        main_result_file = results["automagic"]
         result_filename = self.unique_name + "_results.json"
         result_file_overall = os.path.join(self.result_path, result_filename)
         _write_json(result_file_overall, main_result_file, overwrite=True, verbose=True)

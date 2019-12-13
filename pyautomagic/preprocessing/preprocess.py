@@ -19,10 +19,10 @@ class Preprocess:
         self.eeg_filt_eog = None
         self.eeg_filt_eog_rpca = None
         self.noise = eeg.copy()
-        self.pyautomagic = {'perform_prep' : False,\
-                          'perform_filter' : False, \
-                          'perform_eog_regression' : False, \
-                          'perform_RPCA' : False}
+        self.automagic = {'perform_prep' : False,\
+                           'perform_filter' : False, \
+                           'perform_eog_regression' : False, \
+                           'perform_RPCA' : False}
             
         
         self.fig1 = None
@@ -30,14 +30,16 @@ class Preprocess:
 
         #Return noisy channels found using the prep_pipline()
     def perform_prep(self):
-        self.pyautomagic['perform_prep'] = True
+        self.automagic['perform_prep'] = True
         chans = self.eeg.info['ch_names']
         self.bad_chs = chans[4:5]+chans[30:32]+[chans[50]]
+        print(self.automagic)
+        self.automagic.update({'auto_bad_chans' : self.bad_chs})
         return self.bad_chs #prep_pipeline(self.eeg, self.params)
 
     #Filter data
     def perform_filter(self):
-        self.pyautomagic['perform_filter'] = True
+        self.automagic['perform_filter'] = True
         self.filtered._data = performFilter(self.filtered.get_data(), \
                                             self.eeg.info['sfreq'], \
                                             self.params['filter_type'], \
@@ -52,9 +54,9 @@ class Preprocess:
             eeg = self.filtered.copy()
             self.eog = self.filtered.copy()
             if (self.params['eog_regression'] == True):
-                self.pyautomagic['perform_eog_regression'] = True
+                self.automagic['perform_eog_regression'] = True
             else:
-                self.pyautomagic['perform_eog_regression'] = False
+                self.automagic['perform_eog_regression'] = False
             eeg_indices = eeg.pick_types(eeg=True)
             eog_indices = self.eog.pick_types(eog=True)
             self.eeg_filt_eog._data = perform_EOG_regression(eeg.get_data(eeg_indices),self.eog.get_data(eog_indices))
@@ -64,7 +66,7 @@ class Preprocess:
     def perform_RPCA(self):
         self.eeg_filt_eog_rpca = self.eeg_filt_eog.copy()
         self.eeg_filt_eog_rpca.load_data()
-        self.pyautomagic['perform_RPCA'] = True
+        self.automagic['perform_RPCA'] = True
         self.eeg_filt_eog_rpca._data, self.noise._data = rpca(self.eeg_filt_eog.get_data(), \
                                                               self.params['lam'], \
                                                               self.params['tol'], \
@@ -179,26 +181,26 @@ class Preprocess:
     def fit(self):
 
         #performPrep
-        if (self.pyautomagic['perform_prep'] == False):
+        if (self.automagic['perform_prep'] == False):
             print('prep')
             self.eeg.info['bads'] = self.perform_prep()
             self.index = np.zeros(len(self.eeg.info['bads'])).astype(int)
 
         #perfom filter
-        if (self.pyautomagic['perform_filter'] == False):
+        if (self.automagic['perform_filter'] == False):
             print('filter')
             self.filtered = self.perform_filter()
 
         
         #eog_regression
-        if (self.pyautomagic['perform_eog_regression'] == False):
+        if (self.automagic['perform_eog_regression'] == False):
             print('eog_regression')
             self.eeg_filt_eog = self.filtered.copy()
             self.eeg_filt_eog = self.perform_eog_regression()
         
         
         #perform RPCA
-        if (self.pyautomagic['perform_RPCA'] == False):
+        if (self.automagic['perform_RPCA'] == False):
             print('rpca')
             self.eeg_filt_eog_rpca = self.eeg_filt_eog.copy()
             self.eeg_filt_eog_rpca._data, self.noise = self.perform_RPCA()
