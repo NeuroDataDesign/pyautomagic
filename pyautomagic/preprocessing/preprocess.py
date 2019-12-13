@@ -1,41 +1,10 @@
 import mne
 import matplotlib.pyplot as plt
 import numpy as np
-from .rpca import rpca
-from .performFilter import performFilter
-from .perform_EOG_regression import perform_EOG_regression
-from .prep.prep_pipeline import prep_pipeline
-
-
-""" Preprocess
-    Performs all the preprocessing algorithims on the EEG data
-
-    Parameters
-    ----------
-    eeg : mne raw object
-        First Parameter, EEG Data (must include)
-    params: dict
-        dictionary of all the parameters
-        params = {'line_noise' : 50 \
-                'filter_type': None, \
-                'filt_freq': None, \
-                'filter_length': 'auto', \
-                'eog_index': -1, \
-                'lam': -1,
-                'tol': 1e-7,
-                'max_iter': 1000
-                }
-        values included are default
-
-    Returns
-    -------
-    Data : double numpy array
-        Corrected Data
-    fig : matlib figures
-
-        Figures of the data at different processing stages
-
-"""
+from pyautomagic.preprocessing.rpca import rpca
+from pyautomagic.preprocessing.performFilter import performFilter
+from pyautomagic.preprocessing.performEOGregression import performEOGregression
+from pyautomagic.preprocessing.prep.prep_pipeline import prep_pipeline
 
 class Preprocess:
 
@@ -72,6 +41,7 @@ class Preprocess:
                                              self.params['filter_length'])
     #remove artifact from EOG
     def perform_eog_regression(self):
+        self.eeg_filt_eog = self.filtered.copy()
         if ('eog' in self.filtered):
             eeg = self.filtered.copy()
             self.eog = self.filtered.copy()
@@ -81,19 +51,23 @@ class Preprocess:
                 self.pyautomagic['perform_eog_regression'] = False
             eeg.pick_types(eeg=True)
             self.eog.pick_types(eog=True)
-            self.filtered._data = perform_EOG_regression(eeg.get_data(),self.eog.get_data())
+            self.eeg_filt_eog._data = perform_EOG_regression(eeg.get_data(),self.eog.get_data())
         return self.filtered
 
     #clean data using rpca
     def perform_RPCA(self):
+        print(type(self.eeg_filt_eog.get_data()))
+        self.eeg_filt_eog_rpca = self.eeg_filt_eog.copy()
+
         self.pyautomagic['perform_RPCA'] = True
-        return rpca(self.eeg_filt_eog._data, \
+        print(type(self.eeg_filt_eog_rpca.get_data()))
+        rpca(self.eeg_filt_eog.get_data(), \
                     self.params['lam'], \
                     self.params['tol'], \
                     self.params['max_iter'])
 
     #Return figures of the data
-    def plot(self):
+    def plot(self,show=True):
         self.fig1 = plt.figure(1,frameon=False)
         plt.setp(self.fig1,facecolor=[1,1,1], figwidth=15, figheight=50)
         ax = self.fig1.add_subplot(8, 1, 1)
@@ -122,7 +96,7 @@ class Preprocess:
         plt.title('Filtered EEG data')
 
         #EEG Filtered Plot Without Bad Channels
-        allchan = raw.info['ch_names']
+        allchan = self.eeg.info['ch_names']
         ax = self.fig1.add_subplot(8, 1, 3)
         #delete this next line (index) when performPrep is fully functional
         self.index = np.array([4,12,18,19,20,21,30,31,32,41,42,44,45,46,47])
@@ -172,12 +146,13 @@ class Preprocess:
         plt.title('RPCA Corrected EEG data')
 
         #RPCA Noisy Data Plot
+        self.noise = self.eeg_filt_eog_rpca.copy()
         ax = self.fig1.add_subplot(8, 1, 6)
-        noise = np.delete(self.noise, (self.index-1),0)
-        scale_min = np.min(np.min(self.noise))
-        scale_max = np.max(np.max(self.noise))
-        self.noise = self.noise - ((scale_max + scale_min)/2)
-        plt.imshow(self.noise,aspect='auto',extent=[0,(data.shape[1]/self.eeg.info['sfreq']),self.eeg.info['nchan'],0],cmap=plt.get_cmap('coolwarm'))
+        self.noise._data = np.delete(self.noise._data, (self.index-1),0)
+        scale_min = np.min(np.min(self.noise._data))
+        scale_max = np.max(np.max(self.noise._data))
+        self.noise._data = self.noise._data - ((scale_max + scale_min)/2)
+        plt.imshow(self.noise._data,aspect='auto',extent=[0,(data.shape[1]/self.eeg.info['sfreq']),self.eeg.info['nchan'],0],cmap=plt.get_cmap('coolwarm'))
         #plt.clim(scale_min,scale_max)
         plt.colorbar()
         plt.title('Noise')
@@ -196,25 +171,30 @@ class Preprocess:
         plt.colorbar()
         plt.title('Filtered EEG data')
 
-
+        if (not show):
+            plt.close('all')
 
         return self.fig1,self.fig2
 
     def fit(self):
         #performPrep
-        self.eeg.info['bads'] = self.perform_prep()
-        self.index = np.zeros(len(self.eeg.info['bads'])).astype(int)
+        if (self.pyautomagic['perform_prep'] == False):
+            self.eeg.info['bads'] = self.perform_prep()
+            self.index = np.zeros(len(self.eeg.info['bads'])).astype(int)
 
         #perfom filter
-        self.filtered._data = self.perform_filter()
+        if (self.pyautomagic['perform_filter'] == False):
+            self.filtered._data = self.perform_filter()
 
         #eog_regression
-        self.eeg_filt_eog = self.filtered.copy()
-        self.eeg_filt_eog = self.perform_eog_regression()
+        if (self.pyautomagic['perform_eog_regression'] == False):
+            self.eeg_filt_eog = self.filtered.copy()
+            self.eeg_filt_eog._data = self.perform_eog_regression()
 
         #perform RPCA
-        self.eeg_filt_eog_rpca = self.eeg_filt_eog.copy()
-        self.eeg_filt_eog_rpca._data, self.noise = self.perform_RPCA()
+        if (self.pyautomagic['perform_RPCA'] == False):
+            self.eeg_filt_eog_rpca = self.eeg_filt_eog.copy()
+            self.eeg_filt_eog_rpca._data, self.noise = self.perform_RPCA()
 
         self.fig1, self.fig2 = self.plot()
 
