@@ -16,7 +16,7 @@ class ConstantGlobalValues:
 
     LOAD_PROJECT = {'List_Name': 'Load and existing project'}
 
-    RATINGS = {'Good': 'Good', 'Bad': 'Bad', 'OK': 'OK', 'Interpolate': 'Interpolate',
+    RATINGS = {'Good': 'Good', 'Bad': 'Bad', 'OK': 'OK', 'Interpolate': 'interpolate',
                'NotRated': 'Not Rated'}
 
     EXTENSIONS = {'mat': '.mat', 'text': '.txt .asc .csv', 'fif': '.fif', 'set': '.set', 'edf': '.edf'}

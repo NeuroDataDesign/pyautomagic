@@ -58,7 +58,7 @@ class Project:
     params : dir
         The default parameters to be used
 
-    v_params : dir
+    visualization_params : dir
         The default visualisation parameters to be used
 
     CGV : dict
@@ -195,7 +195,7 @@ class Project:
             start_time = timeit.default_timer()
             int_list = self.interpolate_list
             for i in range(0, len(int_list)):
-                index = int_list[i]
+                index = int(int_list[i])
                 unique_name = self.block_list[index - 1]
                 block = self.block_map[unique_name]
 
@@ -233,12 +233,11 @@ class Project:
         None
 
         """
-
-        self.good_list = np.asarray([self.good_list])
-        self.not_rated_list = np.asarray([self.not_rated_list])
-        self.ok_list = np.asarray([self.ok_list])
-        self.bad_list = np.asarray([self.bad_list])
-        self.interpolate_list = np.asarray([self.interpolate_list])
+        self.good_list = np.asarray(self.good_list)
+        self.not_rated_list = np.asarray(self.not_rated_list)
+        self.ok_list = np.asarray(self.ok_list)
+        self.bad_list = np.asarray(self.bad_list)
+        self.interpolate_list = np.asarray(self.interpolate_list)
 
         if block.rate == self.CGV.RATINGS["Good"]:
             if not np.isin(block.index, self.good_list):
@@ -306,6 +305,7 @@ class Project:
         self.ok_list = self.ok_list.tolist()
         self.bad_list = self.bad_list.tolist()
         self.interpolate_list = self.interpolate_list.tolist()
+
 
     def get_quality_ratings(self, cutoffs):
         """
@@ -552,7 +552,7 @@ class Project:
                         n_list.append(block.index)
 
                     if block.is_interpolated:
-                        already_list = already_list + block.index
+                        already_list.append(block.index)
 
                     p_list.append(block.unique_name)
                     n_preprocessed_file = n_preprocessed_file + 1

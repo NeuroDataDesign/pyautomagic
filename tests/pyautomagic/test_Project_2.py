@@ -9,15 +9,8 @@ file_ext = ".set"
 montage = "biosemi128"
 sampling_rate = 5000
 params = {
-    "line_frequencies": 50,
-    "filter_type": "high",
-    "filt_freq": None,
-    "filter_length": "auto",
-    "eog_regression": False,
-    "lam": -1,
-    "tol": 1e-7,
-    "max_iter": 1000,
-}
+        "interpolation_params": {}
+    }
 
 
 def test_data_folder():
@@ -75,10 +68,6 @@ def test_project_pyautomagic_run():
     )
 
     assert len(X.block_list) == 2
-
-    assert len(X.interpolate_list) == 2
-
-    assert len(X.already_interpolated) == 2
 
     os.remove(
         os.path.join("..", "test_data", "test_project", "derivatives", "automagic", "Dummy project 123456_results.json")
