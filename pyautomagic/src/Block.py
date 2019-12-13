@@ -6,7 +6,7 @@ import mne
 import mne_bids
 from mne_bids.utils import _parse_bids_filename, _write_json
 from mne_bids.read import _read_raw, read_raw_bids
-from pyautomagic.preprocessing.preprocess import preprocess as execute_preprocess
+from pyautomagic.preprocessing.preprocess import Preprocess as execute_preprocess
 from pyautomagic.src.calcQuality import calcQuality
 from pyautomagic.src.rateQuality import rateQuality
 from matplotlib import pyplot as plt
@@ -19,10 +19,10 @@ logger.setLevel(level=10)
 class Block:
     """
     Object for all operations on an individual dataset.
-    
+
     Initialized using the name and path of the raw data.
     Preprocess, interpolate, rate for quality, and store those files.
-    
+
     Parameters
     ----------
     root_path: str
@@ -33,7 +33,7 @@ class Block:
         project object to which this block belongs
     subject: object
         subject object to which this block belongs
-        
+
     Attributes
     ----------
     unique_name : str
@@ -88,18 +88,18 @@ class Block:
     def update_rating_from_file(self):
         """
         Updates block information from the file currently stored
-        
+
         Checks for results file, if it's there, and informaation, we update.
         No direct returns, but updates block fields.
-        
+
         Parameters
         ----------
         none
-        
+
         Returns
         -------
         none
-        
+
         """
         result_filename = self.unique_name + "_results.json"
         result_file_overall = os.path.join(self.result_path, result_filename)
@@ -131,18 +131,18 @@ class Block:
     def find_result_path(self):
         """
         Identifies the directory path pointing to where results stored
-        
+
         Following BIDS requirements, we only have either the subject folder or both subject and session.
-        
+
         Parameters
         ----------
         none
-        
+
         Returns
         -------
         result_path: str
             location of results files within BIDS folder
-            
+
         """
         params = _parse_bids_filename(self.unique_name, verbose=False)
         if params["ses"] is None:
@@ -162,25 +162,26 @@ class Block:
     def preprocess(self):
         """
         Preprocesses the raw data associated with this block
-        
+
         Parameters
         ----------
         none
-        
+
         Returns
         -------
        results: dict
             dictionary containing all the new updates to the block and the preprocessed array
-            
+
         """
         data = self.load_data()
-        preprocessed, fig_1, fig_2 = execute_preprocess(data, self.params)
+        preprocess = execute_preprocess(data, self.params)
+        preprocessed, fig_1, fig_2 = preprocess.fit()
         overall_thresh = self.project.quality_thresholds["overall_thresh"]
         time_thresh = self.project.quality_thresholds["time_thresh"]
         chan_thresh = self.project.quality_thresholds["chan_thresh"]
         apply_common_avg = self.project.quality_thresholds["apply_common_avg"]
-        automagic = preprocessed.info["automagic"]
-        preprocessed.info["bads"] = automagic["auto_bad_chans"]
+        pyautomagic = preprocess.pyautomagic
+        preprocessed.info["bads"] = preprocess.bad_chs
         quality_scores = calcQuality(
             preprocessed.get_data(),
             preprocessed.info["bads"],
@@ -193,16 +194,16 @@ class Block:
         update_to_be_stored = {
             "rate": "not rated",
             "is_manually_rated": False,
-            "to_be_interpolated": automagic["auto_bad_chans"],
+            "to_be_interpolated": preprocessed.info["bads"],
             "final_bad_chans": [],
             "is_interpolated": False,
             "quality_scores": quality_scores,
             "commit": True,
         }
         self.update_rating(update_to_be_stored)
-        automagic.update(
+        pyautomagic.update(
             {
-                "to_be_interpolated": automagic["auto_bad_chans"],
+                "to_be_interpolated": preprocessed.info["bads"],
                 "final_bad_chans": self.final_bad_chans,
                 "montage": self.montage,
                 "version": self.project.config["version"],
@@ -216,25 +217,25 @@ class Block:
                 "is_rated": self.is_rated,
             }
         )
-        results = {"preprocessed": preprocessed, "automagic": automagic}
+        results = {"preprocessed": preprocessed, "pyautomagic": pyautomagic}
         self.save_all_files(results, fig_1, fig_2)
-        self.write_log(automagic)
+        self.write_log(pyautomagic)
         return results
 
     def load_data(self):
         """
         Load raw data from BIDS folder
-        
+
         Allowing for a number of extensions, loads file
-        
+
         Parameters
         ----------
         none
-        
+
         Returns
         -------
         raw MNE object
-        
+
         """
         # params = _parse_bids_filename(self.unique_name, verbose=False)
         # if params['ses'] is None :
@@ -249,14 +250,14 @@ class Block:
     def update_rating(self, update):
         """
         Takes update about ratings and stores in object
-        
+
         From project level object, get an update on rating info.
-        
+
         Parameters
         ----------
         update : dict
             dictionary of updates
-        
+
         Returns
         -------
         none
@@ -313,23 +314,23 @@ class Block:
     def save_all_files(self, results, fig1, fig2):
         """
         Save results dictionary and figures to results path
-        
+
         Parameters
         ----------
         results:
-            MNE raw object with info attribute containing 
+            MNE raw object with info attribute containing
         fig1:
             Figure of ??
-        
+
         fig2:
             Figure of ??
-        
+
         Returns
         -------
         none
-        
+
         """
-        main_result_file = results["automagic"]
+        main_result_file = results["pyautomagic"]
         result_filename = self.unique_name + "_results.json"
         result_file_overall = os.path.join(self.result_path, result_filename)
         _write_json(result_file_overall, main_result_file, overwrite=True, verbose=True)
@@ -353,11 +354,11 @@ class Block:
         Parameters
         ----------
         updates: dict
-        
+
         Returns
         -------
         Updates in log file
-        
+
         """
         logger.log(20, f"pyautomagic version {self.project.config['version']}")
         logger.log(
@@ -390,15 +391,15 @@ class Block:
     def interpolate(self):
         """
         Interpolates bad channels to create new data and updates info
-        
+
         Parameters
         ----------
         none
-        
+
         Returns
         -------
         none
-        
+
         """
         result_filename = self.unique_name + "_results.json"
         result_file_overall = os.path.join(self.result_path, result_filename)
