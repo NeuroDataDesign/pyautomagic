@@ -1,5 +1,3 @@
-import numpy as np
-
 # File containing all Pyautomagic constant values
 
 # Constant Global Values
@@ -85,7 +83,7 @@ class RecommendedParameters:
     FILTER_PARAMS_REC = {'notch': {'freq': 50}, 'high': {'freq': 0.5, 'order': {}}, 'low': {'freq': 30, 'order': {}}}
 
     CRD_PARAMS_REC = {'ChannelCriterion': 0.85, 'LineNoiseCriterion': 4, 'BurstCriterion': 5, 'WindowCriterion': 0.25,
-                      'Highpass': np.array([0.25, 0.75])}
+                      'Highpass': [0.25, 0.75]}
 
     PREP_PARAMS_REC = {}
 
@@ -115,10 +113,10 @@ class DefaultVisualizationParameters:
 
     DS_RATE = 2
 
-    CALC_QUALITY_PARAMS = {'overallThresh': np.arange(20, 40, 5), 'timeThresh': np.arange(5, 25, 5),
-                           'chanThresh': np.arange(5, 25, 5), 'avRef': 1}
+    CALC_QUALITY_PARAMS = {'overall_thresh': [20, 25, 30, 35], 'time_thresh': [5, 10, 15, 20],
+                           'chan_thresh': [5, 10, 15, 20], 'apply_common_avg': 1}
 
-    RATE_QUALITY_PARAMS = {'overallGoodCutoff': 0.1, 'overallBadCutoff': 0.2, 'timeGoodCutoff': 0.1,
-                           'timeBadCutoff': 0.2, 'channelGoodCutoff': 0.15, 'channelBadCutoff': 0.3,
-                           'BadChannelGoodCutoff': 0.15, 'BadChannelBadCutoff': 0.3,
-                           'Qmeasure': {'THV', 'OHA', 'CHV', 'RBC'}}
+    RATE_QUALITY_PARAMS = {"overall_Good_Cutoff": 0.1, 'overall_Bad_Cutoff': 0.2, 'time_Good_Cutoff': 0.1,
+                           'time_Bad_Cutoff': 0.2, 'channel_Good_Cutoff': 0.15, 'channel_Bad_Cutoff': 0.3,
+                           'bad_Channel_Good_Cutoff': 0.15, 'bad_Channel_Bad_Cutoff': 0.3,
+                           'Q_measure': {'THV', 'OHA', 'CHV', 'RBC'}}

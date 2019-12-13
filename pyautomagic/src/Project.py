@@ -240,7 +240,7 @@ class Project:
         self.bad_list = np.asarray([self.bad_list])
         self.interpolate_list = np.asarray([self.interpolate_list])
 
-        if block.rate == self.CGV.RATINGS.Good:
+        if block.rate == self.CGV.RATINGS["Good"]:
             if not np.isin(block.index, self.good_list):
                 self.good_list = np.append(self.good_list, block.index)
                 self.not_rated_list = self.not_rated_list[
@@ -253,7 +253,7 @@ class Project:
                 ]
                 self.good_list = np.unique(self.good_list)
 
-        elif block.rate == self.CGV.RATINGS.OK:
+        elif block.rate == self.CGV.RATINGS["OK"]:
             if not np.isin(block.index, self.ok_list):
                 self.ok_list = np.append(self.ok_list, block.index)
                 self.not_rated_list = self.not_rated_list[
@@ -266,7 +266,7 @@ class Project:
                 ]
                 self.ok_list = np.unique(self.ok_list)
 
-        elif block.rate == self.CGV.RATINGS.Bad:
+        elif block.rate == self.CGV.RATINGS["Bad"]:
             if not np.isin(block.index, self.bad_list):
                 self.bad_list = np.append(self.bad_list, block.index)
                 self.not_rated_list = self.not_rated_list[
@@ -279,7 +279,7 @@ class Project:
                 ]
                 self.bad_list = np.unique(self.bad_list)
 
-        elif block.rate == self.CGV.RATINGS.Interpolate:
+        elif block.rate == self.CGV.RATINGS["Interpolate"]:
             if not np.isin(block.index, self.interpolate_list):
                 self.interpolate_list = np.append(self.interpolate_list, block.index)
                 self.not_rated_list = self.not_rated_list[
@@ -290,7 +290,7 @@ class Project:
                 self.bad_list = self.bad_list[self.bad_list != block.index]
                 self.interpolate_list = np.unique(self.interpolate_list)
 
-        elif block.rate == self.CGV.RATINGS.NotRated:
+        elif block.rate == self.CGV.RATINGS["NotRated"]:
             if not np.isin(block.index, self.not_rated_list):
                 self.not_rated_list = np.append(self.not_rated_list, block.index)
                 self.bad_list = self.bad_list[self.bad_list != block.index]
@@ -546,9 +546,9 @@ class Project:
                         o_list.append(block.index)
                     elif block.rate == "Bad":
                         b_list.append(block.index)
-                    elif block.rate == "Interpolate":
+                    elif block.rate == "interpolate":
                         i_list.append(block.index)
-                    elif block.rate == "NotRated":
+                    elif block.rate == "not rated":
                         n_list.append(block.index)
 
                     if block.is_interpolated:
