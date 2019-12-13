@@ -1,7 +1,11 @@
 import numpy as np
 import pytest
+<<<<<<< HEAD
 from pyautomagic.preprocessing.rpca import rpca
 
+=======
+from pyautomagic.preprocessing.rpca import performRPCA
+>>>>>>> master
 
 
 def test_basic_input1():
@@ -13,8 +17,11 @@ def test_basic_input1():
     assert(np.allclose(E,expected_E))
     print('test_basic_input1 Pass')
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> master
 def test_basic_input2():
     EEG = np.array([[1,2,3],[4,5,6],[7,8,9]])
     expected_A = np.array([[1.5999989,1.99999912,2.3999982],\
@@ -69,7 +76,10 @@ def test_params1():
     assert(np.allclose(E,expected_E))
     print('test_params1 Pass')
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 def test_params2():
     EEG = np.array([[1,2,3],[4,5,6],[7,8,9]])
     lam = .2
