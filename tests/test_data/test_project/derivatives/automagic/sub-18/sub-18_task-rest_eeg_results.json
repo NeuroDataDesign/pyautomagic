@@ -33,7 +33,7 @@
     },
     "rate": "interpolate",
     "is_manually_rated": false,
-    "times_committed": 1,
+    "times_committed": 0,
     "params": {
         "line_freqs": 50,
         "filter_type": "high",
