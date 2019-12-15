@@ -4,12 +4,13 @@ import numpy as np
 from pyautomagic.preprocessing.rpca import rpca
 from pyautomagic.preprocessing.performFilter import performFilter
 from pyautomagic.preprocessing.perform_EOG_regression import perform_EOG_regression
-from pyautomagic.preprocessing.prep.prep_pipeline import prep_pipeline
+from pyprep.prep_pipeline import PrepPipeline
 
 class Preprocess:
 
     def __init__(self,eeg,params):
         eeg.load_data()
+        eeg.rename_channels(lambda s: s.strip("."))
         self.eeg = eeg
         self.eog = None
         self.bad_chs = None
@@ -21,8 +22,8 @@ class Preprocess:
         self.noise = eeg.copy()
         self.automagic = {'prep': {'performed': False},\
                           'filtering': {'performed': False},\
-                           'perform_eog_regression' : False,\
-                           'perform_RPCA' : False}
+                          'perform_eog_regression' : False,\
+                          'perform_RPCA' : False}
 
         self.fig1 = None
         self.fig2 = None
@@ -30,11 +31,12 @@ class Preprocess:
         #Return noisy channels found using the prep_pipline()
     def perform_prep(self):
         self.automagic['prep']['performed'] = True
-        chans = self.eeg.info['ch_names']
-        self.bad_chs = chans[4:5]+chans[30:32]+[chans[50]]
-        print(self.automagic)
+        prep = PrepPipeline(self.eeg, self.params['interpolation_params'],\
+            montage_kind=self.params['interpolation_params']['montage'])
+        prep = prep.fit()
+        self.bad_chs = prep.still_noisy_channels
         self.automagic.update({'auto_bad_chans' : self.bad_chs})
-        return self.bad_chs #prep_pipeline(self.eeg, self.params)
+        return self.bad_chs
 
     #Filter data
     def perform_filter(self):

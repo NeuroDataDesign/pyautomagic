@@ -39,7 +39,7 @@
     "is_manually_rated": false,
     "times_commited": 0,
     "params": {
-        "line_freqs": 50,
+        "line_freqs": 0,
         "filter_type": "high",
         "filt_freq": null,
         "filter_length": "auto",
@@ -47,9 +47,10 @@
         "lam": -1,
         "tol": 1e-07,
         "max_iter": 1000,
-        "interpolation_params": {"ref_chs": null,
-                                 "eval_chs": null,
-                                 "reref_chs": null
+        "interpolation_params": {"line_freqs" : 0,
+                                 "ref_chs": null,
+                                 "reref_chs": null,
+                                 "montage": "biosemi128"
                                 }
     },
     "is_interpolated": false,

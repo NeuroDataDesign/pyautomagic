@@ -174,6 +174,10 @@ class Block:
 
         """
         data = self.load_data()
+        self.params['line_freqs'] = data.info['sfreq']
+        self.params['interpolation_params']['line_freqs'] = data.info['sfreq']
+        self.params['interpolation_params']['ref_chs'] = data.ch_names
+        self.params['interpolation_params']['reref_chs'] = data.ch_names
         preprocess = execute_preprocess(data, self.params)
         preprocessed, fig_1, fig_2 = preprocess.fit()
         overall_thresh = self.project.quality_thresholds["overall_thresh"]

@@ -5,21 +5,22 @@ from pyautomagic.src import Block, Project, Subject
 
 root_path = "./tests/test_data/test_project"
 config = {"version": 1.0,
-          "default_params" : {'line_freqs' : 50,\
-                      'filter_type' : 'high', \
-                      'filt_freq' : None, \
-                      'filter_length' : 'auto', \
-                      'eog_regression' : False, \
-                      'lam' : -1, \
-                      'tol' : 1e-7, \
-                      'max_iter': 1000, \
-                      'interpolation_params': {'ref_chs': None,\
-                                        'eval_chs': None,\
-                                        'reref_chs': None}\
-                      }
+          "default_params" : {'line_freqs' : 0,\
+                              'filter_type' : 'high', \
+                              'filt_freq' : None, \
+                              'filter_length' : 'auto', \
+                              'eog_regression' : False, \
+                              'lam' : -1, \
+                              'tol' : 1e-7, \
+                              'max_iter': 1000, \
+                              'interpolation_params': {'line_freqs' : 0,\
+                                                'ref_chs': None,\
+                                                'reref_chs': None,\
+                                                'montage': 'biosemi128'}
+                              }
 
          }
-params = {'line_freqs' : 50,\
+params = {'line_freqs' : 0,\
           'filter_type' : 'high', \
           'filt_freq' : None, \
           'filter_length' : 'auto', \
@@ -27,9 +28,10 @@ params = {'line_freqs' : 50,\
           'lam' : -1, \
           'tol' : 1e-7, \
           'max_iter': 1000, \
-          'interpolation_params': {'ref_chs': None,\
-                                   'eval_chs': None,\
-                                   'reref_chs': None}\
+          'interpolation_params': {'line_freqs' : 0,\
+                                   'ref_chs': None,\
+                                   'reref_chs': None,\
+                                   'montage': 'biosemi128'}
           }
 montage = "biosemi128"
 sampling_rate = 500
