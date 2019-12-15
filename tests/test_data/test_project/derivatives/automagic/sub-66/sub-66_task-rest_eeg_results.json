@@ -33,7 +33,17 @@
     "is_manually_rated": false,
     "times_commited": 0,
     "params": {
-        "interpolation_params": {}
+        "line_freqs": 50,
+        "filter_type": "high",
+        "filt_freq": null,
+        "filter_length": "auto",
+        "eog_regression": false,
+        "lam": -1,
+        "tol": 1e-07,
+        "max_iter": 1000,
+        "ref_chs": null,
+        "eval_chs": null,
+        "reref_chs": null
     },
     "is_interpolated": false,
     "is_rated": false

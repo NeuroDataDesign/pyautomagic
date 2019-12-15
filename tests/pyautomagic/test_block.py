@@ -4,8 +4,32 @@ import json
 from pyautomagic.src import Block, Project, Subject
 
 root_path = "./tests/test_data/test_project"
-config = {"version": 1.0}
-params = {"interpolation_params": {}}
+config = {"version": 1.0,
+          "default_params" : {'line_freqs' : 50,\
+                      'filter_type' : 'high', \
+                      'filt_freq' : None, \
+                      'filter_length' : 'auto', \
+                      'eog_regression' : False, \
+                      'lam' : -1, \
+                      'tol' : 1e-7, \
+                      'max_iter': 1000, \
+                      'ref_chs': None,\
+                      'eval_chs': None,\
+                      'reref_chs': None, \
+                      }
+         }
+params = {'line_freqs' : 50,\
+                      'filter_type' : 'high', \
+                      'filt_freq' : None, \
+                      'filter_length' : 'auto', \
+                      'eog_regression' : False, \
+                      'lam' : -1, \
+                      'tol' : 1e-7, \
+                      'max_iter': 1000, \
+                      'ref_chs': None,\
+                      'eval_chs': None,\
+                      'reref_chs': None, \
+                      }
 montage = "biosemi128"
 sampling_rate = 500
 visualization_params = {"downsample_rate": 5}
