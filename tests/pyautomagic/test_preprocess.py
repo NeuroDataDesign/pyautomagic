@@ -7,7 +7,7 @@ from pyautomagic.preprocessing.preprocess import Preprocess
 
 #Test each output type on a sample data set
 def test_sample_input_correctType():
-    raw = mne.io.read_raw_edf('/Users/raphaelbechtold/Documents/MATLAB/Automagic/automagic/data/Subj1/S001R01.edf')
+    raw = mne.io.read_raw_edf('./tests/test_data/S001R01.edf')
     raw.rename_channels(lambda s: s.strip("."))
     params = {'line_freqs' : 50,\
               'filter_type' : 'high', \
@@ -32,7 +32,7 @@ def test_sample_input_correctType():
 
 #Test each output type on a sample data set 2
 def test_sample_input2_correctType():
-    raw = mne.io.read_raw_edf('/Users/raphaelbechtold/Documents/MATLAB/Automagic/automagic/data/Subj1/S001R01.edf')
+    raw = mne.io.read_raw_edf('./tests/test_data/S001R01.edf')
     raw.rename_channels(lambda s: s.strip("."))
     params = {'line_freqs' : 50,\
               'filter_type' : 'high', \
