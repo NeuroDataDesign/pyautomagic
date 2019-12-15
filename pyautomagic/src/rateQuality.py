@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import logging
-import pprint
 
 logger = logging.getLogger(__name__)
 
