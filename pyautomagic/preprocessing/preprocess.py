@@ -4,7 +4,6 @@ import numpy as np
 from pyautomagic.preprocessing.rpca import rpca
 from pyautomagic.preprocessing.performFilter import performFilter
 from pyautomagic.preprocessing.perform_EOG_regression import perform_EOG_regression
-from pyprep.prep_pipeline import PrepPipeline
 
 
 class Preprocess:
