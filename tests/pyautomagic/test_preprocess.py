@@ -9,15 +9,18 @@ from pyautomagic.preprocessing.preprocess import Preprocess
 def test_sample_input_correctType():
     raw = mne.io.read_raw_edf('/Users/raphaelbechtold/Documents/MATLAB/Automagic/automagic/data/Subj1/S001R01.edf')
 
-    params = {'line_noise' : 50, \
+    params = {'line_freqs' : 50,\
               'filter_type' : 'high', \
               'filt_freq' : None, \
               'filter_length' : 'auto', \
-              'eog_index' : -1, \
-              'lam' : -1,
-              'tol' : 1e-7,
-              'max_iter': 1000
-             }
+              'eog_regression' : False, \
+              'lam' : -1, \
+              'tol' : 1e-7, \
+              'max_iter': 1000, \
+              'interpolation_params': {'ref_chs': None,\
+                                       'eval_chs': None,\
+                                       'reref_chs': None}\
+              }
 
     preprocess = Preprocess(raw, params)
     eeg,fig1,fig2 = preprocess.fit()
@@ -30,15 +33,18 @@ def test_sample_input_correctType():
 def test_sample_input2_correctType():
     raw = mne.io.read_raw_edf('/Users/raphaelbechtold/Documents/MATLAB/Automagic/automagic/data/Subj1/S001R04.edf')
 
-    params = {'line_noise' : 50, \
+    params = {'line_freqs' : 50,\
               'filter_type' : 'high', \
               'filt_freq' : None, \
               'filter_length' : 'auto', \
-              'eog_index' : -1, \
-              'lam' : -1,
-              'tol' : 1e-7,
-              'max_iter': 1000
-             }
+              'eog_regression' : False, \
+              'lam' : -1, \
+              'tol' : 1e-7, \
+              'max_iter': 1000, \
+              'interpolation_params': {'ref_chs': None,\
+                                       'eval_chs': None,\
+                                       'reref_chs': None}\
+              }
 
 
     preprocess = Preprocess(raw, params)

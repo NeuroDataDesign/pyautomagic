@@ -1,16 +1,18 @@
 {
-    "auto_bad_chans": [
-        "E5",
-        "E31",
-        "E32",
-        "E51"
-    ],
     "prep": {
         "performed": true
     },
     "filtering": {
         "performed": true
     },
+    "perform_eog_regression": false,
+    "perform_RPCA": true,
+    "auto_bad_chans": [
+        "E5",
+        "E31",
+        "E32",
+        "E51"
+    ],
     "to_be_interpolated": [
         "E5",
         "E31",
@@ -45,9 +47,10 @@
         "lam": -1,
         "tol": 1e-07,
         "max_iter": 1000,
-        "ref_chs": null,
-        "eval_chs": null,
-        "reref_chs": null
+        "interpolation_params": {"ref_chs": null,
+                                 "eval_chs": null,
+                                 "reref_chs": null
+                                }
     },
     "is_interpolated": false,
     "is_rated": false

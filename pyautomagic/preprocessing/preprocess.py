@@ -19,18 +19,17 @@ class Preprocess:
         self.eeg_filt_eog = None
         self.eeg_filt_eog_rpca = None
         self.noise = eeg.copy()
-        self.automagic = {'perform_prep' : False,\
-                           'perform_filter' : False, \
-                           'perform_eog_regression' : False, \
+        self.automagic = {'prep': {'performed': False},\
+                          'filtering': {'performed': False},\
+                           'perform_eog_regression' : False,\
                            'perform_RPCA' : False}
-            
-        
+
         self.fig1 = None
         self.fig2 = None
 
         #Return noisy channels found using the prep_pipline()
     def perform_prep(self):
-        self.automagic['perform_prep'] = True
+        self.automagic['prep']['performed'] = True
         chans = self.eeg.info['ch_names']
         self.bad_chs = chans[4:5]+chans[30:32]+[chans[50]]
         print(self.automagic)
@@ -39,14 +38,14 @@ class Preprocess:
 
     #Filter data
     def perform_filter(self):
-        self.automagic['perform_filter'] = True
+        self.automagic['filtering']['performed'] = True
         self.filtered._data = performFilter(self.filtered.get_data(), \
                                             self.eeg.info['sfreq'], \
                                             self.params['filter_type'], \
                                             self.params['filt_freq'], \
                                             self.params['filter_length'])
         return self.filtered
-    
+
     #remove artifact from EOG
     def perform_eog_regression(self):
         self.eeg_filt_eog = self.filtered.copy()
@@ -72,7 +71,7 @@ class Preprocess:
                                                               self.params['tol'], \
                                                               self.params['max_iter'])
         return self.eeg_filt_eog_rpca._data, self.noise._data
-    
+
     #Return figures of the data
     def plot(self,show=True):
 
@@ -181,24 +180,24 @@ class Preprocess:
     def fit(self):
 
         #performPrep
-        if (self.automagic['perform_prep'] == False):
+        if (self.automagic['prep']['performed'] == False):
             print('prep')
             self.eeg.info['bads'] = self.perform_prep()
             self.index = np.zeros(len(self.eeg.info['bads'])).astype(int)
 
         #perfom filter
-        if (self.automagic['perform_filter'] == False):
+        if (self.automagic['filtering']['performed'] == False):
             print('filter')
             self.filtered = self.perform_filter()
 
-        
+
         #eog_regression
         if (self.automagic['perform_eog_regression'] == False):
             print('eog_regression')
             self.eeg_filt_eog = self.filtered.copy()
             self.eeg_filt_eog = self.perform_eog_regression()
-        
-        
+
+
         #perform RPCA
         if (self.automagic['perform_RPCA'] == False):
             print('rpca')
