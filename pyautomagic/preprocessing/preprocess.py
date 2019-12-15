@@ -115,7 +115,7 @@ class Preprocess:
 
     def perform_prep(self):
         """ perform_prep
-        Calls pyprep's PrepPipeline and detects bad channels in the data.
+        dummy prep_pipeline that just returns list of "bad" channels
 
         Returns
         -------
@@ -124,17 +124,8 @@ class Preprocess:
         """
 
         self.automagic["prep"]["performed"] = True
-        prep = PrepPipeline(
-            self.eeg,
-            self.params["interpolation_params"],
-            montage_kind=self.params["interpolation_params"]["montage"],
-        )
-        prep = prep.fit()
-        self.bad_chs = list(
-            set(prep.still_noisy_channels)
-            | set(prep.interpolated_channels)
-            | set(prep.bad_before_interpolation)
-        )
+        chans = self.eeg.info["ch_names"]
+        self.bad_chs = chans[4:5] + chans[30:32] + [chans[50]]
         self.automagic.update({"auto_bad_chans": self.bad_chs})
         return self.bad_chs
 
