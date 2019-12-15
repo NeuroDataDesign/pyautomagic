@@ -13,10 +13,11 @@ config = {"version": 1.0,
                       'lam' : -1, \
                       'tol' : 1e-7, \
                       'max_iter': 1000, \
-                      'ref_chs': None,\
-                      'eval_chs': None,\
-                      'reref_chs': None, \
+                      'interpolation_params': {'ref_chs': None,\
+                                        'eval_chs': None,\
+                                        'reref_chs': None}\
                       }
+
          }
 params = {'line_freqs' : 50,\
                       'filter_type' : 'high', \
@@ -26,9 +27,9 @@ params = {'line_freqs' : 50,\
                       'lam' : -1, \
                       'tol' : 1e-7, \
                       'max_iter': 1000, \
-                      'ref_chs': None,\
-                      'eval_chs': None,\
-                      'reref_chs': None, \
+                      'interpolation_params': {'ref_chs': None,\
+                                        'eval_chs': None,\
+                                        'reref_chs': None}\
                       }
 montage = "biosemi128"
 sampling_rate = 500

@@ -1,7 +1,9 @@
 {
     "auto_bad_chans": [
-        "E3",
-        "E5"
+        "E5",
+        "E31",
+        "E32",
+        "E51"
     ],
     "prep": {
         "performed": true
@@ -10,8 +12,10 @@
         "performed": true
     },
     "to_be_interpolated": [
-        "E3",
-        "E5"
+        "E5",
+        "E31",
+        "E32",
+        "E51"
     ],
     "final_bad_chans": [],
     "montage": "biosemi128",
