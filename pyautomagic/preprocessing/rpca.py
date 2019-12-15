@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.decomposition import TruncatedSVD
 
 
-def rpca(M,lam=-1,tol=1e-7,maxIter=1000):
+def rpca(M, lam=-1, tol=1e-7, maxIter=1000):
 
     """ Perform Robust Principle Component Analysis:
 
@@ -35,15 +35,14 @@ def rpca(M,lam=-1,tol=1e-7,maxIter=1000):
             note: M = L + S
 
 """
-    #Calculate lamda if not provided using the Automagic algorithim
+    # Calculate lamda if not provided using the Automagic algorithim
     Nr = M.shape[0]
     Nc = M.shape[1]
-    if (lam == -1): #if no input lamda, calculate its value
-        lam = 1 / np.sqrt(Nc);
+    if lam == -1:  # if no input lamda, calculate its value
+        lam = 1 / np.sqrt(Nc)
 
-
-    norm_2 = np.linalg.norm(M,2)
-    norm_inf = np.linalg.norm(M,np.inf) / lam
+    norm_2 = np.linalg.norm(M, 2)
+    norm_inf = np.linalg.norm(M, np.inf) / lam
     dual_norm = np.maximum(norm_2, norm_inf)
     Y = M / dual_norm
 
@@ -51,32 +50,31 @@ def rpca(M,lam=-1,tol=1e-7,maxIter=1000):
     mu_bar = mu * 1e7
     rho = 1.5
 
-
-    L = np.zeros((Nr,Nc))
-    S = np.zeros((Nr,Nc))
+    L = np.zeros((Nr, Nc))
+    S = np.zeros((Nr, Nc))
 
     error = 10
     count = 0
-    isRunning = True;
-    while (isRunning and error > tol):
-        temp_t = M-L+(Y/mu)
-        S = soft_thres(temp_t, lam/mu)
-        U,sig,V = np.linalg.svd(M-S+(Y/mu), full_matrices=False)
-        L = np.dot(U, np.dot(np.diag(soft_thres(sig, 1/mu)), V))
-        Y = Y + mu*(M-L-S)
-        mu = np.minimum(mu*rho,mu_bar)
-        error = np.linalg.norm(M-L-S,'fro')/np.linalg.norm(M,'fro')
+    isRunning = True
+    while isRunning and error > tol:
+        temp_t = M - L + (Y / mu)
+        S = soft_thres(temp_t, lam / mu)
+        U, sig, V = np.linalg.svd(M - S + (Y / mu), full_matrices=False)
+        L = np.dot(U, np.dot(np.diag(soft_thres(sig, 1 / mu)), V))
+        Y = Y + mu * (M - L - S)
+        mu = np.minimum(mu * rho, mu_bar)
+        error = np.linalg.norm(M - L - S, "fro") / np.linalg.norm(M, "fro")
         count += 1
-        if (count >= maxIter):
-            isRunning = False;
+        if count >= maxIter:
+            isRunning = False
 
-
-    Data = L.reshape(Nr,Nc)
-    Error = S.reshape(Nr,Nc)
+    Data = L.reshape(Nr, Nc)
+    Error = S.reshape(Nr, Nc)
 
     return Data, Error
 
-def soft_thres(x,eps):
+
+def soft_thres(x, eps):
 
     """
     Cian Scannell - Oct-2017
@@ -99,4 +97,4 @@ def soft_thres(x,eps):
     """
     a = np.sign(x)
     b = np.maximum((np.fabs(x) - eps), 0)
-    return np.multiply(a,b)
+    return np.multiply(a, b)

@@ -3,9 +3,19 @@ import os
 
 logger = logging.getLogger(__name__)
 
-class Project():
-    def __init__(self,root_path,config,params,sampling_rate,visualization_params,
-                 quality_thresholds,rate_cutoffs,montage):
+
+class Project:
+    def __init__(
+        self,
+        root_path,
+        config,
+        params,
+        sampling_rate,
+        visualization_params,
+        quality_thresholds,
+        rate_cutoffs,
+        montage,
+    ):
         self.name = os.path.basename(root_path)
         self.config = config
         self.params = params
@@ -13,7 +23,7 @@ class Project():
         self.visualization_params = visualization_params
         self.quality_thresholds = quality_thresholds
         self.rate_cutoffs = rate_cutoffs
-        self.montage =  montage
+        self.montage = montage
 
     def update_rating_list(self):
         return

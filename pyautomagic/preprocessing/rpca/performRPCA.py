@@ -1,6 +1,7 @@
 import numpy as np
 from .preProcessRPCA import rpca
 
+
 def performRPCA(EEG, lam=-1, tol=1e-7, maxIter=1000):
 
     """ Perform Robust Principle Component Analysis:
@@ -29,11 +30,11 @@ def performRPCA(EEG, lam=-1, tol=1e-7, maxIter=1000):
         Noise removed from the data, Original EEG = Data + Noise
 
     """
-    #Find lamda if not provided using the Automagic algorithim
-    col = EEG.shape;
-    if (lam == -1): #if no input lamda, calculate its value
-        lam = 1 / np.sqrt(col[0]);
+    # Find lamda if not provided using the Automagic algorithim
+    col = EEG.shape
+    if lam == -1:  # if no input lamda, calculate its value
+        lam = 1 / np.sqrt(col[0])
 
-    #Perform Robust Principal Component Analysis
-    data, error = rpca(EEG,lam,tol,maxIter);
-    return data, error;
+    # Perform Robust Principal Component Analysis
+    data, error = rpca(EEG, lam, tol, maxIter)
+    return data, error

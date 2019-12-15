@@ -1,9 +1,12 @@
 import logging
 import numpy as np
+
 logger = logging.getLogger(__name__)
 
 
-def perform_high_variance_channel_rejection(data: np.ndarray, removed_mask: np.array, sd_threshold: float = 25):
+def perform_high_variance_channel_rejection(
+    data: np.ndarray, removed_mask: np.array, sd_threshold: float = 25
+):
     """
     reject bad channels based on high standard deviation
 
@@ -21,7 +24,7 @@ def perform_high_variance_channel_rejection(data: np.ndarray, removed_mask: np.a
     # checking input arguments and if not acceptable, assigning default value.
     if not isinstance(sd_threshold, int) and not isinstance(sd_threshold, float):
         sd_threshold = 25
-        logger.log('Invalid channel_criterion value. Default of 25 used.')
+        logger.log("Invalid channel_criterion value. Default of 25 used.")
 
     # dimension of EEG data
     no_channels, _ = data.shape
