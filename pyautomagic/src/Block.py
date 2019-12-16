@@ -1,16 +1,17 @@
 # from typing import List
+import json
 import logging
 import os
-import json
+
 import mne
 import mne_bids
-from mne_bids.utils import _parse_bids_filename, _write_json
+from matplotlib import pyplot as plt
 from mne_bids.read import _read_raw, read_raw_bids
-from pyautomagic.preprocessing.preprocess import preprocess as execute_preprocess
+from mne_bids.utils import _parse_bids_filename, _write_json
+
+from pyautomagic.preprocessing.preprocess import Preprocess as execute_preprocess
 from pyautomagic.src.calcQuality import calcQuality
 from pyautomagic.src.rateQuality import rateQuality
-from matplotlib import pyplot as plt
-
 
 logger = logging.getLogger(__name__)
 logger.setLevel(level=10)
@@ -174,12 +175,17 @@ class Block:
 
         """
         data = self.load_data()
-        preprocessed, fig_1, fig_2 = execute_preprocess(data, self.params)
+        self.params["line_freqs"] = data.info["sfreq"]
+        self.params["interpolation_params"]["line_freqs"] = data.info["sfreq"]
+        self.params["interpolation_params"]["ref_chs"] = data.ch_names
+        self.params["interpolation_params"]["reref_chs"] = data.ch_names
+        preprocess = execute_preprocess(data, self.params)
+        preprocessed, fig_1, fig_2 = preprocess.fit()
         overall_thresh = self.project.quality_thresholds["overall_thresh"]
         time_thresh = self.project.quality_thresholds["time_thresh"]
         chan_thresh = self.project.quality_thresholds["chan_thresh"]
         apply_common_avg = self.project.quality_thresholds["apply_common_avg"]
-        automagic = preprocessed.info["automagic"]
+        automagic = preprocess.automagic
         preprocessed.info["bads"] = automagic["auto_bad_chans"]
         quality_scores = calcQuality(
             preprocessed.get_data(),

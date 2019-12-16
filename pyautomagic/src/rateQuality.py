@@ -68,6 +68,7 @@ def rateQuality(quality_metrics: dict, overall_Good_Cutoff: float = 0.1, overall
     """
 
     # Check that the values in quality_metrics{} are positive numbers not equal to 0
+
     for i in quality_metrics.values():
         # Verify if any value in quality_metrics is a string
         if isinstance(i, str):

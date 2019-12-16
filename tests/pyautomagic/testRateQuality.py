@@ -1,4 +1,5 @@
 import pytest
+
 from pyautomagic.src.rateQuality import rateQuality
 
 

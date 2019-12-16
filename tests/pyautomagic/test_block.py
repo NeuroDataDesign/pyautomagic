@@ -1,16 +1,43 @@
-import pytest
-import os
 import json
+import os
+
+import pytest
+
 from pyautomagic.src import Block, Project, Subject
 
 name = "Dummy project 123456"
 root_path = os.path.join(".", "tests", "test_data", "test_project")
+config = {"version": 1.0,
+          "default_params" : {'line_freqs' : 0,\
+                              'filter_type' : 'high', \
+                              'filt_freq' : None, \
+                              'filter_length' : 'auto', \
+                              'eog_regression' : False, \
+                              'lam' : -1, \
+                              'tol' : 1e-7, \
+                              'max_iter': 1000, \
+                              'interpolation_params': {'line_freqs' : 0,\
+                                                'ref_chs': None,\
+                                                'reref_chs': None,\
+                                                'montage': 'GSN-HydroCel-128'}
+                              }
+
+         }
+params = {'line_freqs' : 0,\
+          'filter_type' : 'high', \
+          'filt_freq' : None, \
+          'filter_length' : 'auto', \
+          'eog_regression' : False, \
+          'lam' : -1, \
+          'tol' : 1e-7, \
+          'max_iter': 1000, \
+          'interpolation_params': {'line_freqs' : 0,\
+                                   'ref_chs': None,\
+                                   'reref_chs': None,\
+                                   'montage': 'GSN-HydroCel-128'}
+          }
+montage = "GSN-HydroCel-128"
 file_ext = ".set"
-config = {"version": 1.0}
-params = {
-        "interpolation_params": {}
-    }
-montage = "biosemi128"
 sampling_rate = 500
 visualization_params = {"downsample_rate": 5}
 quality_thresholds = {
@@ -29,7 +56,6 @@ rate_cutoffs = {
     "channel_Good_Cutoff": 0.15,
     "channel_Bad_Cutoff": 0.3,
 }
-
 
 dummy_project = Project.Project(
     name,

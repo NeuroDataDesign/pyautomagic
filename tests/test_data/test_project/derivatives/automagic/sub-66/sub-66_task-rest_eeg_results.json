@@ -1,17 +1,23 @@
 {
-    "auto_bad_chans": [
-        "E3",
-        "E5"
-    ],
     "prep": {
         "performed": true
     },
     "filtering": {
         "performed": true
     },
+    "perform_eog_regression": false,
+    "perform_RPCA": true,
+    "auto_bad_chans": [
+        "E5",
+        "E31",
+        "E32",
+        "E51"
+    ],
     "to_be_interpolated": [
-        "E3",
-        "E5"
+        "E5",
+        "E31",
+        "E32",
+        "E51"
     ],
     "final_bad_chans": [],
     "montage": "biosemi128",
@@ -33,7 +39,19 @@
     "is_manually_rated": false,
     "times_commited": 0,
     "params": {
-        "interpolation_params": {}
+        "line_freqs": 0,
+        "filter_type": "high",
+        "filt_freq": null,
+        "filter_length": "auto",
+        "eog_regression": false,
+        "lam": -1,
+        "tol": 1e-07,
+        "max_iter": 1000,
+        "interpolation_params": {"line_freqs" : 0,
+                                 "ref_chs": null,
+                                 "reref_chs": null,
+                                 "montage": "GSN-HydroCel-128"
+                                }
     },
     "is_interpolated": false,
     "is_rated": false

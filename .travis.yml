@@ -16,6 +16,8 @@ install:
 # run conda /pip installation of packages
   - conda config --add channels conda-forge
   - conda install numpy pandas scikit-learn scipy mne seaborn matplotlib pytest mne-bids
+  - pip install git+https://github.com/NeuroDataDesign/pyprep #eeg=pyprep
+
 #  - pip install -r requirements.txt
 # command to run tests
 script:

@@ -9,9 +9,19 @@ d_folder = os.path.join(".", "tests", "test_data", "test_project")
 file_ext = ".set"
 montage = "biosemi128"
 sampling_rate = 5000
-params = {
-        "interpolation_params": {}
-    }
+params = {'line_freqs' : 0,\
+          'filter_type' : 'high', \
+          'filt_freq' : None, \
+          'filter_length' : 'auto', \
+          'eog_regression' : False, \
+          'lam' : -1, \
+          'tol' : 1e-7, \
+          'max_iter': 1000, \
+          'interpolation_params': {'line_freqs' : 0,\
+                                   'ref_chs': None,\
+                                   'reref_chs': None,\
+                                   'montage': 'GSN-HydroCel-128'}
+          }
 
 
 def test_data_folder():
