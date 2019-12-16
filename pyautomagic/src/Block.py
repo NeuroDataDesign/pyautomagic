@@ -59,14 +59,12 @@ class Block:
         contains all metrics of quality calculated for the dataset
     times_committed : int
         used to track how many changes were made to the evaluation of the data
-
     Methods
     -------
     preprocess()
         run the block through preprocessing steps, calc quality scores, save files, write log
     interpolate()
         interpolate the dataset, update quality scores and rating, save files, write log
-
     """
 
     def __init__(self, root_path, data_filename, project, subject):
@@ -83,7 +81,9 @@ class Block:
         self.is_rated = False
         self.is_interpolated = False
         self.times_committed = -1
-        self = self.update_rating_from_file()
+        self.update_rating_from_file()
+        self.rate = 'not rated'
+        self.index = -1
         # self.auto_bad_chans = []
 
     def update_rating_from_file(self):
@@ -211,7 +211,7 @@ class Block:
                 "to_be_interpolated": automagic["auto_bad_chans"],
                 "final_bad_chans": self.final_bad_chans,
                 "montage": self.montage,
-                "version": self.project.config["version"],
+                "version": self.project.CGV.VERSION,
                 "quality_scores": self.quality_scores,
                 "quality_thresholds": self.project.quality_thresholds,
                 "rate": self.rate,
@@ -314,7 +314,7 @@ class Block:
         if "commit" in update and update["commit"] == True:
             self.times_committed += 1
 
-        self.project.update_rating_list()
+        self.project.update_rating_lists(self)
 
     def save_all_files(self, results, fig1, fig2):
         """
@@ -365,7 +365,7 @@ class Block:
         Updates in log file
 
         """
-        logger.log(20, f"pyautomagic version {self.project.config['version']}")
+        logger.log(20, f"pyautomagic version {self.project.CGV.VERSION}")
         logger.log(
             20,
             f"Project:{self.project.name}, Subject:{self.subject.name}, File: {self.unique_name}",

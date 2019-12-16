@@ -5,7 +5,8 @@ import pytest
 
 from pyautomagic.src import Block, Project, Subject
 
-root_path = "./tests/test_data/test_project"
+name = "Dummy project 123456"
+root_path = os.path.join(".", "tests", "test_data", "test_project")
 config = {"version": 1.0,
           "default_params" : {'line_freqs' : 0,\
                               'filter_type' : 'high', \
@@ -36,6 +37,7 @@ params = {'line_freqs' : 0,\
                                    'montage': 'GSN-HydroCel-128'}
           }
 montage = "GSN-HydroCel-128"
+
 sampling_rate = 500
 visualization_params = {"downsample_rate": 5}
 quality_thresholds = {
@@ -54,15 +56,15 @@ rate_cutoffs = {
     "channel_Good_Cutoff": 0.15,
     "channel_Bad_Cutoff": 0.3,
 }
+
+
 dummy_project = Project.Project(
+    name,
     root_path,
-    config,
-    params,
-    sampling_rate,
-    visualization_params,
-    quality_thresholds,
-    rate_cutoffs,
+    file_ext,
     montage,
+    sampling_rate,
+    params
 )
 
 
@@ -73,7 +75,7 @@ def test_result_path():
     test_block = Block.Block(root_path, data_filename, dummy_project, dummy_subject)
     assert (
         test_block.result_path
-        == "./tests/test_data/test_project/derivatives/automagic/sub-18"
+        == os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "sub-18")
     )
 
 
@@ -103,33 +105,33 @@ def test_preprocess_and_interpolate():
     assert isinstance(results["automagic"]["quality_scores"], dict)
     assert test_block.times_committed == 0
     assert os.path.isfile(
-        "./tests/test_data/test_project/derivatives/automagic/sub-18/sub-18_task-rest_eeg_raw.fif"
+        os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg_raw.fif")
     )
     assert os.path.isfile(
-        "./tests/test_data/test_project/derivatives/automagic/sub-18/sub-18_task-rest_eeg_results.json"
+        os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg_results.json")
     )
     assert os.path.isfile(
-        "./tests/test_data/test_project/derivatives/automagic/sub-18/sub-18_task-rest_eeg.png"
+        os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg.png")
     )
     assert os.path.isfile(
-        "./tests/test_data/test_project/derivatives/automagic/sub-18/sub-18_task-rest_eeg_orig.png"
+        os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg_orig.png")
     )
     # assert(os.path.isfile('./tests/test_data/test_project/derivatives/automagic/sub-18/sub-18_task-rest_eeg_raw.fif'))
     test_block.interpolate()
-    result_file = "./tests/test_data/test_project/derivatives/automagic/sub-18/sub-18_task-rest_eeg_results.json"
+    result_file = os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg_results.json")
     with open(result_file) as json_file:
         block = json.load(json_file)
     assert block["is_interpolated"] == True
     os.remove(
-        "./tests/test_data/test_project/derivatives/automagic/sub-18/sub-18_task-rest_eeg_raw.fif"
+        os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg_raw.fif")
     )
     os.remove(
-        "./tests/test_data/test_project/derivatives/automagic/sub-18/sub-18_task-rest_eeg_results.json"
+        os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg_results.json")
     )
     os.remove(
-        "./tests/test_data/test_project/derivatives/automagic/sub-18/sub-18_task-rest_eeg.png"
+        os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg.png")
     )
     os.remove(
-        "./tests/test_data/test_project/derivatives/automagic/sub-18/sub-18_task-rest_eeg_orig.png"
+        os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg_orig.png")
     )
     # os.path.remove('./tests/test_data/test_project/derivatives/automagic/sub-18/sub-18_task-rest_eeg_raw.fif')
