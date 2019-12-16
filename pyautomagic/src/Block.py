@@ -19,10 +19,10 @@ logger.setLevel(level=10)
 class Block:
     """
     Object for all operations on an individual dataset.
-    
+
     Initialized using the name and path of the raw data.
     Preprocess, interpolate, rate for quality, and store those files.
-    
+
     Parameters
     ----------
     root_path: str
@@ -33,7 +33,7 @@ class Block:
         project object to which this block belongs
     subject: object
         subject object to which this block belongs
-        
+
     Attributes
     ----------
     unique_name : str
@@ -58,14 +58,12 @@ class Block:
         contains all metrics of quality calculated for the dataset
     times_committed : int
         used to track how many changes were made to the evaluation of the data
-
     Methods
     -------
     preprocess()
         run the block through preprocessing steps, calc quality scores, save files, write log
     interpolate()
         interpolate the dataset, update quality scores and rating, save files, write log
-
     """
 
     def __init__(self, root_path, data_filename, project, subject):
@@ -82,24 +80,26 @@ class Block:
         self.is_rated = False
         self.is_interpolated = False
         self.times_committed = -1
-        self = self.update_rating_from_file()
+        self.update_rating_from_file()
+        self.rate = 'not rated'
+        self.index = -1
         # self.auto_bad_chans = []
 
     def update_rating_from_file(self):
         """
         Updates block information from the file currently stored
-        
+
         Checks for results file, if it's there, and informaation, we update.
         No direct returns, but updates block fields.
-        
+
         Parameters
         ----------
         none
-        
+
         Returns
         -------
         none
-        
+
         """
         result_filename = self.unique_name + "_results.json"
         result_file_overall = os.path.join(self.result_path, result_filename)
@@ -131,18 +131,18 @@ class Block:
     def find_result_path(self):
         """
         Identifies the directory path pointing to where results stored
-        
+
         Following BIDS requirements, we only have either the subject folder or both subject and session.
-        
+
         Parameters
         ----------
         none
-        
+
         Returns
         -------
         result_path: str
             location of results files within BIDS folder
-            
+
         """
         params = _parse_bids_filename(self.unique_name, verbose=False)
         if params["ses"] is None:
@@ -162,16 +162,16 @@ class Block:
     def preprocess(self):
         """
         Preprocesses the raw data associated with this block
-        
+
         Parameters
         ----------
         none
-        
+
         Returns
         -------
        results: dict
             dictionary containing all the new updates to the block and the preprocessed array
-            
+
         """
         data = self.load_data()
         preprocessed, fig_1, fig_2 = execute_preprocess(data, self.params)
@@ -205,7 +205,7 @@ class Block:
                 "to_be_interpolated": automagic["auto_bad_chans"],
                 "final_bad_chans": self.final_bad_chans,
                 "montage": self.montage,
-                "version": self.project.config["version"],
+                "version": self.project.CGV.VERSION,
                 "quality_scores": self.quality_scores,
                 "quality_thresholds": self.project.quality_thresholds,
                 "rate": self.rate,
@@ -224,17 +224,17 @@ class Block:
     def load_data(self):
         """
         Load raw data from BIDS folder
-        
+
         Allowing for a number of extensions, loads file
-        
+
         Parameters
         ----------
         none
-        
+
         Returns
         -------
         raw MNE object
-        
+
         """
         # params = _parse_bids_filename(self.unique_name, verbose=False)
         # if params['ses'] is None :
@@ -249,14 +249,14 @@ class Block:
     def update_rating(self, update):
         """
         Takes update about ratings and stores in object
-        
+
         From project level object, get an update on rating info.
-        
+
         Parameters
         ----------
         update : dict
             dictionary of updates
-        
+
         Returns
         -------
         none
@@ -308,26 +308,26 @@ class Block:
         if "commit" in update and update["commit"] == True:
             self.times_committed += 1
 
-        self.project.update_rating_list()
+        self.project.update_rating_lists(self)
 
     def save_all_files(self, results, fig1, fig2):
         """
         Save results dictionary and figures to results path
-        
+
         Parameters
         ----------
         results:
-            MNE raw object with info attribute containing 
+            MNE raw object with info attribute containing
         fig1:
             Figure of ??
-        
+
         fig2:
             Figure of ??
-        
+
         Returns
         -------
         none
-        
+
         """
         main_result_file = results["automagic"]
         result_filename = self.unique_name + "_results.json"
@@ -353,13 +353,13 @@ class Block:
         Parameters
         ----------
         updates: dict
-        
+
         Returns
         -------
         Updates in log file
-        
+
         """
-        logger.log(20, f"pyautomagic version {self.project.config['version']}")
+        logger.log(20, f"pyautomagic version {self.project.CGV.VERSION}")
         logger.log(
             20,
             f"Project:{self.project.name}, Subject:{self.subject.name}, File: {self.unique_name}",
@@ -390,15 +390,15 @@ class Block:
     def interpolate(self):
         """
         Interpolates bad channels to create new data and updates info
-        
+
         Parameters
         ----------
         none
-        
+
         Returns
         -------
         none
-        
+
         """
         result_filename = self.unique_name + "_results.json"
         result_file_overall = os.path.join(self.result_path, result_filename)
