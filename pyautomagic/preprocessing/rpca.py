@@ -1,5 +1,4 @@
 import numpy as np
-from sklearn.decomposition import TruncatedSVD
 
 
 def rpca(M, lam=-1, tol=1e-7, maxIter=1000):

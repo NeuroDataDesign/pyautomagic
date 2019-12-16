@@ -1,6 +1,8 @@
-import pytest
-import numpy as np
 import logging
+
+import numpy as np
+import pytest
+
 
 def performEOGRegression(eeg, eog, *args):
     """Performs linear regression to remove EOG artifact from the EEG data

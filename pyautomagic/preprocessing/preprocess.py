@@ -1,10 +1,11 @@
-import mne
 import matplotlib.pyplot as plt
+import mne
 import numpy as np
-from pyautomagic.preprocessing.rpca import rpca
+from pyprep.prep_pipeline import PrepPipeline
+
 from pyautomagic.preprocessing.performFilter import performFilter
 from pyautomagic.preprocessing.perform_EOG_regression import perform_EOG_regression
-from pyprep.prep_pipeline import PrepPipeline
+from pyautomagic.preprocessing.rpca import rpca
 
 
 class Preprocess:
@@ -124,13 +125,10 @@ class Preprocess:
         """
 
         self.automagic["prep"]["performed"] = True
-        montage = mne.channels.make_standard_montage(\
-            self.params["interpolation_params"]["montage"])
-        prep = PrepPipeline(
-            self.eeg,
-            self.params["interpolation_params"],
-            montage
+        montage = mne.channels.make_standard_montage(
+            self.params["interpolation_params"]["montage"]
         )
+        prep = PrepPipeline(self.eeg, self.params["interpolation_params"], montage)
         prep = prep.fit()
         self.bad_chs = list(
             set(prep.still_noisy_channels)

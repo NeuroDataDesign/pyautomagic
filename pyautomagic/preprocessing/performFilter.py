@@ -1,6 +1,7 @@
+import logging
+
 import mne
 import numpy as np
-import logging
 
 
 def performFilter(EEG, sfreq, filter_type=None, filt_freq=None, filter_length="auto"):

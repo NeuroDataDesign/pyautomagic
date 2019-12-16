@@ -1,6 +1,8 @@
 import numpy as np
-from pyautomagic.preprocessing.perform_EOG_regression import perform_EOG_regression
 import pytest
+
+from pyautomagic.preprocessing.perform_EOG_regression import perform_EOG_regression
+
 
 def test_EOG_egression():
     """Test for EOG Regression in EEG data"""

@@ -1,7 +1,8 @@
-import numpy as np
-import mne
-import pytest
 import matplotlib.pyplot as plt
+import mne
+import numpy as np
+import pytest
+
 from pyautomagic.preprocessing.preprocess import Preprocess
 
 

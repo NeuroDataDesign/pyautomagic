@@ -50,7 +50,7 @@
         "interpolation_params": {"line_freqs" : 0,
                                  "ref_chs": null,
                                  "reref_chs": null,
-                                 "montage": "biosemi128"
+                                 "montage": "GSN-HydroCel-128"
                                 }
     },
     "is_interpolated": false,

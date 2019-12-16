@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
-from pyautomagic.preprocessing.rpca import rpca
 
+from pyautomagic.preprocessing.rpca import rpca
 
 
 def test_basic_input1():

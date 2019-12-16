@@ -1,6 +1,8 @@
-import pytest
-import os
 import json
+import os
+
+import pytest
+
 from pyautomagic.src import Block, Project, Subject
 
 root_path = "./tests/test_data/test_project"
