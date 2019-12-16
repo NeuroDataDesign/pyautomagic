@@ -4,7 +4,7 @@ import json
 from pyautomagic.src import Block, Project, Subject
 
 name = "Dummy project 123456"
-root_path = "../test_data/test_project"
+root_path = "./tests/test_data/test_project"
 file_ext = ".set"
 config = {"version": 1.0}
 params = {
