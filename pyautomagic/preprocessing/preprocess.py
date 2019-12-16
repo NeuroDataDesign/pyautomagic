@@ -4,6 +4,7 @@ import numpy as np
 from pyautomagic.preprocessing.rpca import rpca
 from pyautomagic.preprocessing.performFilter import performFilter
 from pyautomagic.preprocessing.perform_EOG_regression import perform_EOG_regression
+from pyprep.prep_pipeline import PrepPipeline
 
 
 class Preprocess:
@@ -114,7 +115,7 @@ class Preprocess:
 
     def perform_prep(self):
         """ perform_prep
-        dummy prep_pipeline that just returns list of "bad" channels
+        Calls pyprep's PrepPipeline and detects bad channels in the data.
 
         Returns
         -------
@@ -123,8 +124,19 @@ class Preprocess:
         """
 
         self.automagic["prep"]["performed"] = True
-        chans = self.eeg.info["ch_names"]
-        self.bad_chs = chans[4:5] + chans[30:32] + [chans[50]]
+        montage = mne.channels.make_standard_montage(\
+            self.params["interpolation_params"]["montage"])
+        prep = PrepPipeline(
+            self.eeg,
+            self.params["interpolation_params"],
+            montage
+        )
+        prep = prep.fit()
+        self.bad_chs = list(
+            set(prep.still_noisy_channels)
+            | set(prep.interpolated_channels)
+            | set(prep.bad_before_interpolation)
+        )
         self.automagic.update({"auto_bad_chans": self.bad_chs})
         return self.bad_chs
 

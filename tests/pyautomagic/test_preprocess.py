@@ -9,6 +9,9 @@ from pyautomagic.preprocessing.preprocess import Preprocess
 def test_sample_input_correctType():
     raw = mne.io.read_raw_edf('./tests/test_data/S001R01.edf')
     raw.rename_channels(lambda s: s.strip("."))
+    raw.rename_channels(lambda s: s.replace("c", "C").replace("o", "O").\
+      replace("f", "F").replace("t", "T").replace("Tp", "TP").replace("Cp", "CP"))
+    print(raw.ch_names)
     params = {'line_freqs' : 50,\
               'filter_type' : 'high', \
               'filt_freq' : None, \
@@ -34,6 +37,8 @@ def test_sample_input_correctType():
 def test_sample_input2_correctType():
     raw = mne.io.read_raw_edf('./tests/test_data/S001R01.edf')
     raw.rename_channels(lambda s: s.strip("."))
+    raw.rename_channels(lambda s: s.replace("c", "C").replace("o", "O").\
+      replace("f", "F").replace("t", "T").replace("Tp", "TP").replace("Cp", "CP"))
     params = {'line_freqs' : 50,\
               'filter_type' : 'high', \
               'filt_freq' : None, \

@@ -16,7 +16,7 @@ config = {"version": 1.0,
                               'interpolation_params': {'line_freqs' : 0,\
                                                 'ref_chs': None,\
                                                 'reref_chs': None,\
-                                                'montage': 'biosemi128'}
+                                                'montage': 'GSN-HydroCel-128'}
                               }
 
          }
@@ -31,9 +31,9 @@ params = {'line_freqs' : 0,\
           'interpolation_params': {'line_freqs' : 0,\
                                    'ref_chs': None,\
                                    'reref_chs': None,\
-                                   'montage': 'biosemi128'}
+                                   'montage': 'GSN-HydroCel-128'}
           }
-montage = "biosemi128"
+montage = "GSN-HydroCel-128"
 sampling_rate = 500
 visualization_params = {"downsample_rate": 5}
 quality_thresholds = {
