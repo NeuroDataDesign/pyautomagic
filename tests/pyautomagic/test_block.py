@@ -37,7 +37,7 @@ params = {'line_freqs' : 0,\
                                    'montage': 'GSN-HydroCel-128'}
           }
 montage = "GSN-HydroCel-128"
-
+file_ext = ".set"
 sampling_rate = 500
 visualization_params = {"downsample_rate": 5}
 quality_thresholds = {
@@ -57,10 +57,11 @@ rate_cutoffs = {
     "channel_Bad_Cutoff": 0.3,
 }
 
-
+(self, name, d_folder, file_ext, montage, sampling_rate, params)
 dummy_project = Project.Project(
     name,
     root_path,
+    file_ext,
     montage,
     sampling_rate,
     params
