@@ -61,7 +61,6 @@ rate_cutoffs = {
 dummy_project = Project.Project(
     name,
     root_path,
-    file_ext,
     montage,
     sampling_rate,
     params
