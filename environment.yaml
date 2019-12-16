@@ -67,6 +67,5 @@ dependencies:
   - zlib=1.2.11=h01d97ff_1006
   - pip:
     - coverage-badge==1.0.1
-    - "--editable=git+https://github.com/NeuroDataDesign/pyprep"
 prefix: /Users/adam2392/miniconda3/envs/pyautomagic
 
