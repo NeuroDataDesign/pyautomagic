@@ -3,9 +3,13 @@ import os
 import json
 from pyautomagic.src import Block, Project, Subject
 
-root_path = "./tests/test_data/test_project"
+name = "Dummy project 123456"
+root_path = "../test_data/test_project"
+file_ext = ".set"
 config = {"version": 1.0}
-params = {"interpolation_params": {}}
+params = {
+        "interpolation_params": {}
+    }
 montage = "biosemi128"
 sampling_rate = 500
 visualization_params = {"downsample_rate": 5}
@@ -25,15 +29,15 @@ rate_cutoffs = {
     "channel_Good_Cutoff": 0.15,
     "channel_Bad_Cutoff": 0.3,
 }
+
+
 dummy_project = Project.Project(
+    name,
     root_path,
-    config,
-    params,
-    sampling_rate,
-    visualization_params,
-    quality_thresholds,
-    rate_cutoffs,
+    file_ext,
     montage,
+    sampling_rate,
+    params
 )
 
 

@@ -1,0 +1,59 @@
+{
+    "auto_bad_chans": [
+        "E3",
+        "E5"
+    ],
+    "prep": {
+        "performed": true
+    },
+    "filtering": {
+        "performed": true
+    },
+    "to_be_interpolated": [],
+    "final_bad_chans": [],
+    "montage": "biosemi128",
+    "version": "1.0",
+    "quality_scores": {
+        "overall_high_amp": 0.0,
+        "times_high_var": 0.0,
+        "ratio_bad_chans": 0.015625,
+        "chan_high_var": 0.0,
+        "mean_abs_volt": 4.699328886494902e-06
+    },
+    "quality_thresholds": {
+        "overall_thresh": [
+            20,
+            25,
+            30,
+            35
+        ],
+        "time_thresh": [
+            5,
+            10,
+            15,
+            20
+        ],
+        "chan_thresh": [
+            5,
+            10,
+            15,
+            20
+        ],
+        "apply_common_avg": 1
+    },
+    "rate": "not rated",
+    "is_manually_rated": false,
+    "times_committed": 2,
+    "params": {
+        "interpolation_params": {}
+    },
+    "is_interpolated": true,
+    "is_rated": false,
+    "interpolation": {
+        "channels": [
+            "E3",
+            "E5"
+        ],
+        "params": {}
+    }
+}
