@@ -5,7 +5,7 @@ from pyautomagic.src import Project
 
 
 name = "Dummy project 123456"
-d_folder = os.path.join("..", "test_data", "test_project")
+d_folder = os.path.join(".", "tests", "test_data", "test_project")
 file_ext = ".set"
 montage = "biosemi128"
 sampling_rate = 5000
@@ -18,7 +18,7 @@ def test_data_folder():
     test_Project = Project.Project(
         name, d_folder, file_ext, montage, sampling_rate, params
     )
-    expected = os.path.join("..", "test_data", "test_project")
+    expected = os.path.join(".", "tests", "test_data", "test_project")
     assert test_Project.data_folder == expected
 
 
@@ -28,7 +28,7 @@ def test_results_folder():
     )
     assert (
         test_Project.results_folder
-        == os.path.join("..", "test_data", "test_project", "derivatives", "automagic")
+        == os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic")
     )
 
 
@@ -61,37 +61,37 @@ def test_project_pyautomagic_run():
 
     X.interpolate_selected()
 
-    assert X.results_folder == os.path.join("..", "test_data", "test_project", "derivatives", "automagic")
+    assert X.results_folder == os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic")
 
     assert os.path.isfile(
-        os.path.join("..", "test_data", "test_project", "derivatives", "automagic", "Dummy project 123456_results.json")
+        os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "Dummy project 123456_results.json")
 
     )
 
     assert len(X.block_list) == 2
 
-    with open(os.path.join("..", "test_data", "test_project", "derivatives", "automagic", "sub-66", "sub-66_task-rest_eeg_results.json"), "r") as jsonFile:
+    with open(os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "sub-66", "sub-66_task-rest_eeg_results.json"), "r") as jsonFile:
         data = json.load(jsonFile)
 
     tmp = data["times_committed"]
     data["times_committed"] = 0
 
-    with open(os.path.join("..", "test_data", "test_project", "derivatives", "automagic", "sub-66", "sub-66_task-rest_eeg_results.json"), "w") as jsonFile:
+    with open(os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "sub-66", "sub-66_task-rest_eeg_results.json"), "w") as jsonFile:
         json.dump(data, jsonFile)
 
     os.remove(
-        os.path.join("..", "test_data", "test_project", "derivatives", "automagic", "Dummy project 123456_results.json")
+        os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "Dummy project 123456_results.json")
     )
 
     os.remove(
-        os.path.join("..", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg_raw.fif")
+        os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg_raw.fif")
     )
     os.remove(
-        os.path.join("..", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg_results.json")
+        os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg_results.json")
     )
     os.remove(
-        os.path.join("..", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg.png")
+        os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg.png")
     )
     os.remove(
-        os.path.join("..", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg_orig.png")
+        os.path.join(".", "tests", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg_orig.png")
     )
