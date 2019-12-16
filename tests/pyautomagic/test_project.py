@@ -1,4 +1,5 @@
 import pytest
+import json
 import os
 from pyautomagic.src import Project
 
@@ -69,6 +70,28 @@ def test_project_pyautomagic_run():
 
     assert len(X.block_list) == 2
 
+    with open(os.path.join("..", "test_data", "test_project", "derivatives", "automagic", "sub-66", "sub-66_task-rest_eeg_results.json"), "r") as jsonFile:
+        data = json.load(jsonFile)
+
+    tmp = data["times_committed"]
+    data["times_committed"] = 0
+
+    with open(os.path.join("..", "test_data", "test_project", "derivatives", "automagic", "sub-66", "sub-66_task-rest_eeg_results.json"), "w") as jsonFile:
+        json.dump(data, jsonFile)
+
     os.remove(
         os.path.join("..", "test_data", "test_project", "derivatives", "automagic", "Dummy project 123456_results.json")
+    )
+
+    os.remove(
+        os.path.join("..", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg_raw.fif")
+    )
+    os.remove(
+        os.path.join("..", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg_results.json")
+    )
+    os.remove(
+        os.path.join("..", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg.png")
+    )
+    os.remove(
+        os.path.join("..", "test_data", "test_project", "derivatives", "automagic", "sub-18", "sub-18_task-rest_eeg_orig.png")
     )
