@@ -57,7 +57,6 @@ rate_cutoffs = {
     "channel_Bad_Cutoff": 0.3,
 }
 
-(self, name, d_folder, file_ext, montage, sampling_rate, params)
 dummy_project = Project.Project(
     name,
     root_path,
