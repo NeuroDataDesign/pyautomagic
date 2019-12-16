@@ -694,22 +694,19 @@ class Project:
             List of subjects in the root folder
         """
 
-        if os.path.isdir(root_folder):
-            subs = os.path.join(root_folder)
-            subjects = [
-                y
-                for y in os.listdir(subs)
-                if os.path.isdir(os.path.join(root_folder, y))
-            ]
-            if len(subjects) == 0:
-                logging.error(
-                    "%s: This path doesn't have any folders, please verify your data",
-                    root_folder,
-                )
-            else:
-                return subjects
+        subs = os.path.join(root_folder)
+        subjects = [
+            y
+            for y in os.listdir(subs)
+            if os.path.isdir(os.path.join(root_folder, y))
+        ]
+        if len(subjects) == 0:
+            logging.error(
+                "%s: This path doesn't have any folders, please verify your data",
+                root_folder,
+            )
         else:
-            logging.log(40, "%s: This directory doesn't exist", root_folder)
+            return subjects
 
     @staticmethod
     def dir_not_hiddens(folder, extn):
