@@ -306,7 +306,6 @@ class Project:
         self.bad_list = self.bad_list.tolist()
         self.interpolate_list = self.interpolate_list.tolist()
 
-
     def get_quality_ratings(self, cutoffs):
         """
         Parameters
@@ -696,9 +695,7 @@ class Project:
 
         subs = os.path.join(root_folder)
         subjects = [
-            y
-            for y in os.listdir(subs)
-            if os.path.isdir(os.path.join(root_folder, y))
+            y for y in os.listdir(subs) if os.path.isdir(os.path.join(root_folder, y))
         ]
         if len(subjects) == 0:
             logging.error(

@@ -82,7 +82,7 @@ class Block:
         self.is_interpolated = False
         self.times_committed = -1
         self.update_rating_from_file()
-        self.rate = 'not rated'
+        self.rate = "not rated"
         self.index = -1
         # self.auto_bad_chans = []
 

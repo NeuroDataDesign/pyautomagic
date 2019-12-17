@@ -14,15 +14,25 @@
 
 import logging
 
-logging.basicConfig(format='%(asctime)s : %(levelname)s: %(message)s', level=logging.DEBUG)
+logging.basicConfig(
+    format="%(asctime)s : %(levelname)s: %(message)s", level=logging.DEBUG
+)
 
 
 # Function that rates EEG datasets depending on quality_metrics values and predefined rating values
 
-def rateQuality(quality_metrics: dict, overall_Good_Cutoff: float = 0.1, overall_Bad_Cutoff: float = 0.2,
-                time_Good_Cutoff: float = 0.1, time_Bad_Cutoff: float = 0.2,
-                bad_Channel_Good_Cutoff: float = 0.15, bad_Channel_Bad_Cutoff: float = 0.3, channel_Good_Cutoff: float = 0.15,
-                channel_Bad_Cutoff: float = 0.3):
+
+def rateQuality(
+    quality_metrics: dict,
+    overall_Good_Cutoff: float = 0.1,
+    overall_Bad_Cutoff: float = 0.2,
+    time_Good_Cutoff: float = 0.1,
+    time_Bad_Cutoff: float = 0.2,
+    bad_Channel_Good_Cutoff: float = 0.15,
+    bad_Channel_Bad_Cutoff: float = 0.3,
+    channel_Good_Cutoff: float = 0.15,
+    channel_Bad_Cutoff: float = 0.3,
+):
     """
     Rates datasets, based on quality measures calculated with calcQuality().
 
@@ -72,15 +82,24 @@ def rateQuality(quality_metrics: dict, overall_Good_Cutoff: float = 0.1, overall
     for i in quality_metrics.values():
         # Verify if any value in quality_metrics is a string
         if isinstance(i, str):
-            logging.log(40, "Some value of Quality Metrics is not a positive number, please verify your EEG input data")
+            logging.log(
+                40,
+                "Some value of Quality Metrics is not a positive number, please verify your EEG input data",
+            )
             break
         # Verify if any value in quality_metrics is bool type
         elif isinstance(i, bool):
-            logging.log(40, "Some value of Quality Metrics is not a positive number, please verify your EEG input data")
+            logging.log(
+                40,
+                "Some value of Quality Metrics is not a positive number, please verify your EEG input data",
+            )
             break
         # Verify if any value in quality_metrics is a negative number
         elif i < 0:
-            logging.log(40, "Some value of Quality Metrics is not a positive number, please verify your EEG input data")
+            logging.log(
+                40,
+                "Some value of Quality Metrics is not a positive number, please verify your EEG input data",
+            )
             break
         else:
 
@@ -88,15 +107,31 @@ def rateQuality(quality_metrics: dict, overall_Good_Cutoff: float = 0.1, overall
 
             # The function rates the EEG DATA with the rule that the rating depends on the WORST rating
 
-            if quality_metrics['overall_high_amp'] > overall_Bad_Cutoff or quality_metrics['times_high_var'] > time_Bad_Cutoff or quality_metrics['ratio_bad_chans'] > bad_Channel_Bad_Cutoff or quality_metrics['chan_high_var'] > channel_Bad_Cutoff:
-                dataset_qualification = {'dataset_qualification': 'Bad dataset'}  # Bad EEG dataset rating if any rating is BAD
-                #logging.info("Bad dataset: %s", dataset_qualification['dataset_qualification'])
+            if (
+                quality_metrics["overall_high_amp"] > overall_Bad_Cutoff
+                or quality_metrics["times_high_var"] > time_Bad_Cutoff
+                or quality_metrics["ratio_bad_chans"] > bad_Channel_Bad_Cutoff
+                or quality_metrics["chan_high_var"] > channel_Bad_Cutoff
+            ):
+                dataset_qualification = {
+                    "dataset_qualification": "Bad dataset"
+                }  # Bad EEG dataset rating if any rating is BAD
+                # logging.info("Bad dataset: %s", dataset_qualification['dataset_qualification'])
                 return dataset_qualification
-            elif quality_metrics['overall_high_amp'] < overall_Good_Cutoff and quality_metrics['times_high_var'] < time_Good_Cutoff and quality_metrics['ratio_bad_chans'] < bad_Channel_Good_Cutoff and quality_metrics['chan_high_var'] < channel_Good_Cutoff:
-                dataset_qualification = {'dataset_qualification': 'Good dataset'}  # Good EEG dataset rating if all ratings are GOOD
-                #logging.info("Good dataset: %s", dataset_qualification['dataset_qualification'])
+            elif (
+                quality_metrics["overall_high_amp"] < overall_Good_Cutoff
+                and quality_metrics["times_high_var"] < time_Good_Cutoff
+                and quality_metrics["ratio_bad_chans"] < bad_Channel_Good_Cutoff
+                and quality_metrics["chan_high_var"] < channel_Good_Cutoff
+            ):
+                dataset_qualification = {
+                    "dataset_qualification": "Good dataset"
+                }  # Good EEG dataset rating if all ratings are GOOD
+                # logging.info("Good dataset: %s", dataset_qualification['dataset_qualification'])
                 return dataset_qualification
             else:
-                dataset_qualification = {'dataset_qualification': 'Regular dataset'}  # Regular EEG dataset rating if any rating is REGULAR
-                #logging.info("Regular dataset: %s", dataset_qualification['dataset_qualification'])
+                dataset_qualification = {
+                    "dataset_qualification": "Regular dataset"
+                }  # Regular EEG dataset rating if any rating is REGULAR
+                # logging.info("Regular dataset: %s", dataset_qualification['dataset_qualification'])
                 return dataset_qualification
