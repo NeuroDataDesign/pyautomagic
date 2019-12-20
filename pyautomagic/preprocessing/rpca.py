@@ -14,7 +14,6 @@ def rpca(M, lam=-1, tol=1e-7, maxIter=1000):
     Computes rpca separation of M into L(low rank) and S(Sparse) using the parameter lam
     this uses the alternating directions augmented method of multipliers.
 
-
     parameters
     ----------
         M : npumpy.darray
@@ -32,7 +31,6 @@ def rpca(M, lam=-1, tol=1e-7, maxIter=1000):
         Error : npumpy.darray
             Noise removed from the data (Sparse Matrix)
             note: M = L + S
-
 """
     # Calculate lamda if not provided using the Automagic algorithim
     Nr = M.shape[0]
@@ -75,10 +73,9 @@ def rpca(M, lam=-1, tol=1e-7, maxIter=1000):
 
 def soft_thres(x, eps):
 
-    """
-    Cian Scannell - Oct-2017
+    """ Cian Scannell - Oct-2017
     Soft thresholds a matrix x at the eps level
-    i.e ST(x,eps)_ij = sgn(x_ij) max(|x_ij| - eps, 0)
+    i.e ST(x,eps)_ij = sgn(x _ij) max(|x _ij| - eps, 0)
 
     parameters
     ----------
@@ -92,7 +89,6 @@ def soft_thres(x, eps):
         np.multiply(a,b) : npumpy.darray
             thersholded values, where anythign under the threshold
             was set to zero
-
     """
     a = np.sign(x)
     b = np.maximum((np.fabs(x) - eps), 0)

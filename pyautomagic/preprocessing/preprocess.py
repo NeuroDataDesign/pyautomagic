@@ -7,13 +7,11 @@ from pyautomagic.preprocessing.performFilter import performFilter
 from pyautomagic.preprocessing.perform_EOG_regression import perform_EOG_regression
 from pyautomagic.preprocessing.rpca import rpca
 
-
 class Preprocess:
-    """Preprocess class for pyautomagic preprocessing pipeline.
-
-    Preprocess performs pyprep's prep_pipeline, then filters the eeg data,
-    performs optionaleog_regression, preforms RPCA to remove noise, and lastly
-    can output plotsof the data at various stages in the process.
+    """Preprocess class for pyautomagic preprocessing pipeline: preprocess
+    performs pyprep's prep_pipeline, then filters the eeg data, performs
+    optionaleog_regression, preforms RPCA to remove noise, and lastly
+    can output plots of the data at various stages in the process.
 
     Parameters
     ----------
@@ -89,7 +87,6 @@ class Preprocess:
     fit(self):
         Perform the full preprocessing pipeline for pyautomagic (modeled from
         matlab's automagic package).
-
     """
 
     def __init__(self, eeg, params):
