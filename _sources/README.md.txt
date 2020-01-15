@@ -1,5 +1,6 @@
 pyautomagic
-==============================
+===========
+
 [![Build Status](https://travis-ci.com/NeuroDataDesign/pyautomagic.svg?branch=master)](https://travis-ci.com/NeuroDataDesign/pyautomagic)
 [![Coverage Status](./coverage.svg)](./coverage.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
@@ -18,7 +19,7 @@ References
 
 
 Project Organization
-------------
+--------------------
 
     ├── LICENSE
     ├── Makefile           <- Makefile with commands like `make data` or `make train`
@@ -62,15 +63,19 @@ Project Organization
 --------
 
 
-## Intended Users / Usage
+Intended Users / Usage
+----------------------
 
 Researchers dealing with EEG data. The main (default) workflow is summarized in: 
 
-# Installation Guide
+Installation Guide
+------------------
 
 For installation instructions, see [installation guide](./INSTALLATION.md).
     
-## Setup Jupyter Kernel To Test
+Setup Jupyter Kernel To Test
+----------------------------
+
 You need to install ipykernel to expose your conda environment to jupyter notebooks.
    
     conda install ipykernel
@@ -79,7 +84,8 @@ You need to install ipykernel to expose your conda environment to jupyter notebo
     jupyter lab 
         
 
-# Testing and Documentation
+Testing and Documentation
+-------------------------
 
 For contributing, please see [contribution guide](./CONTRIBUTING.md).
 
