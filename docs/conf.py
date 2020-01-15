@@ -39,7 +39,17 @@ release = version
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.napoleon','sphinx.ext.autodoc'
+extensions = [
+    'sphinx.ext.napoleon',
+    'sphinx.ext.autodoc',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.doctest',
+    'sphinx.ext.intersphinx',
+    'sphinx_gallery.gen_gallery',
+    'numpydoc',
+    'recommonmark',
 ]
 
 napoleon_google_docstring = False
@@ -104,7 +114,7 @@ sphinx_gallery_conf = {
         'branch': 'gh-pages',  # noqa: E501 Can be any branch, tag, or commit hash. Use a branch that hosts your docs.
         'binderhub_url': 'https://mybinder.org',  # noqa: E501 Any URL of a binderhub deployment. Must be full URL (e.g. https://mybinder.org).
         'dependencies': [
-            './environment.yml'
+            '../environment.yml'
         ],
     }
 }

@@ -52,7 +52,13 @@ Authors
 
 People who contributed to this release (in alphabetical order):
 
+* Aamna Lawrence
 * Adam Li
+* Claire Zurn
+* Deep Soni
+* Raph Bechto
+* Saul Mezac
+* Victor Xiang
 
 .. _Aamna Lawrence: https://github.com/AamnaLawrence
 .. _Adam Li: https://github.com/adam2392

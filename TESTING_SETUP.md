@@ -32,7 +32,7 @@ Steps to create documentation for this package
 1. Install and setup sphinx from terminal and run through the options, defaults are okay when available
     
     ```
-    pip install sphinx
+    pip install sphinx sphinx_bootstrap_theme sphinx_gallery numpydoc
     mkdir docs
     cd docs
     sphinx-quickstart
