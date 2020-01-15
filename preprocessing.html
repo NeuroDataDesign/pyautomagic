@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Preprocess &#8212; pyautoomagic 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/gallery.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          PyAutomagic</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="auto_examples/index.html">Examples</a></li>
+                <li><a href="api.html">API</a></li>
+                <li><a href="whats_new.html">What's new</a></li>
+                <li><a href="https://github.com/neurodatadesign/pyautomagic">Github</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="module-preprocess">
+<span id="preprocess"></span><h1>Preprocess<a class="headerlink" href="#module-preprocess" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="preprocess.Preprocess">
+<em class="property">class </em><code class="sig-prename descclassname">preprocess.</code><code class="sig-name descname">Preprocess</code><span class="sig-paren">(</span><em class="sig-param">eeg</em>, <em class="sig-param">params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preprocess.html#Preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#preprocess.Preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess class for pyautomagic preprocessing pipeline: preprocess
+performs pyprep’s prep_pipeline, then filters the eeg data, performs
+optionaleog_regression, preforms RPCA to remove noise, and lastly
+can output plots of the data at various stages in the process.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul>
+<li><p><strong>eeg</strong> (<em>mne.io.Raw</em>) – mne raw object containing eeg data and all the data’s information.</p></li>
+<li><p><strong>params</strong> (<em>dict</em>) – dictionary of parameters
+&lt;default&gt; params = {‘line_freqs’ : 50,</p>
+<blockquote>
+<div><p>‘filter_type’ : ‘high’,
+‘filt_freq’ : None,
+‘filter_length’ : ‘auto’,
+‘eog_regression’ : False,
+‘lam’ : -1,
+‘tol’ : 1e-7,
+‘max_iter’: 1000,
+‘interpolation_params’: {‘line_freqs’ : 50,</p>
+<blockquote>
+<div><p>‘ref_chs’: eeg.ch_names,
+‘reref_chs’: eeg.ch_names,
+‘montage’: ‘standard_1020’}</p>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</dd>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>eeg</strong> (<a class="reference external" href="https://mne.tools/stable/generated/mne.io.Raw.html#mne.io.Raw" title="(in MNE v0.19.2)"><em>mne.io.Raw</em></a>) – mne raw object containing eeg data and all the data’s information.</p></li>
+<li><p><strong>eog</strong> (<a class="reference external" href="https://mne.tools/stable/generated/mne.io.Raw.html#mne.io.Raw" title="(in MNE v0.19.2)"><em>mne.io.Raw</em></a>) – mne raw object containing eog data and all the data’s information.</p></li>
+<li><p><strong>bad_chs</strong> (<em>List</em>) – list of the names of all the detected bad channels</p></li>
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of parameters described above</p></li>
+<li><p><strong>index</strong> (<em>numpy.array</em>) – array of bad channel indices</p></li>
+<li><p><strong>filtered</strong> (<a class="reference external" href="https://mne.tools/stable/generated/mne.io.Raw.html#mne.io.Raw" title="(in MNE v0.19.2)"><em>mne.io.Raw</em></a>) – mne raw object containing eeg data after filtering</p></li>
+<li><p><strong>eeg_filt_eog</strong> (<a class="reference external" href="https://mne.tools/stable/generated/mne.io.Raw.html#mne.io.Raw" title="(in MNE v0.19.2)"><em>mne.io.Raw</em></a>) – mne raw object containing eeg data after filtering, and eog_regression</p></li>
+<li><p><strong>eeg_filt_eog_rpca</strong> (<a class="reference external" href="https://mne.tools/stable/generated/mne.io.Raw.html#mne.io.Raw" title="(in MNE v0.19.2)"><em>mne.io.Raw</em></a>) – mne raw object containing eeg data after filtering, eog_regression, and
+robust PCA (final cleaned data)</p></li>
+<li><p><strong>noise</strong> (<em>numpy.array</em>) – array of the noise removed from rpca</p></li>
+<li><p><strong>automagic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – automagic holds information about the progress of the pipeline</p></li>
+<li><p><strong>fig1</strong> (<em>matplotlib.pyplot.figure</em>) – figure of 6 subplots at each stage of the preprocess pipeline</p></li>
+<li><p><strong>fig2</strong> (<em>matplotlib.pyplot.figure</em>) – Figure of the final cleaned eeg data</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="preprocess.Preprocess.perform_prep">
+<code class="sig-name descname">perform_prep</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/preprocess.html#Preprocess.perform_prep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#preprocess.Preprocess.perform_prep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls pyprep’s PrepPipeline and detects bad channels in the data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">perform_filter():</code></dt>
+<dd><p>Performs initial filter (high, low, or band-pass) and removes line
+noise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">def perform_eog_regression</code></dt>
+<dd><p>If requested, it will remove artifact from eog data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="preprocess.Preprocess.perform_RPCA">
+<code class="sig-name descname">perform_RPCA</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/preprocess.html#Preprocess.perform_RPCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#preprocess.Preprocess.perform_RPCA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses Robust Principal Component Analysis to remove noise from the data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">plot(self, show=True):</code></dt>
+<dd><p>Outputs plots of data at each point in the preprocess pipeline.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">fit(self):</code></dt>
+<dd><p>Perform the full preprocessing pipeline for pyautomagic (modeled from
+matlab’s automagic package).</p>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#preprocess.Preprocess.fit" title="preprocess.Preprocess.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a>(self)</p></td>
+<td><p>Fit Perform the full preprocessing pipeline for pyautomagic (modeled from matlab’s automagic package).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#preprocess.Preprocess.perform_RPCA" title="preprocess.Preprocess.perform_RPCA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">perform_RPCA</span></code></a>(self)</p></td>
+<td><p>Uses Robust Principal Component Analysis to remove noise from the data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#preprocess.Preprocess.perform_eog_regression" title="preprocess.Preprocess.perform_eog_regression"><code class="xref py py-obj docutils literal notranslate"><span class="pre">perform_eog_regression</span></code></a>(self)</p></td>
+<td><p>If requested, it will remove artifact from eog data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#preprocess.Preprocess.perform_filter" title="preprocess.Preprocess.perform_filter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">perform_filter</span></code></a>(self)</p></td>
+<td><p>Performs initial filter (high, low, or band-pass) and removes line noise.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#preprocess.Preprocess.perform_prep" title="preprocess.Preprocess.perform_prep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">perform_prep</span></code></a>(self)</p></td>
+<td><p>Calls pyprep’s PrepPipeline and detects bad channels in the data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#preprocess.Preprocess.plot" title="preprocess.Preprocess.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>(self[, show])</p></td>
+<td><p>Outputs plots of data at each point in the preprocess pipeline.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="preprocess.Preprocess.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preprocess.html#Preprocess.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#preprocess.Preprocess.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit
+Perform the full preprocessing pipeline for pyautomagic (modeled from
+matlab’s automagic package).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>eeg_filt_eog_rpca</strong> (<em>mne.io.Raw</em>) – Corrected Data</p></li>
+<li><p><strong>fig1</strong> (<em>matplotlib.pyplot.figure</em>) – figure of 6 subplots at each stage of the preprocess pipeline</p></li>
+<li><p><strong>fig2</strong> (<em>matplotlib.pyplot.figure</em>) – Figure of the final cleaned eeg data</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">perform_RPCA</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preprocess.html#Preprocess.perform_RPCA"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Uses Robust Principal Component Analysis to remove noise from the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>eeg_filt_eog_rpca</strong> (<em>numpy.array</em>) – eeg data after filtering, eog_regression, and
+robust PCA (final cleaned data)</p></li>
+<li><p><strong>noise</strong> (<em>numpy.array</em>) – array of the noise removed from rpca</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="preprocess.Preprocess.perform_eog_regression">
+<code class="sig-name descname">perform_eog_regression</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preprocess.html#Preprocess.perform_eog_regression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#preprocess.Preprocess.perform_eog_regression" title="Permalink to this definition">¶</a></dt>
+<dd><p>If requested, it will remove artifact from eog data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>eeg_filt_eog</strong> – Filtered eeg data, with eog regression</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://mne.tools/stable/generated/mne.io.Raw.html#mne.io.Raw" title="(in MNE v0.19.2)">mne.io.Raw</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="preprocess.Preprocess.perform_filter">
+<code class="sig-name descname">perform_filter</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preprocess.html#Preprocess.perform_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#preprocess.Preprocess.perform_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs initial filter (high, low, or band-pass) and removes line
+noise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>filtered</strong> – Filtered eeg data</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://mne.tools/stable/generated/mne.io.Raw.html#mne.io.Raw" title="(in MNE v0.19.2)">mne.io.Raw</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">perform_prep</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preprocess.html#Preprocess.perform_prep"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Calls pyprep’s PrepPipeline and detects bad channels in the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>bad_chs</strong> – List of all the bad channel names</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="preprocess.Preprocess.plot">
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">show=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preprocess.html#Preprocess.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#preprocess.Preprocess.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outputs plots of data at each point in the preprocess pipeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>fig1</strong> (<em>matplotlib.pyplot.figure</em>) – figure of 6 subplots at each stage of the preprocess pipeline</p></li>
+<li><p><strong>fig2</strong> (<em>matplotlib.pyplot.figure</em>) – Figure of the final cleaned eeg data</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-perform_EOG_regression">
+<span id="perform-eog-regression"></span><h1>Perform EOG Regression<a class="headerlink" href="#module-perform_EOG_regression" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="perform_EOG_regression.perform_EOG_regression">
+<code class="sig-prename descclassname">perform_EOG_regression.</code><code class="sig-name descname">perform_EOG_regression</code><span class="sig-paren">(</span><em class="sig-param">EEG</em>, <em class="sig-param">EOG</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/perform_EOG_regression.html#perform_EOG_regression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#perform_EOG_regression.perform_EOG_regression" title="Permalink to this definition">¶</a></dt>
+<dd><p>The artifacts due to EOG activity are removed from the EEG data using the subtraction method
+that relies on the linear transformation of the EEG signal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>EEG</strong> (<em>np.ndarray</em>) – The input EEG data</p></li>
+<li><p><strong>EOG</strong> (<em>np.ndarray</em>) – The input EOG data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>clean_EEG</strong> – Cleaned EEG signal from EOG artifacts</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<p>[1] Pedroni, A., Bahreini, A., &amp; Langer, N. (2019). Automagic: Standardized preprocessing of big EEG data.
+Neuroimage, 200, 460-473. doi: 10.1016/j.neuroimage.2019.06.046</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-performFilter">
+<span id="perform-filter"></span><h1>Perform Filter<a class="headerlink" href="#module-performFilter" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="performFilter.performFilter">
+<code class="sig-prename descclassname">performFilter.</code><code class="sig-name descname">performFilter</code><span class="sig-paren">(</span><em class="sig-param">EEG</em>, <em class="sig-param">sfreq</em>, <em class="sig-param">filter_type=None</em>, <em class="sig-param">filt_freq=None</em>, <em class="sig-param">filter_length='auto'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/performFilter.html#performFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#performFilter.performFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function filters EEG data using Hamming windowed sinc FIR filter
+with input filter type and parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>EEG</strong> (<em>ndarray, shape (…, n_times)</em>) – Input EEG data to be filtered.</p></li>
+<li><p><strong>sfreq</strong> (<em>float | None</em>) – The sample frequency in Hz.</p></li>
+<li><p><strong>filter_type</strong> (<em>str</em>) – The filter type, can only take ‘low’, ‘high’ or ‘notch’, defaults to None</p></li>
+<li><p><strong>filt_freq</strong> (<em>float | None</em>) – The filter frequency in Hz, defaults to None</p></li>
+<li><p><strong>filter_length</strong> (<em>str | int</em>) – Length of the FIR filter to use, defaults to ‘auto’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The filtered EEG data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray, shape (…, n_times)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-rpca">
+<span id="robust-principal-component-analysis"></span><h1>Robust Principal Component Analysis<a class="headerlink" href="#module-rpca" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="rpca.rpca">
+<code class="sig-prename descclassname">rpca.</code><code class="sig-name descname">rpca</code><span class="sig-paren">(</span><em class="sig-param">M</em>, <em class="sig-param">lam=-1</em>, <em class="sig-param">tol=1e-07</em>, <em class="sig-param">maxIter=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpca.html#rpca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpca.rpca" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform Robust Principle Component Analysis:</p>
+<p>Performs a Robust Principal Component Analysis on the EEG data with
+the specified parameters: Lamda, Tolerance, and Maximum number of Iterations.
+The function outputs the EEG data with the noise removed as well as the nosie
+that was removed.</p>
+<p>Adapted from Cian Scannell - Oct-2017 (<a class="reference external" href="https://github.com/cianmscannell/RPCA">https://github.com/cianmscannell/RPCA</a>)
+Computes rpca separation of M into L(low rank) and S(Sparse) using the parameter lam
+this uses the alternating directions augmented method of multipliers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>M</strong> (<em>npumpy.darray</em>) – 1st parameter, EEG Data (must include)</p></li>
+<li><p><strong>lam</strong> (<em>double</em>) – 2nd parameter, Lamda paramter for RPCA (default = 1/(sqrt(# of Colunms))</p></li>
+<li><p><strong>tol</strong> (<em>double</em>) – 3rd parameter, Tolerance (defalut = 1e-7) RPCA param</p></li>
+<li><p><strong>maxIter</strong> (<em>int</em>) – fourth parameter, Maximum Iterations (deafult = 1000)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>Data</strong> (<em>npumpy.darray</em>) – Corrected Data (Low rank matrix)</p></li>
+<li><p><strong>Error</strong> (<em>npumpy.darray</em>) – Noise removed from the data (Sparse Matrix)
+note: M = L + S</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="rpca.soft_thres">
+<code class="sig-prename descclassname">rpca.</code><code class="sig-name descname">soft_thres</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">eps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpca.html#soft_thres"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpca.soft_thres" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cian Scannell - Oct-2017
+Soft thresholds a matrix x at the eps level
+i.e ST(x,eps)_ij = sgn(x _ij) max(<a href="#id1"><span class="problematic" id="id2">|x _ij|</span></a> - eps, 0)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>npumpy.darray</em>) – first parameter, values to be thersholded</p></li>
+<li><p><strong>eps</strong> (<em>double</em>) – second parameter, thershold</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>np.multiply(a,b)</strong> – thersholded values, where anythign under the threshold
+was set to zero</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>npumpy.darray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, C. Zurn, R. Bechtold, A. Lawrence, L. Xiang, S. Meza, D. Soni.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

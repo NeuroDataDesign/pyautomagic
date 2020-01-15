@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Project &#8212; pyautoomagic 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/gallery.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          PyAutomagic</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="auto_examples/index.html">Examples</a></li>
+                <li><a href="api.html">API</a></li>
+                <li><a href="whats_new.html">What's new</a></li>
+                <li><a href="https://github.com/neurodatadesign/pyautomagic">Github</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="module-Project">
+<span id="project"></span><h1>Project<a class="headerlink" href="#module-Project" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="Project.Project">
+<em class="property">class </em><code class="sig-prename descclassname">Project.</code><code class="sig-name descname">Project</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">d_folder</em>, <em class="sig-param">file_ext</em>, <em class="sig-param">montage</em>, <em class="sig-param">sampling_rate</em>, <em class="sig-param">params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object containing all methods for creating a new project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the project</p></li>
+<li><p><strong>d_folder</strong> (<em>str</em>) – The folder where the raw data is stored</p></li>
+<li><p><strong>file_ext</strong> (<em>str</em>) – File extension</p></li>
+<li><p><strong>montage</strong> (<em>str</em>) – Montage to be used</p></li>
+<li><p><strong>sampling_rate</strong> (<em>int</em>) – Sampling rate for the txt file</p></li>
+<li><p><strong>params</strong> (<em>dict</em>) – Preprocessing parameters for the new project</p></li>
+</ul>
+</dd>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>quality_thresholds</strong> – The thresholds to rate te quality of the datasets</p></li>
+<li><p><strong>ds_rate</strong> – Sampling rate to create reduced files</p></li>
+<li><p><strong>rate_cutoffs</strong> – Sampling rate to the recorded data</p></li>
+<li><p><strong>config</strong> – Configuration file with all the project constants</p></li>
+<li><p><strong>params</strong> (<em>dir</em>) – The default parameters to be used</p></li>
+<li><p><strong>visualization_params</strong> (<em>dir</em>) – The default visualisation parameters to be used</p></li>
+<li><p><strong>CGV</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – Constant Global Variables</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Project.Project.create_ratings_structure" title="Project.Project.create_ratings_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_ratings_structure</span></code></a>(self)</p></td>
+<td><p>Method that creates and initializes all data structures based on the data on both data folder and results folder</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Project.Project.dir_not_hiddens" title="Project.Project.dir_not_hiddens"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_not_hiddens</span></code></a>(folder, extn)</p></td>
+<td><p>Returns the list of files in the folder, excluding the hidden files</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Project.Project.get_current_block" title="Project.Project.get_current_block"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_current_block</span></code></a>(self)</p></td>
+<td><p>Returns the block pointed by the current index</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Project.Project.get_quality_ratings" title="Project.Project.get_quality_ratings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_quality_ratings</span></code></a>(self, cutoffs)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cutoffs</strong> (<em>dict</em>) – cutoffs on which the ratings will be decided</p>
+</dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Project.Project.get_rated_count" title="Project.Project.get_rated_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_rated_count</span></code></a>(self)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Project.Project.interpolate_selected" title="Project.Project.interpolate_selected"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpolate_selected</span></code></a>(self)</p></td>
+<td><p>Interpolates all the channels selected to be interpolated</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Project.Project.list_preprocessed_subjects" title="Project.Project.list_preprocessed_subjects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_preprocessed_subjects</span></code></a>(self)</p></td>
+<td><p>Method that lists all folders in the results folder</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Project.Project.list_subject_files" title="Project.Project.list_subject_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_subject_files</span></code></a>(self)</p></td>
+<td><p>Method that lists all folders in the data folder</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Project.Project.list_subjects" title="Project.Project.list_subjects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_subjects</span></code></a>(root_folder)</p></td>
+<td><p>Returns the list of subjects in the folder</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Project.Project.make_rating_manually" title="Project.Project.make_rating_manually"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_rating_manually</span></code></a>(block, q_rate)</p></td>
+<td><p>Returns q_rate if the block is not rated manually.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Project.Project.preprocess_all" title="Project.Project.preprocess_all"><code class="xref py py-obj docutils literal notranslate"><span class="pre">preprocess_all</span></code></a>(self)</p></td>
+<td><p>Preprocess all files in the data folder of the project</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Project.Project.save_project" title="Project.Project.save_project"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_project</span></code></a>(self)</p></td>
+<td><p>saves the project information to a JSON file</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Project.Project.set_data_folder" title="Project.Project.set_data_folder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_data_folder</span></code></a>(self, folder)</p></td>
+<td><p>Sets the path folder where the data is stored</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Project.Project.set_name" title="Project.Project.set_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_name</span></code></a>(self, name)</p></td>
+<td><p>Sets the name of a new project</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Project.Project.set_results_folder" title="Project.Project.set_results_folder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_results_folder</span></code></a>(self, folder)</p></td>
+<td><p>Sets the path folder where the results will be stored</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Project.Project.to_be_interpolated_count" title="Project.Project.to_be_interpolated_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_be_interpolated_count</span></code></a>(self)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Project.Project.update_project" title="Project.Project.update_project"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_project</span></code></a>(self, preprocessed)</p></td>
+<td><p>Updates the project information dictionary with each blocks information</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Project.Project.update_rating_lists" title="Project.Project.update_rating_lists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_rating_lists</span></code></a>(self, block)</p></td>
+<td><p>Updates the rating lists according to the rating of the block.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="Project.Project.create_ratings_structure">
+<code class="sig-name descname">create_ratings_structure</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.create_ratings_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.create_ratings_structure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that creates and initializes all data structures based on the data
+on both data folder and results folder</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>block_list</em></p></li>
+<li><p><em>processed_list</em></p></li>
+<li><p><em>block_map</em></p></li>
+<li><p><em>n_processed_subjects</em></p></li>
+<li><p><em>n_processed_files</em></p></li>
+<li><p><em>n_block</em></p></li>
+<li><p><em>current</em></p></li>
+<li><p><em>interpolate_list</em></p></li>
+<li><p><em>good_list</em></p></li>
+<li><p><em>bad_list</em></p></li>
+<li><p><em>ok_list</em></p></li>
+<li><p><em>not_rated_list</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Project.Project.dir_not_hiddens">
+<em class="property">static </em><code class="sig-name descname">dir_not_hiddens</code><span class="sig-paren">(</span><em class="sig-param">folder</em>, <em class="sig-param">extn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.dir_not_hiddens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.dir_not_hiddens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of files in the folder, excluding the hidden files</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>folder</strong> – The folder in which the files are listed</p></li>
+<li><p><strong>extn</strong> – Extension of the raw file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of files that are not hidden</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>files</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Project.Project.get_current_block">
+<code class="sig-name descname">get_current_block</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.get_current_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.get_current_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the block pointed by the current index</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Current block</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>block</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Project.Project.get_quality_ratings">
+<code class="sig-name descname">get_quality_ratings</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">cutoffs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.get_quality_ratings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.get_quality_ratings" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cutoffs</strong> (<em>dict</em>) – cutoffs on which the ratings will be decided</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ratings</strong> – list of block-wise ratings</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Project.Project.get_rated_count">
+<code class="sig-name descname">get_rated_count</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.get_rated_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.get_rated_count" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Count for no. of blocks that are yet to be rated</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Project.Project.interpolate_selected">
+<code class="sig-name descname">interpolate_selected</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.interpolate_selected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.interpolate_selected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolates all the channels selected to be interpolated</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Project.Project.list_preprocessed_subjects">
+<code class="sig-name descname">list_preprocessed_subjects</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.list_preprocessed_subjects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.list_preprocessed_subjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that lists all folders in the results folder</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>listb</strong> – List of all folders in the results folder</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Project.Project.list_subject_files">
+<code class="sig-name descname">list_subject_files</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.list_subject_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.list_subject_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that lists all folders in the data folder</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>listb</strong> – List of all folders in the data folder</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Project.Project.list_subjects">
+<em class="property">static </em><code class="sig-name descname">list_subjects</code><span class="sig-paren">(</span><em class="sig-param">root_folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.list_subjects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.list_subjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of subjects in the folder</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>root_folder</strong> (<em>str</em>) – The folder in which the subjects are looked for</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>subjects</strong> – List of subjects in the root folder</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Project.Project.make_rating_manually">
+<em class="property">static </em><code class="sig-name descname">make_rating_manually</code><span class="sig-paren">(</span><em class="sig-param">block</em>, <em class="sig-param">q_rate</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.make_rating_manually"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.make_rating_manually" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns q_rate if the block is not rated manually.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q_rate</strong> (<em>float</em>) – The rate to be returned</p></li>
+<li><p><strong>block</strong> – Block for which the rate is returned</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Return q_rate if the block is not manually rated.
+If it is rated manually return ‘Manually rated’</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>rate</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Project.Project.preprocess_all">
+<code class="sig-name descname">preprocess_all</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.preprocess_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.preprocess_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess all files in the data folder of the project</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Project.Project.save_project">
+<code class="sig-name descname">save_project</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.save_project"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.save_project" title="Permalink to this definition">¶</a></dt>
+<dd><p>saves the project information to a JSON file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Project.Project.set_data_folder">
+<code class="sig-name descname">set_data_folder</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.set_data_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.set_data_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the path folder where the data is stored</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>folder</strong> (<em>str</em>) – Path to the raw data folder</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self.data_folder</strong> – Path to the raw data folder</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Project.Project.set_name">
+<code class="sig-name descname">set_name</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.set_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.set_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the name of a new project</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Name of the current project</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self.name</strong> – Name of the new project</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Project.Project.set_results_folder">
+<code class="sig-name descname">set_results_folder</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.set_results_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.set_results_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the path folder where the results will be stored</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>folder</strong> (<em>str</em>) – Path where is the data stored</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self.results_folder</strong> – Path to the results folder</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Project.Project.to_be_interpolated_count">
+<code class="sig-name descname">to_be_interpolated_count</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.to_be_interpolated_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.to_be_interpolated_count" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Count for no. of blocks that are yet to be interpolated</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Project.Project.update_project">
+<code class="sig-name descname">update_project</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">preprocessed</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.update_project"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.update_project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the project information dictionary with each blocks information</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>preprocessed</strong> – Preprocessed files</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Project.Project.update_rating_lists">
+<code class="sig-name descname">update_rating_lists</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">block</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Project.html#Project.update_rating_lists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Project.Project.update_rating_lists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the rating lists according to the rating of the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>block</strong> – block for which the rating list has to be updated</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-Block">
+<span id="block"></span><h1>Block<a class="headerlink" href="#module-Block" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="Block.Block">
+<em class="property">class </em><code class="sig-prename descclassname">Block.</code><code class="sig-name descname">Block</code><span class="sig-paren">(</span><em class="sig-param">root_path</em>, <em class="sig-param">data_filename</em>, <em class="sig-param">project</em>, <em class="sig-param">subject</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Block.html#Block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Block.Block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object for all operations on an individual dataset.</p>
+<p>Initialized using the name and path of the raw data.
+Preprocess, interpolate, rate for quality, and store those files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root_path</strong> (<em>str</em>) – root directory of the BIDS project</p></li>
+<li><p><strong>data_filename</strong> (<em>str</em>) – BIDS filename with extension</p></li>
+<li><p><strong>project</strong> (<em>object</em>) – project object to which this block belongs</p></li>
+<li><p><strong>subject</strong> (<em>object</em>) – subject object to which this block belongs</p></li>
+</ul>
+</dd>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>unique_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – raw file name minus extension, used for saving results as well</p></li>
+<li><p><strong>file_ext</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – raw file extension</p></li>
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – parameters for preprocessing and calculating quality metrics</p></li>
+<li><p><strong>sampling_rate</strong> – sampling rate of raw data file</p></li>
+<li><p><strong>result_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – directory path to where results are stored for the block</p></li>
+<li><p><strong>rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – current rating of the file (good, bad, ok, not rated)</p></li>
+<li><p><strong>to_be_interpolated</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – list of channel indices that are to be interpolated</p></li>
+<li><p><strong>auto_bad_chans</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – list of channel indices detected as bad</p></li>
+<li><p><strong>final_bad_chans</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – list of channel indices determined to be bad after checks</p></li>
+<li><p><strong>quality_scores</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – contains all metrics of quality calculated for the dataset</p></li>
+<li><p><strong>times_committed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – used to track how many changes were made to the evaluation of the data</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="Block.Block.preprocess">
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Block.html#Block.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Block.Block.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>run the block through preprocessing steps, calc quality scores, save files, write log</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Block.Block.interpolate">
+<code class="sig-name descname">interpolate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Block.html#Block.interpolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Block.Block.interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>interpolate the dataset, update quality scores and rating, save files, write log</p>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Block.Block.find_result_path" title="Block.Block.find_result_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_result_path</span></code></a>(self)</p></td>
+<td><p>Identifies the directory path pointing to where results stored</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Block.Block.interpolate" title="Block.Block.interpolate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpolate</span></code></a>(self)</p></td>
+<td><p>Interpolates bad channels to create new data and updates info</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Block.Block.load_data" title="Block.Block.load_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_data</span></code></a>(self)</p></td>
+<td><p>Load raw data from BIDS folder</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Block.Block.preprocess" title="Block.Block.preprocess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">preprocess</span></code></a>(self)</p></td>
+<td><p>Preprocesses the raw data associated with this block</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Block.Block.save_all_files" title="Block.Block.save_all_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_all_files</span></code></a>(self, results, fig1, fig2)</p></td>
+<td><p>Save results dictionary and figures to results path</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Block.Block.update_rating" title="Block.Block.update_rating"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_rating</span></code></a>(self, update)</p></td>
+<td><p>Takes update about ratings and stores in object</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Block.Block.update_rating_from_file" title="Block.Block.update_rating_from_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_rating_from_file</span></code></a>(self)</p></td>
+<td><p>Updates block information from the file currently stored</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Block.Block.write_log" title="Block.Block.write_log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_log</span></code></a>(self, updates)</p></td>
+<td><p>Writes a log for all of the updates its making/actions performed :Parameters: <strong>updates</strong> (<em>dict</em>)</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="Block.Block.find_result_path">
+<code class="sig-name descname">find_result_path</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Block.html#Block.find_result_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Block.Block.find_result_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identifies the directory path pointing to where results stored</p>
+<p>Following BIDS requirements, we only have either the subject folder or both subject and session.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>none</strong></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result_path</strong> – location of results files within BIDS folder</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">interpolate</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Block.html#Block.interpolate"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Interpolates bad channels to create new data and updates info</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>none</strong></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>none</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Block.Block.load_data">
+<code class="sig-name descname">load_data</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Block.html#Block.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Block.Block.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load raw data from BIDS folder</p>
+<p>Allowing for a number of extensions, loads file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>none</strong></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>raw MNE object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Block.html#Block.preprocess"><span class="viewcode-link">[source]</span></a></dt>
+<dd><blockquote>
+<div><p>Preprocesses the raw data associated with this block</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>none</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>results: dict</dt><dd><p>dictionary containing all the new updates to the block and the preprocessed array</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Block.Block.save_all_files">
+<code class="sig-name descname">save_all_files</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">results</em>, <em class="sig-param">fig1</em>, <em class="sig-param">fig2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Block.html#Block.save_all_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Block.Block.save_all_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save results dictionary and figures to results path</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>results</strong> – MNE raw object with info attribute containing</p></li>
+<li><p><strong>fig1</strong> – Figure of ??</p></li>
+<li><p><strong>fig2</strong> – Figure of ??</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>none</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Block.Block.update_rating">
+<code class="sig-name descname">update_rating</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">update</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Block.html#Block.update_rating"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Block.Block.update_rating" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes update about ratings and stores in object</p>
+<p>From project level object, get an update on rating info.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>update</strong> (<em>dict</em>) – dictionary of updates</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>none</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Block.Block.update_rating_from_file">
+<code class="sig-name descname">update_rating_from_file</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Block.html#Block.update_rating_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Block.Block.update_rating_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates block information from the file currently stored</p>
+<p>Checks for results file, if it’s there, and informaation, we update.
+No direct returns, but updates block fields.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>none</strong></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>none</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Block.Block.write_log">
+<code class="sig-name descname">write_log</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">updates</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Block.html#Block.write_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Block.Block.write_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a log for all of the updates its making/actions performed
+:Parameters: <strong>updates</strong> (<em>dict</em>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Updates in log file</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-Subject">
+<span id="subject"></span><h1>Subject<a class="headerlink" href="#module-Subject" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="Subject.Subject">
+<em class="property">class </em><code class="sig-prename descclassname">Subject.</code><code class="sig-name descname">Subject</code><span class="sig-paren">(</span><em class="sig-param">data_folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Subject.html#Subject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Subject.Subject" title="Permalink to this definition">¶</a></dt>
+<dd><p>SUBJECT is a class representing each subject in the dataFolder.
+A Subject corresponds to a folder, which contains one or more
+Blocks. A Block represents a raw file and it’s associated
+preprocessed file, if any (See Block).</p>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Subject.Subject.extract_name" title="Subject.Subject.extract_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_name</span></code></a>(address)</p></td>
+<td><p>extract the name of the subject from subject data folder.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#Subject.Subject.result_path" title="Subject.Subject.result_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">result_path</span></code></a>(self, data_folder)</p></td>
+<td><p>finds the result folder path for the corresponding subject data folder according to the BIDS folder hierarchy.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#Subject.Subject.update_addresses" title="Subject.Subject.update_addresses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_addresses</span></code></a>(self, new_data_path, …)</p></td>
+<td><p>This method is to be called to update addresses in case the project is loaded from another operating system and may have a different path to the dataFolder or resultFolder.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="Subject.Subject.extract_name">
+<em class="property">static </em><code class="sig-name descname">extract_name</code><span class="sig-paren">(</span><em class="sig-param">address</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Subject.html#Subject.extract_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Subject.Subject.extract_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>extract the name of the subject from subject data folder.
+:Parameters: <strong>address</strong> (<em>str</em>) – path of the subject folder</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>name</strong> – name of the subject</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Subject.Subject.result_path">
+<code class="sig-name descname">result_path</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">data_folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Subject.html#Subject.result_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Subject.Subject.result_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>finds the result folder path for the corresponding subject data folder according to the BIDS folder hierarchy.
+:Parameters: <strong>data_folder</strong> (<em>str</em>) – subject data folder</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>result</strong> – corresponding result folder</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Subject.Subject.update_addresses">
+<code class="sig-name descname">update_addresses</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">new_data_path</em>, <em class="sig-param">new_project_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Subject.html#Subject.update_addresses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Subject.Subject.update_addresses" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is to be called to update addresses
+in case the project is loaded from another operating system and may
+have a different path to the dataFolder or resultFolder. This can
+happen either because the data is on a server and the path to it is
+different on different systems, or simply if the project is loaded
+from a windows to a iOS or vice versa.
+:Parameters: * <strong>new_data_path</strong> (<em>str</em>) – updated path of the data folder</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>new_project_path</strong> (<em>str</em>) – updated path of the project folder</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-calcQuality">
+<span id="calculate-quality"></span><h1>Calculate Quality<a class="headerlink" href="#module-calcQuality" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="calcQuality.calcQuality">
+<code class="sig-prename descclassname">calcQuality.</code><code class="sig-name descname">calcQuality</code><span class="sig-paren">(</span><em class="sig-param">data: numpy.ndarray</em>, <em class="sig-param">bad_chans: List</em>, <em class="sig-param">overallThresh: float = 50</em>, <em class="sig-param">timeThresh: float = 25</em>, <em class="sig-param">chanThresh: float = 25</em>, <em class="sig-param">apply_common_avg: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/calcQuality.html#calcQuality"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calcQuality.calcQuality" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates four essential quality metrics of a data set and returns a dictionary of the quality metrics and thresholds/settings used</p>
+<dl class="simple">
+<dt>The four quality metrics:</dt><dd><p>Overall high amplitude data points
+Timepoints of high variance across channels
+Ratio of bad channels
+Channels of high variance across time</p>
+</dd>
+</dl>
+<p>Mean absolute voltage is also calculated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Data</strong> (<em>np.ndarray</em>) – a channels x timepoints data array of EEG</p></li>
+<li><p><strong>bad_chans</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – a list of the numbers of bad channels</p></li>
+<li><p><strong>overallThresh</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – overall threshold for rejection of …</p></li>
+<li><p><strong>timeThresh</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – threshold for rejecting time segments</p></li>
+<li><p><strong>chanThresh</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – threshold for rejecting channels</p></li>
+<li><p><strong>apply_common_avg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if average referencing should be applied</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>quality_metrics: a dictionary of the quality metrics and thresholds/settings used
+The four quality metrics:
+Overall high amplitude data points
+Timepoints of high variance across channels
+Ratio of bad channels
+Channels of high variance across time</p>
+<p>Mean absolute voltage also calculated</p>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-rateQuality">
+<span id="rate-quality"></span><h1>Rate Quality<a class="headerlink" href="#module-rateQuality" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="rateQuality.rateQuality">
+<code class="sig-prename descclassname">rateQuality.</code><code class="sig-name descname">rateQuality</code><span class="sig-paren">(</span><em class="sig-param">quality_metrics: dict</em>, <em class="sig-param">overall_Good_Cutoff: float = 0.1</em>, <em class="sig-param">overall_Bad_Cutoff: float = 0.2</em>, <em class="sig-param">time_Good_Cutoff: float = 0.1</em>, <em class="sig-param">time_Bad_Cutoff: float = 0.2</em>, <em class="sig-param">bad_Channel_Good_Cutoff: float = 0.15</em>, <em class="sig-param">bad_Channel_Bad_Cutoff: float = 0.3</em>, <em class="sig-param">channel_Good_Cutoff: float = 0.15</em>, <em class="sig-param">channel_Bad_Cutoff: float = 0.3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rateQuality.html#rateQuality"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rateQuality.rateQuality" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rates datasets, based on quality measures calculated with calcQuality().</p>
+<dl class="simple">
+<dt>The possible ratings:</dt><dd><p>Good overall rating
+Regular overall rating
+Bad overall rating</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>quality_metrics</strong> (<em>dict</em>) – a dictionary containing the quality metrics to rate the dataset.</p></li>
+<li><p><strong>overall_Good_Cutoff</strong> (<em>float</em>) – cutoff for “Good” quality based on  overall high amplitude data points [0.1].</p></li>
+<li><p><strong>overall_Bad_Cutoff</strong> (<em>float</em>) – cutoff for “Bad” quality based on overall high amplitude data point [0.2].</p></li>
+<li><p><strong>time_Good_Cutoff</strong> (<em>float</em>) – cutoff for “Good” quality based on time points of high variance across channels [0.1].</p></li>
+<li><p><strong>time_Bad_Cutoff</strong> (<em>float</em>) – cutoff for “Bad” quality based on time points of high variance across channels [0.2].</p></li>
+<li><p><strong>bad_Channel_Good_Cutoff</strong> (<em>float</em>) – cutoff for “Good” quality based on ratio of bad channels [0.15].</p></li>
+<li><p><strong>bad_Channel_Bad_Cutoff</strong> (<em>float</em>) – cutoff for “Bad” quality based on ratio of bad channels [0.3].</p></li>
+<li><p><strong>channel_Good_Cutoff</strong> (<em>float</em>) – cutoff for “Good” quality based on channels of high variance across time [0.15].</p></li>
+<li><p><strong>channel_Bad_Cutoff</strong> (<em>float</em>) – cutoff for “Bad” quality based on channels of high variance across time [0.3].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dataset_qualification</strong> – a dictionary indicating is the dataset if “Good” = 100, “Regular” = 50 or “Bad” = 0.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, C. Zurn, R. Bechtold, A. Lawrence, L. Xiang, S. Meza, D. Soni.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

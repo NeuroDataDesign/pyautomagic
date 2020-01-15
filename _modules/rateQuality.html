@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>rateQuality &#8212; pyautoomagic 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/gallery.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          PyAutomagic</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../auto_examples/index.html">Examples</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../whats_new.html">What's new</a></li>
+                <li><a href="https://github.com/neurodatadesign/pyautomagic">Github</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for rateQuality</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2019 NeuroData (http://neurodata.io)</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+    <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> : </span><span class="si">%(levelname)s</span><span class="s2">: </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span>
+<span class="p">)</span>
+
+
+<span class="c1"># Function that rates EEG datasets depending on quality_metrics values and predefined rating values</span>
+
+
+<div class="viewcode-block" id="rateQuality"><a class="viewcode-back" href="../source.html#rateQuality.rateQuality">[docs]</a><span class="k">def</span> <span class="nf">rateQuality</span><span class="p">(</span>
+    <span class="n">quality_metrics</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="n">overall_Good_Cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">overall_Bad_Cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">time_Good_Cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">time_Bad_Cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">bad_Channel_Good_Cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.15</span><span class="p">,</span>
+    <span class="n">bad_Channel_Bad_Cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">channel_Good_Cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.15</span><span class="p">,</span>
+    <span class="n">channel_Bad_Cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Rates datasets, based on quality measures calculated with calcQuality().</span>
+
+<span class="sd">    The possible ratings:</span>
+<span class="sd">        Good overall rating</span>
+<span class="sd">        Regular overall rating</span>
+<span class="sd">        Bad overall rating</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    quality_metrics : dict</span>
+<span class="sd">                    a dictionary containing the quality metrics to rate the dataset.</span>
+
+<span class="sd">    overall_Good_Cutoff : float</span>
+<span class="sd">                    cutoff for &quot;Good&quot; quality based on  overall high amplitude data points [0.1].</span>
+
+<span class="sd">    overall_Bad_Cutoff : float</span>
+<span class="sd">                    cutoff for &quot;Bad&quot; quality based on overall high amplitude data point [0.2].</span>
+
+<span class="sd">    time_Good_Cutoff : float</span>
+<span class="sd">                    cutoff for &quot;Good&quot; quality based on time points of high variance across channels [0.1].</span>
+
+<span class="sd">    time_Bad_Cutoff : float</span>
+<span class="sd">                    cutoff for &quot;Bad&quot; quality based on time points of high variance across channels [0.2].</span>
+
+<span class="sd">    bad_Channel_Good_Cutoff : float</span>
+<span class="sd">                    cutoff for &quot;Good&quot; quality based on ratio of bad channels [0.15].</span>
+
+<span class="sd">    bad_Channel_Bad_Cutoff : float</span>
+<span class="sd">                    cutoff for &quot;Bad&quot; quality based on ratio of bad channels [0.3].</span>
+
+<span class="sd">    channel_Good_Cutoff : float</span>
+<span class="sd">                    cutoff for &quot;Good&quot; quality based on channels of high variance across time [0.15].</span>
+
+<span class="sd">    channel_Bad_Cutoff : float</span>
+<span class="sd">                    cutoff for &quot;Bad&quot; quality based on channels of high variance across time [0.3].</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dataset_qualification : dict</span>
+<span class="sd">                    a dictionary indicating is the dataset if &quot;Good&quot; = 100, &quot;Regular&quot; = 50 or &quot;Bad&quot; = 0.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Check that the values in quality_metrics{} are positive numbers not equal to 0</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">quality_metrics</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="c1"># Verify if any value in quality_metrics is a string</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                <span class="mi">40</span><span class="p">,</span>
+                <span class="s2">&quot;Some value of Quality Metrics is not a positive number, please verify your EEG input data&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">break</span>
+        <span class="c1"># Verify if any value in quality_metrics is bool type</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                <span class="mi">40</span><span class="p">,</span>
+                <span class="s2">&quot;Some value of Quality Metrics is not a positive number, please verify your EEG input data&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">break</span>
+        <span class="c1"># Verify if any value in quality_metrics is a negative number</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                <span class="mi">40</span><span class="p">,</span>
+                <span class="s2">&quot;Some value of Quality Metrics is not a positive number, please verify your EEG input data&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="c1"># Rating of EEG DATA according to the values of quality_metrics</span>
+
+            <span class="c1"># The function rates the EEG DATA with the rule that the rating depends on the WORST rating</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">quality_metrics</span><span class="p">[</span><span class="s2">&quot;overall_high_amp&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">overall_Bad_Cutoff</span>
+                <span class="ow">or</span> <span class="n">quality_metrics</span><span class="p">[</span><span class="s2">&quot;times_high_var&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">time_Bad_Cutoff</span>
+                <span class="ow">or</span> <span class="n">quality_metrics</span><span class="p">[</span><span class="s2">&quot;ratio_bad_chans&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">bad_Channel_Bad_Cutoff</span>
+                <span class="ow">or</span> <span class="n">quality_metrics</span><span class="p">[</span><span class="s2">&quot;chan_high_var&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">channel_Bad_Cutoff</span>
+            <span class="p">):</span>
+                <span class="n">dataset_qualification</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;dataset_qualification&quot;</span><span class="p">:</span> <span class="s2">&quot;Bad dataset&quot;</span>
+                <span class="p">}</span>  <span class="c1"># Bad EEG dataset rating if any rating is BAD</span>
+                <span class="c1"># logging.info(&quot;Bad dataset: %s&quot;, dataset_qualification[&#39;dataset_qualification&#39;])</span>
+                <span class="k">return</span> <span class="n">dataset_qualification</span>
+            <span class="k">elif</span> <span class="p">(</span>
+                <span class="n">quality_metrics</span><span class="p">[</span><span class="s2">&quot;overall_high_amp&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">overall_Good_Cutoff</span>
+                <span class="ow">and</span> <span class="n">quality_metrics</span><span class="p">[</span><span class="s2">&quot;times_high_var&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">time_Good_Cutoff</span>
+                <span class="ow">and</span> <span class="n">quality_metrics</span><span class="p">[</span><span class="s2">&quot;ratio_bad_chans&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">bad_Channel_Good_Cutoff</span>
+                <span class="ow">and</span> <span class="n">quality_metrics</span><span class="p">[</span><span class="s2">&quot;chan_high_var&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">channel_Good_Cutoff</span>
+            <span class="p">):</span>
+                <span class="n">dataset_qualification</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;dataset_qualification&quot;</span><span class="p">:</span> <span class="s2">&quot;Good dataset&quot;</span>
+                <span class="p">}</span>  <span class="c1"># Good EEG dataset rating if all ratings are GOOD</span>
+                <span class="c1"># logging.info(&quot;Good dataset: %s&quot;, dataset_qualification[&#39;dataset_qualification&#39;])</span>
+                <span class="k">return</span> <span class="n">dataset_qualification</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dataset_qualification</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;dataset_qualification&quot;</span><span class="p">:</span> <span class="s2">&quot;Regular dataset&quot;</span>
+                <span class="p">}</span>  <span class="c1"># Regular EEG dataset rating if any rating is REGULAR</span>
+                <span class="c1"># logging.info(&quot;Regular dataset: %s&quot;, dataset_qualification[&#39;dataset_qualification&#39;])</span>
+                <span class="k">return</span> <span class="n">dataset_qualification</span></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, C. Zurn, R. Bechtold, A. Lawrence, L. Xiang, S. Meza, D. Soni.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

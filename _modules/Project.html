@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Project &#8212; pyautoomagic 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/gallery.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          PyAutomagic</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../auto_examples/index.html">Examples</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../whats_new.html">What's new</a></li>
+                <li><a href="https://github.com/neurodatadesign/pyautomagic">Github</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for Project</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">timeit</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">mne</span>
+<span class="kn">import</span> <span class="nn">mne_bids</span>
+<span class="kn">from</span> <span class="nn">mne_bids.utils</span> <span class="k">import</span> <span class="n">_write_json</span>
+<span class="kn">from</span> <span class="nn">pyautomagic.src.rateQuality</span> <span class="k">import</span> <span class="n">rateQuality</span>
+<span class="kn">from</span> <span class="nn">pyautomagic.src.Block</span> <span class="k">import</span> <span class="n">Block</span>
+<span class="kn">from</span> <span class="nn">pyautomagic.src.Subject</span> <span class="k">import</span> <span class="n">Subject</span>
+<span class="kn">from</span> <span class="nn">pyautomagic.src</span> <span class="k">import</span> <span class="n">Config</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+    <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> - </span><span class="si">%(levelname)s</span><span class="s2">: </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="Project"><a class="viewcode-back" href="../source.html#Project.Project">[docs]</a><span class="k">class</span> <span class="nc">Project</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Object containing all methods for creating a new project.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        The name of the project</span>
+
+<span class="sd">    d_folder : str</span>
+<span class="sd">        The folder where the raw data is stored</span>
+
+<span class="sd">    file_ext : str</span>
+<span class="sd">        File extension</span>
+
+<span class="sd">    montage : str</span>
+<span class="sd">        Montage to be used</span>
+
+<span class="sd">    sampling_rate : int</span>
+<span class="sd">        Sampling rate for the txt file</span>
+
+<span class="sd">    params : dict</span>
+<span class="sd">        Preprocessing parameters for the new project</span>
+
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    quality_thresholds</span>
+<span class="sd">        The thresholds to rate te quality of the datasets</span>
+
+<span class="sd">    ds_rate</span>
+<span class="sd">        Sampling rate to create reduced files</span>
+
+<span class="sd">    rate_cutoffs</span>
+<span class="sd">        Sampling rate to the recorded data</span>
+
+<span class="sd">    config</span>
+<span class="sd">        Configuration file with all the project constants</span>
+
+<span class="sd">    params : dir</span>
+<span class="sd">        The default parameters to be used</span>
+
+<span class="sd">    visualization_params : dir</span>
+<span class="sd">        The default visualisation parameters to be used</span>
+
+<span class="sd">    CGV : dict</span>
+<span class="sd">        Constant Global Variables</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">d_folder</span><span class="p">,</span> <span class="n">file_ext</span><span class="p">,</span> <span class="n">montage</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_folder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_data_folder</span><span class="p">(</span><span class="n">d_folder</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results_folder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_results_folder</span><span class="p">(</span><span class="n">d_folder</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_extension</span> <span class="o">=</span> <span class="n">file_ext</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">file_ext</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quality_thresholds</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Config</span><span class="o">.</span><span class="n">DefaultVisualizationParameters</span><span class="o">.</span><span class="n">CALC_QUALITY_PARAMS</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ds_rate</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">DefaultVisualizationParameters</span><span class="o">.</span><span class="n">DS_RATE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rate_cutoffs</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">DefaultVisualizationParameters</span><span class="o">.</span><span class="n">RATE_QUALITY_PARAMS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">Config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visualization_params</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">DefaultVisualizationParameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CGV</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">ConstantGlobalValues</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">automagic_final</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">montage</span> <span class="o">=</span> <span class="n">montage</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">=</span> <span class="n">sampling_rate</span>
+
+        <span class="c1"># Calling create_rating_structures() method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_ratings_structure</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Project.get_current_block"><a class="viewcode-back" href="../source.html#Project.Project.get_current_block">[docs]</a>    <span class="k">def</span> <span class="nf">get_current_block</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the block pointed by the current index</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        block</span>
+<span class="sd">            Current block</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">subject</span> <span class="o">=</span> <span class="n">Subject</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">block</span> <span class="o">=</span> <span class="n">Block</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">)</span>
+            <span class="n">block</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">return</span>
+
+        <span class="n">unique_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">processed_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current</span><span class="p">]</span>
+        <span class="n">block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_map</span><span class="p">[</span><span class="n">unique_name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">block</span></div>
+
+<div class="viewcode-block" id="Project.preprocess_all"><a class="viewcode-back" href="../source.html#Project.Project.preprocess_all">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Preprocess all files in the data folder of the project</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_folder</span><span class="p">)):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                <span class="mi">40</span><span class="p">,</span> <span class="s2">&quot;No directory exists, please specify the correct data directory&quot;</span>
+            <span class="p">)</span>  <span class="c1"># Displays error message if no data directory found</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;----- START PREPROCESSING -----&quot;</span><span class="p">)</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>  <span class="c1"># Calculates start time</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">block_list</span><span class="p">)):</span>
+                <span class="n">unique_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_map</span><span class="p">[</span><span class="n">unique_name</span><span class="p">]</span>
+                <span class="n">subject_name</span> <span class="o">=</span> <span class="n">block</span><span class="o">.</span><span class="n">subject</span><span class="o">.</span><span class="n">name</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                    <span class="mi">20</span><span class="p">,</span>
+                    <span class="s2">&quot;Processing file </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> out of </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">block</span><span class="o">.</span><span class="n">unique_name</span><span class="p">,</span>
+                    <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">block_list</span><span class="p">)),</span>
+                <span class="p">)</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results_folder</span><span class="p">,</span> <span class="s2">&quot;sub-&quot;</span> <span class="o">+</span> <span class="n">subject_name</span><span class="p">)</span>
+                <span class="p">):</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results_folder</span><span class="p">,</span> <span class="s2">&quot;sub-&quot;</span> <span class="o">+</span> <span class="n">subject_name</span><span class="p">)</span>
+                    <span class="p">)</span>
+
+                <span class="n">p_results</span> <span class="o">=</span> <span class="n">block</span><span class="o">.</span><span class="n">preprocess</span><span class="p">()</span>  <span class="c1"># Preprocess function</span>
+                <span class="n">EEG</span> <span class="o">=</span> <span class="n">p_results</span><span class="p">[</span><span class="s2">&quot;preprocessed&quot;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">EEG</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="s2">&quot;EEG PREPROCESSED DATA NOT FOUND&quot;</span><span class="p">)</span>
+                    <span class="k">break</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current</span> <span class="o">=</span> <span class="mi">1</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_project</span><span class="p">(</span><span class="n">p_results</span><span class="p">)</span>  <span class="c1"># Function to save the current changes</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;**Project saved**&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_project</span><span class="p">()</span>  <span class="c1"># Function to save all the changes</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>  <span class="c1"># End time</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;---- PREPROCESSING FINISHED ----&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;Total elapsed time: </span><span class="si">%s</span><span class="s2"> sec&quot;</span><span class="p">,</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
+            <span class="p">)</span>  <span class="c1"># Prints total elapsed time of the process</span></div>
+
+<div class="viewcode-block" id="Project.interpolate_selected"><a class="viewcode-back" href="../source.html#Project.Project.interpolate_selected">[docs]</a>    <span class="k">def</span> <span class="nf">interpolate_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Interpolates all the channels selected to be interpolated</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="s2">&quot;Interpolate subjects list is empty, please rate first&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;----- START INTERPOLATION -----&quot;</span><span class="p">)</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>
+            <span class="n">int_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">int_list</span><span class="p">)):</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">int_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">unique_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_list</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_map</span><span class="p">[</span><span class="n">unique_name</span><span class="p">]</span>
+
+                <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                    <span class="mi">20</span><span class="p">,</span>
+                    <span class="s2">&quot;Processing file </span><span class="si">%s</span><span class="s2"> file </span><span class="si">%s</span><span class="s2"> out of </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">block</span><span class="o">.</span><span class="n">unique_name</span><span class="p">,</span>
+                    <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span><span class="p">)),</span>
+                <span class="p">)</span>
+
+                <span class="n">block</span><span class="o">.</span><span class="n">interpolate</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">already_interpolated</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+                <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;**Project saved**&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_project</span><span class="p">()</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>  <span class="c1"># Calculates end time</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;----- INTERPOLATION FINISHED -----&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;Total elapsed time: </span><span class="si">%s</span><span class="s2"> sec&quot;</span><span class="p">,</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
+            <span class="p">)</span>  <span class="c1"># Prints total elapsed time of the process</span></div>
+
+<div class="viewcode-block" id="Project.update_rating_lists"><a class="viewcode-back" href="../source.html#Project.Project.update_rating_lists">[docs]</a>    <span class="k">def</span> <span class="nf">update_rating_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates the rating lists according to the rating of the block.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        block</span>
+<span class="sd">            block for which the rating list has to be updated</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">good_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">good_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">rate</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">CGV</span><span class="o">.</span><span class="n">RATINGS</span><span class="p">[</span><span class="s2">&quot;Good&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">good_list</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">good_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">good_list</span><span class="p">,</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span><span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span>
+                <span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span><span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span>
+                <span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">good_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">good_list</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">block</span><span class="o">.</span><span class="n">rate</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">CGV</span><span class="o">.</span><span class="n">RATINGS</span><span class="p">[</span><span class="s2">&quot;OK&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span><span class="p">,</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span><span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span>
+                <span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">good_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">good_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">good_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span><span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span>
+                <span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">block</span><span class="o">.</span><span class="n">rate</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">CGV</span><span class="o">.</span><span class="n">RATINGS</span><span class="p">[</span><span class="s2">&quot;Bad&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span><span class="p">,</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span><span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span>
+                <span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">good_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">good_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">good_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span><span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span>
+                <span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">block</span><span class="o">.</span><span class="n">rate</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">CGV</span><span class="o">.</span><span class="n">RATINGS</span><span class="p">[</span><span class="s2">&quot;Interpolate&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span><span class="p">,</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span><span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span>
+                <span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">good_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">good_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">good_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">block</span><span class="o">.</span><span class="n">rate</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">CGV</span><span class="o">.</span><span class="n">RATINGS</span><span class="p">[</span><span class="s2">&quot;NotRated&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span><span class="p">,</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">good_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">good_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">good_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span><span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span> <span class="o">!=</span> <span class="n">block</span><span class="o">.</span><span class="n">index</span>
+                <span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">good_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">good_list</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Project.get_quality_ratings"><a class="viewcode-back" href="../source.html#Project.Project.get_quality_ratings">[docs]</a>    <span class="k">def</span> <span class="nf">get_quality_ratings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutoffs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cutoffs : dict</span>
+<span class="sd">            cutoffs on which the ratings will be decided</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ratings : list</span>
+<span class="sd">            list of block-wise ratings</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">blocks</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">block_map</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">processed_list</span><span class="p">]</span>
+        <span class="n">q_scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">z</span><span class="o">.</span><span class="n">quality_scores</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">]</span>
+        <span class="n">ratings</span> <span class="o">=</span> <span class="p">[</span><span class="n">rateQuality</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">q_scores</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ratings</span></div>
+
+<div class="viewcode-block" id="Project.get_rated_count"><a class="viewcode-back" href="../source.html#Project.Project.get_rated_count">[docs]</a>    <span class="k">def</span> <span class="nf">get_rated_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Count for no. of blocks that are yet to be rated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processed_list</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Project.to_be_interpolated_count"><a class="viewcode-back" href="../source.html#Project.Project.to_be_interpolated_count">[docs]</a>    <span class="k">def</span> <span class="nf">to_be_interpolated_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Count for no. of blocks that are yet to be interpolated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Project.save_project"><a class="viewcode-back" href="../source.html#Project.Project.save_project">[docs]</a>    <span class="k">def</span> <span class="nf">save_project</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        saves the project information to a JSON file</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_results.json&quot;</span>
+        <span class="n">result_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results_folder</span><span class="p">,</span> <span class="n">result_file</span><span class="p">)</span>
+        <span class="n">_write_json</span><span class="p">(</span>
+            <span class="n">result_file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">automagic_final</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Project.update_project"><a class="viewcode-back" href="../source.html#Project.Project.update_project">[docs]</a>    <span class="k">def</span> <span class="nf">update_project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">preprocessed</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates the project information dictionary with each blocks information</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        preprocessed</span>
+<span class="sd">            Preprocessed files</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">update</span> <span class="o">=</span> <span class="n">preprocessed</span><span class="p">[</span><span class="s2">&quot;automagic&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">automagic_final</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">update</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Project.list_subject_files"><a class="viewcode-back" href="../source.html#Project.Project.list_subject_files">[docs]</a>    <span class="k">def</span> <span class="nf">list_subject_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that lists all folders in the data folder</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        listb : list</span>
+<span class="sd">            List of all folders in the data folder</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">listb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_subjects</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_folder</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">listb</span></div>
+
+<div class="viewcode-block" id="Project.list_preprocessed_subjects"><a class="viewcode-back" href="../source.html#Project.Project.list_preprocessed_subjects">[docs]</a>    <span class="k">def</span> <span class="nf">list_preprocessed_subjects</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that lists all folders in the results folder</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        listb : list</span>
+<span class="sd">            List of all folders in the results folder</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">listb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_subjects</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results_folder</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">listb</span></div>
+
+<div class="viewcode-block" id="Project.create_ratings_structure"><a class="viewcode-back" href="../source.html#Project.Project.create_ratings_structure">[docs]</a>    <span class="k">def</span> <span class="nf">create_ratings_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that creates and initializes all data structures based on the data</span>
+<span class="sd">        on both data folder and results folder</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        block_list</span>
+<span class="sd">        processed_list</span>
+<span class="sd">        block_map</span>
+<span class="sd">        n_processed_subjects</span>
+<span class="sd">        n_processed_files</span>
+<span class="sd">        n_block</span>
+<span class="sd">        current</span>
+<span class="sd">        interpolate_list</span>
+<span class="sd">        good_list</span>
+<span class="sd">        bad_list</span>
+<span class="sd">        ok_list</span>
+<span class="sd">        not_rated_list</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;Setting up project. Please wait...&quot;</span><span class="p">)</span>
+        <span class="n">slash</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span>
+        <span class="n">subjects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_subject_files</span><span class="p">()</span>
+        <span class="n">s_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">subjects</span><span class="p">)</span>
+
+        <span class="n">mapa</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">listb</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_extension</span>
+        <span class="n">p_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">i_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">g_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">b_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">o_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">n_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">already_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">files_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">n_preprocessed_file</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">n_preprocessed_subject</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">subjects</span><span class="p">)):</span>
+            <span class="n">subject_name</span> <span class="o">=</span> <span class="n">subjects</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">subject_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
+                <span class="s2">&quot;derivatives&quot;</span>
+            <span class="p">):</span>  <span class="c1"># Condition to exclude the results folder when looking for the subjects</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Adding subject </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">subject_name</span><span class="p">)</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_folder</span> <span class="o">+</span> <span class="n">slash</span> <span class="o">+</span> <span class="n">subject_name</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_folder</span> <span class="o">+</span> <span class="n">slash</span> <span class="o">+</span> <span class="n">subject_name</span>
+                <span class="n">subject</span> <span class="o">=</span> <span class="n">Subject</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+                <span class="n">raw_files</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">sess_or_EEG</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_subjects</span><span class="p">(</span><span class="n">subject</span><span class="o">.</span><span class="n">data_folder</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">sess_or_EEG</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+                    <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;ses-&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sess_or_EEG</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;ses-&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sess_or_EEG</span><span class="p">)</span>
+                <span class="p">):</span>
+                    <span class="k">for</span> <span class="n">sesIdx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sess_or_EEG</span><span class="p">)):</span>
+                        <span class="n">sess_file</span> <span class="o">=</span> <span class="n">sess_or_EEG</span><span class="p">[</span><span class="n">sesIdx</span><span class="p">]</span>
+                        <span class="n">eeg_fold</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">subject</span><span class="o">.</span><span class="n">data_folder</span>
+                            <span class="o">+</span> <span class="n">slash</span>
+                            <span class="o">+</span> <span class="n">sess_file</span>
+                            <span class="o">+</span> <span class="n">slash</span>
+                            <span class="o">+</span> <span class="s2">&quot;eeg&quot;</span>
+                            <span class="o">+</span> <span class="n">slash</span>
+                        <span class="p">)</span>
+                        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">eeg_fold</span><span class="p">):</span>
+                            <span class="n">raw_files</span> <span class="o">=</span> <span class="n">raw_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">dir_not_hiddens</span><span class="p">(</span><span class="n">eeg_fold</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+                            <span class="p">)</span>
+
+                <span class="k">elif</span> <span class="p">(</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">sess_or_EEG</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+                    <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;ses-&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sess_or_EEG</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;eeg&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sess_or_EEG</span><span class="p">)</span>
+                <span class="p">):</span>
+                    <span class="n">eeg_fold</span> <span class="o">=</span> <span class="n">subject</span><span class="o">.</span><span class="n">data_folder</span> <span class="o">+</span> <span class="n">slash</span> <span class="o">+</span> <span class="s2">&quot;eeg&quot;</span> <span class="o">+</span> <span class="n">slash</span>
+                    <span class="n">raw_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_not_hiddens</span><span class="p">(</span><span class="n">eeg_fold</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+
+                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">sess_or_EEG</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+                    <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;eeg&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sess_or_EEG</span>
+                <span class="p">):</span>
+                    <span class="n">eeg_fold</span> <span class="o">=</span> <span class="n">subject</span><span class="o">.</span><span class="n">data_folder</span> <span class="o">+</span> <span class="n">slash</span> <span class="o">+</span> <span class="s2">&quot;eeg&quot;</span> <span class="o">+</span> <span class="n">slash</span>
+                    <span class="n">raw_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_not_hiddens</span><span class="p">(</span><span class="n">eeg_fold</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">raw_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_not_hiddens</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">slash</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+
+                <span class="n">temp</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw_files</span><span class="p">)):</span>
+                    <span class="n">files_count</span> <span class="o">=</span> <span class="n">files_count</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="n">file</span> <span class="o">=</span> <span class="n">raw_files</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                    <span class="n">name_temp</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">name</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">name_temp</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">ext</span><span class="o">.</span><span class="n">isupper</span><span class="p">():</span>
+                            <span class="n">ext</span> <span class="o">=</span> <span class="n">ext</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                        <span class="k">elif</span> <span class="ow">not</span> <span class="n">ext</span><span class="o">.</span><span class="n">islower</span><span class="p">():</span>
+                            <span class="n">ext</span> <span class="o">=</span> <span class="n">ext</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+                        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_extension</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">file_extension</span> <span class="o">=</span> <span class="n">ext</span>
+
+                    <span class="n">file_name</span> <span class="o">=</span> <span class="n">name_temp</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;...Adding file </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+
+                    <span class="n">block</span> <span class="o">=</span> <span class="n">Block</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">data_folder</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">subject</span>
+                    <span class="p">)</span>  <span class="c1"># Calling block class</span>
+                    <span class="n">mapa</span><span class="p">[</span><span class="n">block</span><span class="o">.</span><span class="n">unique_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">block</span>
+                    <span class="n">listb</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">files_count</span><span class="p">,</span> <span class="n">block</span><span class="o">.</span><span class="n">unique_name</span><span class="p">)</span>
+                    <span class="n">block</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">files_count</span>
+
+                    <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">rate</span> <span class="o">==</span> <span class="s2">&quot;Good&quot;</span><span class="p">:</span>
+                        <span class="n">g_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">block</span><span class="o">.</span><span class="n">rate</span> <span class="o">==</span> <span class="s2">&quot;OK&quot;</span><span class="p">:</span>
+                        <span class="n">o_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">block</span><span class="o">.</span><span class="n">rate</span> <span class="o">==</span> <span class="s2">&quot;Bad&quot;</span><span class="p">:</span>
+                        <span class="n">b_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">block</span><span class="o">.</span><span class="n">rate</span> <span class="o">==</span> <span class="s2">&quot;interpolate&quot;</span><span class="p">:</span>
+                        <span class="n">i_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">block</span><span class="o">.</span><span class="n">rate</span> <span class="o">==</span> <span class="s2">&quot;not rated&quot;</span><span class="p">:</span>
+                        <span class="n">n_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">is_interpolated</span><span class="p">:</span>
+                        <span class="n">already_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+                    <span class="n">p_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">unique_name</span><span class="p">)</span>
+                    <span class="n">n_preprocessed_file</span> <span class="o">=</span> <span class="n">n_preprocessed_file</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span> <span class="o">+</span> <span class="mi">1</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw_files</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">temp</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw_files</span><span class="p">):</span>
+                    <span class="n">n_preprocessed_subject</span> <span class="o">=</span> <span class="n">n_preprocessed_subject</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">processed_list</span> <span class="o">=</span> <span class="n">p_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_processed_files</span> <span class="o">=</span> <span class="n">n_preprocessed_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_processed_subjects</span> <span class="o">=</span> <span class="n">n_preprocessed_subject</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_block</span> <span class="o">=</span> <span class="n">files_count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_subject</span> <span class="o">=</span> <span class="n">s_count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">block_map</span> <span class="o">=</span> <span class="n">mapa</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">block_list</span> <span class="o">=</span> <span class="n">listb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_list</span> <span class="o">=</span> <span class="n">i_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">good_list</span> <span class="o">=</span> <span class="n">g_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bad_list</span> <span class="o">=</span> <span class="n">b_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ok_list</span> <span class="o">=</span> <span class="n">o_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">not_rated_list</span> <span class="o">=</span> <span class="n">n_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">already_interpolated</span> <span class="o">=</span> <span class="n">already_list</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processed_list</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">current</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">current</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_project</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;**Project saved**&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Project.set_name"><a class="viewcode-back" href="../source.html#Project.Project.set_name">[docs]</a>    <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the name of a new project</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Name of the current project</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self.name : str</span>
+<span class="sd">            Name of the new project</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
+
+<div class="viewcode-block" id="Project.set_data_folder"><a class="viewcode-back" href="../source.html#Project.Project.set_data_folder">[docs]</a>    <span class="k">def</span> <span class="nf">set_data_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the path folder where the data is stored</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        folder : str</span>
+<span class="sd">            Path to the raw data folder</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self.data_folder : str</span>
+<span class="sd">            Path to the raw data folder</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_folder</span> <span class="o">=</span> <span class="n">folder</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_folder</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: This folder doesn&#39;t exist, please verify your data folder&quot;</span><span class="p">,</span> <span class="n">folder</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_folder</span></div>
+
+<div class="viewcode-block" id="Project.set_results_folder"><a class="viewcode-back" href="../source.html#Project.Project.set_results_folder">[docs]</a>    <span class="k">def</span> <span class="nf">set_results_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the path folder where the results will be stored</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        folder : str</span>
+<span class="sd">            Path where is the data stored</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self.results_folder : str</span>
+<span class="sd">            Path to the results folder</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: Cannot create results folder, please verify your data folder&quot;</span><span class="p">,</span>
+                <span class="n">folder</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="s2">&quot;derivatives&quot;</span><span class="p">,</span> <span class="s2">&quot;automagic&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results_folder</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results_folder</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_folder</span></div>
+
+<div class="viewcode-block" id="Project.make_rating_manually"><a class="viewcode-back" href="../source.html#Project.Project.make_rating_manually">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">make_rating_manually</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="n">q_rate</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns q_rate if the block is not rated manually.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        q_rate : float</span>
+<span class="sd">            The rate to be returned</span>
+<span class="sd">        block</span>
+<span class="sd">            Block for which the rate is returned</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        rate</span>
+<span class="sd">            Return q_rate if the block is not manually rated.</span>
+<span class="sd">            If it is rated manually return &#39;Manually rated&#39;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rate</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">is_manually_rated</span><span class="p">:</span>
+            <span class="n">rate</span> <span class="o">=</span> <span class="s2">&quot;Manually Rated&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rate</span> <span class="o">=</span> <span class="n">q_rate</span>
+        <span class="k">return</span> <span class="n">rate</span></div>
+
+<div class="viewcode-block" id="Project.list_subjects"><a class="viewcode-back" href="../source.html#Project.Project.list_subjects">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">list_subjects</span><span class="p">(</span><span class="n">root_folder</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the list of subjects in the folder</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        root_folder : str</span>
+<span class="sd">            The folder in which the subjects are looked for</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        subjects : list</span>
+<span class="sd">            List of subjects in the root folder</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">subs</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_folder</span><span class="p">)</span>
+        <span class="n">subjects</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">y</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">subs</span><span class="p">)</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_folder</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">subjects</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: This path doesn&#39;t have any folders, please verify your data&quot;</span><span class="p">,</span>
+                <span class="n">root_folder</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">subjects</span></div>
+
+<div class="viewcode-block" id="Project.dir_not_hiddens"><a class="viewcode-back" href="../source.html#Project.Project.dir_not_hiddens">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">dir_not_hiddens</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">extn</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the list of files in the folder, excluding the hidden files</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        folder</span>
+<span class="sd">            The folder in which the files are listed</span>
+
+<span class="sd">        extn</span>
+<span class="sd">            Extension of the raw file</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        files</span>
+<span class="sd">            List of files that are not hidden</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">scandir</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+            <span class="n">fname</span><span class="p">,</span> <span class="n">fext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">))</span> <span class="ow">and</span> <span class="n">fext</span> <span class="o">==</span> <span class="n">extn</span><span class="p">:</span>
+                <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">files</span></div></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2019, C. Zurn, R. Bechtold, A. Lawrence, L. Xiang, S. Meza, D. Soni.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
