@@ -1,24 +1,37 @@
+import os
 import sys
 
-import numpy
 from setuptools import find_packages, setup
 
 """
-Some cheat-codes for setting up a PyPi repo:
-    
-    To re-setup: 
-    
-        python setup.py bdist_wheel
+To re-setup: 
 
-        pip install -r requirements.txt --process-dependency-links
+    python setup.py sdist bdist_wheel
 
-    To test on test pypi:
+    pip install -r requirements.txt --process-dependency-links
+
+To test on test pypi:
     
-        twine upload --repository testpypi dist/*
+    twine upload --repository testpypi dist/*
+    
+    # test upload
+    pip install -i https://test.pypi.org/simple/ --no-deps pyautomagic
+
+    twine upload dist/* 
 """
-
 PACKAGE_NAME = "pyautomagic"
-VERSION = "0.1"
+# get the version
+version = None
+with open(os.path.join("pyautomagic", '__init__.py'), 'r') as fid:
+    for line in (line.strip() for line in fid):
+        if line.startswith('__version__'):
+            version = line.split('=')[1].strip().strip('\'').strip('"')
+            break
+if version is None:
+    raise RuntimeError('Could not determine version')
+
+MAINTAINER = 'Adam Li'
+MAINTAINER_EMAIL = 'adam2392@gmail.com'
 DESCRIPTION = "A Python3 package for eeg (pre)processing from Automagic."
 URL = 'https://github.com/NeuroDataDesign/pyautomagic'
 MINIMUM_PYTHON_VERSION = 3, 6  # Minimum of Python 3.6
@@ -27,7 +40,7 @@ REQUIRED_PACKAGES = [
     "scipy>=1.1.0",
     "scikit-learn>=0.19.2",
     "pandas>=0.23.4",
-    "mne>=0.18.2",
+    "mne>=0.19.2",
     "mne-bids>=0.3",
 ]
 CLASSIFICATION_OF_PACKAGE = [
@@ -52,6 +65,7 @@ CLASSIFICATION_OF_PACKAGE = [
     'Natural Language :: English',
 ]
 
+
 def check_python_version():
     """Exit when the Python version is too low."""
     if sys.version_info < MINIMUM_PYTHON_VERSION:
@@ -60,17 +74,25 @@ def check_python_version():
 
 setup(
     name=PACKAGE_NAME,
-    version=VERSION,
+    version=version,
     description=DESCRIPTION,
-    packages=find_packages(),
+    maintainer=MAINTAINER,
+    maintainer_email=MAINTAINER_EMAIL,
+    packages=find_packages(exclude=["tests"]),
     long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     url=URL,
     author='NDD19',
     license='MIT',
-    # include_dirs=[numpy.get_include()],
+    keywords="EEG, research tools, automated processing",
     dependency_links=[
         'git+https://github.com/NeuroDataDesign/pyautomagic#egg=pyautomagic',
     ],
+    project_urls={
+        "Documentation": "https://github.com/NeuroDataDesign/pyautomagic/docs/",
+        "Source": URL,
+        "Tracker": "https://github.com/NeuroDataDesign/pyautomagic/issues",
+    },
     install_requires=REQUIRED_PACKAGES,
     include_package_data=True,
     classifiers=CLASSIFICATION_OF_PACKAGE,

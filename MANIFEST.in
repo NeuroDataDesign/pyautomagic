@@ -1,7 +1,6 @@
 include *.rst
 include *.md
 include coverage.svg
-include pylint.svg
 include LICENSE
 include pyautomagic/__init__.py
 
