@@ -7,6 +7,7 @@ from pyautomagic.preprocessing.performFilter import performFilter
 from pyautomagic.preprocessing.perform_EOG_regression import perform_EOG_regression
 from pyautomagic.preprocessing.rpca import rpca
 
+
 class Preprocess:
     """Preprocess class for pyautomagic preprocessing pipeline: preprocess
     performs pyprep's prep_pipeline, then filters the eeg data, performs
