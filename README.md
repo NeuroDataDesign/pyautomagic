@@ -67,24 +67,8 @@ Project Organization
 Researchers dealing with EEG data. The main (default) workflow is summarized in: 
 
 # Installation Guide
-pyautomagic relies on the following libraries to work:
 
-    numpy
-    scipy
-    scikit-learn
-    pandas
-    mne
-    matplotlib
-    seaborn
-    mne-bids
-    
-Setup environment via Conda:
-
-
-    conda create -n pyautomagic
-    conda activate pyautomagic
-    conda config --add channels conda-forge
-    conda install numpy pandas mne scipy scikit-learn seaborn matplotlib
+For installation instructions, see [installation guide](./INSTALLATION.md).
     
 ## Setup Jupyter Kernel To Test
 You need to install ipykernel to expose your conda environment to jupyter notebooks.
@@ -94,25 +78,9 @@ You need to install ipykernel to expose your conda environment to jupyter notebo
     # now you can run jupyter lab and select a kernel
     jupyter lab 
         
-    
-## Install from Github
-To install, run this command in your repo:
-
-    pip install -e git+https://github.com/NeuroDataDesign/pyautomagic#egg=pyautomagic
-
 
 # Testing and Documentation
-Run tests and also autoformatting of your code. Install black, pylint, pytest, and pytest-coverage.
-    
-    conda install sphinx black pytest pytest-cov coverage 
-    pip install coverage-badge
-    black pyautomagic/*
-    pylint ./pyautomagic/
-    pytest --cov-config=.coveragerc --cov=./pyautomagic/ tests/
-    coverage-badge -f -o coverage.svg
 
-Use sphinx to generate documentation:
+For contributing, please see [contribution guide](./CONTRIBUTING.md).
 
-    sphinx-quickstart
-
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+For running tests, please see [testing guide](./TESTING_SETUP.md).
