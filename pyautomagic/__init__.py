@@ -5,4 +5,4 @@ warnings.simplefilter(action="ignore", category=FutureWarning)
 warnings.simplefilter(action="ignore", category=PendingDeprecationWarning)
 
 name = "pyautomagic"
-__version__ = "0.1.0"
+__version__ = '0.1.0'

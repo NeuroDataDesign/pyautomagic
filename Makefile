@@ -96,6 +96,8 @@ clean-so:
 clean-build:
 	rm -rf _build
 	rm -rf pyautomagic.egg-info
+	rm -rf build
+	rm -rf dist
 
 clean-ctags:
 	rm -f tags
