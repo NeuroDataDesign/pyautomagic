@@ -410,10 +410,9 @@ Now we just need to specify a few more EEG details to get something sensible:
     Writing '/Users/adam2392/mne_data/eegmmidb_bids/sub-001/sub-001_scans.tsv'...
 
     filename        acq_time
-    eeg/sub-001_task-imaginefists_run-1_eeg.edf     n/a
-    eeg/sub-001_task-imaginefists_run-2_eeg.edf     n/a
+    eeg/sub-001_task-imaginefists_run-1_eeg.edf     2009-08-12T16:15:00
+    eeg/sub-001_task-imaginefists_run-2_eeg.edf     2009-08-12T16:15:00
     eeg/sub-001_task-resteyesclosed_eeg.edf 2009-08-12T16:15:00
-    ieeg/sub-001_task-testresteyes_acq-ecog_ieeg.fif        n/a
 
     Writing '/Users/adam2392/mne_data/eegmmidb_bids/sub-001/eeg/sub-001_task-resteyesclosed_events.tsv'...
 
@@ -507,14 +506,6 @@ What does our fresh BIDS directory look like?
     |--------- sub-002_task-resteyesclosed_eeg.json
     |--- sub-001/
     |------ sub-001_scans.tsv
-    |------ ieeg/
-    |--------- sub-001_task-testresteyes_acq-ecog_ieeg.eeg
-    |--------- sub-001_task-testresteyes_acq-ecog_ieeg.json
-    |--------- sub-001_acq-ecog_electrodes.tsv
-    |--------- sub-001_task-testresteyes_acq-ecog_ieeg.vhdr
-    |--------- sub-001_task-testresteyes_acq-ecog_ieeg.vmrk
-    |--------- sub-001_task-testresteyes_acq-ecog_channels.tsv
-    |--------- sub-001_acq-ecog_coordsystem.json
     |------ eeg/
     |--------- sub-001_task-imaginefists_run-2_eeg.edf
     |--------- sub-001_task-imaginefists_run-1_eeg.json
@@ -1207,7 +1198,7 @@ Command line tool: https://www.npmjs.com/package/bids-validator
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.360 seconds)
+   **Total running time of the script:** ( 0 minutes  1.227 seconds)
 
 
 .. _sphx_glr_download_auto_examples_run_automagic.py:
